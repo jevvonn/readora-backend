@@ -1,9 +1,7 @@
 package infra
 
 import (
-	"flag"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -11,7 +9,10 @@ import (
 	authHandler "github.com/jevvonn/reodora-backend/internal/app/auth/interface/rest"
 	authUsecase "github.com/jevvonn/reodora-backend/internal/app/auth/usecase"
 	userRepository "github.com/jevvonn/reodora-backend/internal/app/user/repository"
+	"github.com/jevvonn/reodora-backend/internal/infra/logger"
 	"github.com/jevvonn/reodora-backend/internal/infra/postgresql"
+	"github.com/jevvonn/reodora-backend/internal/infra/validator"
+	"github.com/jevvonn/reodora-backend/internal/models"
 )
 
 const idleTimeout = 5 * time.Second
@@ -24,6 +25,15 @@ func Bootstrap() error {
 	app := fiber.New(fiber.Config{
 		IdleTimeout: idleTimeout,
 	})
+
+	// Logger
+	logger := logger.New()
+
+	// Validator
+	vd := validator.NewValidator()
+
+	// Response
+	res := models.NewResponseModel()
 
 	// Connect to PostgreSQL
 	dsn := fmt.Sprintf(
@@ -40,36 +50,21 @@ func Bootstrap() error {
 		return err
 	}
 
-	// Migration flag check
-	var migrationCmd string
-	var seederCmd bool
+	// Command flag check (migration, seeder)
+	CommandHandler(db)
 
-	flag.StringVar(&migrationCmd, "m", "", "Migrate database 'up' or 'down'")
-	flag.BoolVar(&seederCmd, "s", false, "Seed database")
-	flag.Parse()
-
-	if migrationCmd != "" {
-		postgresql.Migrate(db, migrationCmd)
-		os.Exit(0)
-	}
-
-	if seederCmd {
-		postgresql.Seed(db)
-		os.Exit(0)
-	}
-
-	// Routes
+	// Routes Group
 	apiRouter := app.Group("/api")
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello world!")
 	})
 
 	// User Instance
-	userRepo := userRepository.NewUserPostgreSQL(db)
+	userRepo := userRepository.NewUserPostgreSQL(db, logger)
 
 	// Auth Instance
-	authUsecase := authUsecase.NewAuthUsecase(userRepo)
-	authHandler.NewAuthHandler(apiRouter, authUsecase)
+	authUsecase := authUsecase.NewAuthUsecase(userRepo, logger)
+	authHandler.NewAuthHandler(apiRouter, authUsecase, vd, logger, res)
 
 	// Start the server
 	listenAddr := fmt.Sprintf("localhost:%s", conf.AppPort)
