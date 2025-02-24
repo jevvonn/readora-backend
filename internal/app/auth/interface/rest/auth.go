@@ -26,15 +26,34 @@ func NewAuthHandler(
 ) {
 	handler := AuthHandler{router, authUsecase, validator, log, response}
 
-	// router.Post("/auth/login", handler.Login)
+	router.Post("/auth/login", handler.Login)
 	router.Post("/auth/register", handler.Register)
 }
 
-// func (h *AuthHandler) Login(c *fiber.Ctx) error {
-// 	// log := "[AuthHandler][Login]"
+func (h *AuthHandler) Login(ctx *fiber.Ctx) error {
+	log := "[AuthHandler][Login]"
 
-// 	return c.SendString("Hello, World 👋!")
-// }
+	var req dto.LoginRequest
+	err := ctx.BodyParser(&req)
+	if err != nil {
+		h.log.Error(log, err)
+		return h.response.BadRequest(ctx, err, nil)
+	}
+
+	erorrsMap, err := h.validator.Validate(req)
+	if err != nil {
+		h.log.Error(log, err)
+		return h.response.BadRequest(ctx, err, erorrsMap)
+	}
+
+	res, err := h.authUsecase.Login(ctx, req)
+	if err != nil {
+		h.log.Error(log, err)
+		return h.response.BadRequest(ctx, err, nil)
+	}
+
+	return h.response.SetData(res).Success(ctx, "User Logged In Successfully")
+}
 
 func (h *AuthHandler) Register(ctx *fiber.Ctx) error {
 	log := "[AuthHandler][Register]"
