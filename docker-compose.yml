@@ -1,0 +1,21 @@
+version: "1.0"
+
+services:
+  db:
+    container_name: readora
+    image: postgres:16.1-alpine
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - volume-db:/var/lib/postgresql/data
+    networks:
+      - network
+
+volumes:
+  volume-db:
+networks:
+  network:
