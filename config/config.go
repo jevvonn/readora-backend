@@ -11,6 +11,8 @@ type config struct {
 	AppEnv  string `env:"APP_ENV"`
 	AppPort string `env:"APP_PORT"`
 
+	JWTSecret string `env:"JWT_SECRET"`
+
 	DbHost     string `env:"DB_HOST"`
 	DbPort     string `env:"DB_PORT"`
 	DbUser     string `env:"DB_USER"`
@@ -19,6 +21,14 @@ type config struct {
 }
 
 var cfg config
+
+func Load() config {
+	if cfg.AppEnv == "" {
+		New()
+	}
+
+	return cfg
+}
 
 func New() config {
 	// Load .env file
