@@ -39,5 +39,11 @@ func Bootstrap() error {
 		return c.SendString("Hello world!")
 	})
 
-	return app.Listen("localhost:8080")
+	// Start the server
+	listenAddr := fmt.Sprintf("localhost:%s", conf.AppPort)
+	if conf.AppEnv == "production" {
+		listenAddr = fmt.Sprintf(":%s", conf.AppPort)
+	}
+
+	return app.Listen(listenAddr)
 }

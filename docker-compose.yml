@@ -1,8 +1,6 @@
-version: "1.0"
-
 services:
   db:
-    container_name: readora
+    container_name: readora-database
     image: postgres:16.1-alpine
     ports:
       - ${DB_PORT}:${DB_PORT}
