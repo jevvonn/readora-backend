@@ -18,6 +18,7 @@ import (
 type AuthUsecaseItf interface {
 	Register(ctx *fiber.Ctx, req dto.RegisterRequest) error
 	Login(ctx *fiber.Ctx, req dto.LoginRequest) (dto.LoginResponse, error)
+	Session(ctx *fiber.Ctx) (dto.SessionResponse, error)
 }
 
 type AuthUsecase struct {
@@ -101,5 +102,31 @@ func (u *AuthUsecase) Login(ctx *fiber.Ctx, req dto.LoginRequest) (dto.LoginResp
 	return dto.LoginResponse{
 		UserId: user.ID.String(),
 		Token:  token,
+	}, nil
+}
+
+func (u *AuthUsecase) Session(ctx *fiber.Ctx) (dto.SessionResponse, error) {
+	log := "[AuthUsecase][Session]"
+	userId := ctx.Locals("userId").(string)
+
+	uuidUser, err := uuid.Parse(userId)
+	if err != nil {
+		u.log.Error(log, err)
+		return dto.SessionResponse{}, err
+	}
+
+	user, err := u.userRepo.GetSpecificUser(entity.User{
+		ID: uuidUser,
+	})
+	if err != nil {
+		u.log.Error(log, err)
+		return dto.SessionResponse{}, err
+	}
+
+	return dto.SessionResponse{
+		ID:       user.ID.String(),
+		Name:     user.Name,
+		Username: user.Username,
+		Email:    user.Email,
 	}, nil
 }

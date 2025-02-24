@@ -16,3 +16,10 @@ type LoginResponse struct {
 	UserId string `json:"userId"`
 	Token  string `json:"token"`
 }
+
+type SessionResponse struct {
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+}
