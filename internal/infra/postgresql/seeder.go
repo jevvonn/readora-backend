@@ -3,6 +3,7 @@ package postgresql
 import (
 	"github.com/google/uuid"
 	"github.com/jevvonn/reodora-backend/helper"
+	"github.com/jevvonn/reodora-backend/internal/constant"
 	"github.com/jevvonn/reodora-backend/internal/domain/entity"
 	"gorm.io/gorm"
 )
@@ -16,20 +17,20 @@ func Seed(db *gorm.DB) {
 	adminAccount := entity.User{
 		ID:            uuid.New(),
 		Name:          "Admin",
-		Username:      "admin.ganteng",
+		Username:      "adminganteng",
 		Email:         "admin@gmail.com",
 		Password:      hashedPassword,
-		Role:          "ADMIN",
+		Role:          constant.RoleAdmin,
 		EmailVerified: true,
 	}
 
 	userAccount := entity.User{
 		ID:            uuid.New(),
 		Name:          "User",
-		Username:      "user.ganteng",
+		Username:      "userganteng",
 		Email:         "user@gmail.com",
 		Password:      hashedPassword,
-		Role:          "USER",
+		Role:          constant.RoleUser,
 		EmailVerified: true,
 	}
 
