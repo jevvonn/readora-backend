@@ -9,11 +9,11 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
-      - volume-db:/var/lib/postgresql/data
+      - volume:/var/lib/postgresql/data
     networks:
       - network
 
 volumes:
-  volume-db:
+  volume:
 networks:
   network:
