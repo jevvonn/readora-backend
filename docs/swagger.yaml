@@ -1,0 +1,207 @@
+definitions:
+  dto.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  dto.RegisterRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        maxLength: 15
+        minLength: 8
+        type: string
+      username:
+        maxLength: 15
+        minLength: 5
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - username
+    type: object
+  dto.SessionResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      username:
+        type: string
+    type: object
+  models.JSONResponseModel:
+    properties:
+      data: {}
+      errors: {}
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login User
+      parameters:
+      - description: Login Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.LoginRequest'
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      summary: Login User
+      tags:
+      - Auth
+  /api/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register User
+      parameters:
+      - description: Register Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.RegisterRequest'
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      summary: Register User
+      tags:
+      - Auth
+  /api/auth/session:
+    get:
+      consumes:
+      - application/json
+      description: Get Session User Data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.SessionResponse'
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Get Session User Data
+      tags:
+      - Auth
+securityDefinitions:
+  BearerAuth:
+    description: '"Type ''Bearer TOKEN'' to correctly set the API Key"'
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

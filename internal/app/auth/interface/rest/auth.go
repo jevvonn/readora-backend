@@ -32,6 +32,16 @@ func NewAuthHandler(
 	router.Get("/auth/session", middleware.Authenticated, handler.Session)
 }
 
+// @Summary      Login User
+// @Description  Login User
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        req body dto.LoginRequest true "Login Request"
+// @Success      200  object   models.JSONResponseModel{data=dto.LoginRequest,errors=nil}
+// @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Router       /api/auth/login [post]
 func (h *AuthHandler) Login(ctx *fiber.Ctx) error {
 	log := "[AuthHandler][Login]"
 
@@ -57,6 +67,16 @@ func (h *AuthHandler) Login(ctx *fiber.Ctx) error {
 	return h.response.SetData(res).Success(ctx, "User Logged In Successfully")
 }
 
+// @Summary      Register User
+// @Description  Register User
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        req body dto.RegisterRequest true "Register Request"
+// @Success      200  object   models.JSONResponseModel{data=dto.RegisterRequest,errors=nil}
+// @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Router       /api/auth/register [post]
 func (h *AuthHandler) Register(ctx *fiber.Ctx) error {
 	log := "[AuthHandler][Register]"
 
@@ -82,6 +102,16 @@ func (h *AuthHandler) Register(ctx *fiber.Ctx) error {
 	return h.response.Success(ctx, "User Registered Successfully")
 }
 
+// @Summary      Get Session User Data
+// @Description  Get Session User Data
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Success      200  object   models.JSONResponseModel{data=dto.SessionResponse,errors=nil}
+// @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Security     BearerAuth
+// @Router       /api/auth/session [get]
 func (h *AuthHandler) Session(ctx *fiber.Ctx) error {
 	log := "[AuthHandler][Session]"
 

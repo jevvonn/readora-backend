@@ -6,7 +6,9 @@ migrate-up:
 
 migrate-down:
 	@go run cmd/migrate/main.go -m down
-	
+
 seed:
 	@go run cmd/migrate/main.go -s
 
+docs-generate:
+	@swag init -g cmd/api/main.go

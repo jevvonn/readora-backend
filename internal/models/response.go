@@ -9,6 +9,8 @@ type ResponseItf interface {
 	SetData(data any) *JSONResponseModel
 }
 
+type NoErrInterface interface{}
+
 type JSONResponseModel struct {
 	Message string `json:"message"`
 	Data    any    `json:"data,omitempty"`

@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/gofiber/swagger"
+	docs "github.com/jevvonn/reodora-backend/docs"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/jevvonn/reodora-backend/config"
 	authHandler "github.com/jevvonn/reodora-backend/internal/app/auth/interface/rest"
@@ -65,6 +68,10 @@ func Bootstrap() error {
 	// Auth Instance
 	authUsecase := authUsecase.NewAuthUsecase(userRepo, logger)
 	authHandler.NewAuthHandler(apiRouter, authUsecase, vd, logger, res)
+
+	// Swagger Docs
+	docs.SwaggerInfo.Title = "Readora Backend Service Documentation"
+	app.Get("/docs/*", swagger.HandlerDefault)
 
 	// Start the server
 	listenAddr := fmt.Sprintf("localhost:%s", conf.AppPort)
