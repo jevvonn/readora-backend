@@ -1,7 +1,9 @@
 package infra
 
 import (
+	"flag"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -29,10 +31,28 @@ func Bootstrap() error {
 		conf.DbPassword,
 		conf.DbName,
 	)
-	_, err := postgresql.New(dsn)
+	db, err := postgresql.New(dsn)
 
 	if err != nil {
 		return err
+	}
+
+	// Migration flag check
+	var migrationCmd string
+	var seederCmd bool
+
+	flag.StringVar(&migrationCmd, "m", "", "Migrate database 'up' or 'down'")
+	flag.BoolVar(&seederCmd, "s", true, "Seed database")
+	flag.Parse()
+
+	if migrationCmd != "" {
+		postgresql.Migrate(db, migrationCmd)
+		os.Exit(0)
+	}
+
+	if seederCmd {
+		postgresql.Seed(db)
+		os.Exit(0)
 	}
 
 	app.Get("/", func(c *fiber.Ctx) error {
