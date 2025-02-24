@@ -8,6 +8,9 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jevvonn/reodora-backend/config"
+	authHandler "github.com/jevvonn/reodora-backend/internal/app/auth/interface/rest"
+	authUsecase "github.com/jevvonn/reodora-backend/internal/app/auth/usecase"
+	userRepository "github.com/jevvonn/reodora-backend/internal/app/user/repository"
 	"github.com/jevvonn/reodora-backend/internal/infra/postgresql"
 )
 
@@ -42,7 +45,7 @@ func Bootstrap() error {
 	var seederCmd bool
 
 	flag.StringVar(&migrationCmd, "m", "", "Migrate database 'up' or 'down'")
-	flag.BoolVar(&seederCmd, "s", true, "Seed database")
+	flag.BoolVar(&seederCmd, "s", false, "Seed database")
 	flag.Parse()
 
 	if migrationCmd != "" {
@@ -55,9 +58,18 @@ func Bootstrap() error {
 		os.Exit(0)
 	}
 
+	// Routes
+	apiRouter := app.Group("/api")
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello world!")
 	})
+
+	// User Instance
+	userRepo := userRepository.NewUserPostgreSQL(db)
+
+	// Auth Instance
+	authUsecase := authUsecase.NewAuthUsecase(userRepo)
+	authHandler.NewAuthHandler(apiRouter, authUsecase)
 
 	// Start the server
 	listenAddr := fmt.Sprintf("localhost:%s", conf.AppPort)
