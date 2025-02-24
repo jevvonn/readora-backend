@@ -2,9 +2,9 @@ package postgresql
 
 import (
 	"github.com/google/uuid"
-	"github.com/jevvonn/reodora-backend/helper"
-	"github.com/jevvonn/reodora-backend/internal/constant"
-	"github.com/jevvonn/reodora-backend/internal/domain/entity"
+	"github.com/jevvonn/readora-backend/helper"
+	"github.com/jevvonn/readora-backend/internal/constant"
+	"github.com/jevvonn/readora-backend/internal/domain/entity"
 	"gorm.io/gorm"
 )
 

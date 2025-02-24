@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/jevvonn/reodora-backend/internal/domain/entity"
-	"github.com/jevvonn/reodora-backend/internal/infra/logger"
+	"github.com/jevvonn/readora-backend/internal/domain/entity"
+	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"gorm.io/gorm"
 )
 

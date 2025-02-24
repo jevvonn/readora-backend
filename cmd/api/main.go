@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/jevvonn/reodora-backend/internal/infra"
+	"github.com/jevvonn/readora-backend/internal/infra"
 )
 
 // First Time Init For Swagger Documentation

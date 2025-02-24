@@ -1,7 +1,7 @@
 package postgresql
 
 import (
-	"github.com/jevvonn/reodora-backend/internal/domain/entity"
+	"github.com/jevvonn/readora-backend/internal/domain/entity"
 	"gorm.io/gorm"
 )
 

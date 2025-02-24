@@ -5,13 +5,13 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/jevvonn/reodora-backend/helper"
-	"github.com/jevvonn/reodora-backend/internal/app/user/repository"
-	"github.com/jevvonn/reodora-backend/internal/constant"
-	"github.com/jevvonn/reodora-backend/internal/domain/dto"
-	"github.com/jevvonn/reodora-backend/internal/domain/entity"
-	"github.com/jevvonn/reodora-backend/internal/infra/jwt"
-	"github.com/jevvonn/reodora-backend/internal/infra/logger"
+	"github.com/jevvonn/readora-backend/helper"
+	"github.com/jevvonn/readora-backend/internal/app/user/repository"
+	"github.com/jevvonn/readora-backend/internal/constant"
+	"github.com/jevvonn/readora-backend/internal/domain/dto"
+	"github.com/jevvonn/readora-backend/internal/domain/entity"
+	"github.com/jevvonn/readora-backend/internal/infra/jwt"
+	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"gorm.io/gorm"
 )
 

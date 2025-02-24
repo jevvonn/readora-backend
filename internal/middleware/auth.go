@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/jevvonn/reodora-backend/internal/infra/jwt"
+	"github.com/jevvonn/readora-backend/internal/infra/jwt"
 )
 
 func Authenticated(ctx *fiber.Ctx) error {

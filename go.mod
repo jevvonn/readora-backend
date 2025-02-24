@@ -1,4 +1,4 @@
-module github.com/jevvonn/reodora-backend
+module github.com/jevvonn/readora-backend
 
 go 1.23.2
 

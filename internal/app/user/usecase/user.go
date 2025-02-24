@@ -1,6 +1,6 @@
 package usecase
 
-import "github.com/jevvonn/reodora-backend/internal/app/user/repository"
+import "github.com/jevvonn/readora-backend/internal/app/user/repository"
 
 type UserUsecaseItf interface{}
 

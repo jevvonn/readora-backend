@@ -2,12 +2,12 @@ package rest
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/jevvonn/reodora-backend/internal/app/auth/usecase"
-	"github.com/jevvonn/reodora-backend/internal/domain/dto"
-	"github.com/jevvonn/reodora-backend/internal/infra/logger"
-	"github.com/jevvonn/reodora-backend/internal/infra/validator"
-	"github.com/jevvonn/reodora-backend/internal/middleware"
-	"github.com/jevvonn/reodora-backend/internal/models"
+	"github.com/jevvonn/readora-backend/internal/app/auth/usecase"
+	"github.com/jevvonn/readora-backend/internal/domain/dto"
+	"github.com/jevvonn/readora-backend/internal/infra/logger"
+	"github.com/jevvonn/readora-backend/internal/infra/validator"
+	"github.com/jevvonn/readora-backend/internal/middleware"
+	"github.com/jevvonn/readora-backend/internal/models"
 )
 
 type AuthHandler struct {

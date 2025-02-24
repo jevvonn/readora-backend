@@ -5,17 +5,17 @@ import (
 	"time"
 
 	"github.com/gofiber/swagger"
-	docs "github.com/jevvonn/reodora-backend/docs"
+	docs "github.com/jevvonn/readora-backend/docs"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/jevvonn/reodora-backend/config"
-	authHandler "github.com/jevvonn/reodora-backend/internal/app/auth/interface/rest"
-	authUsecase "github.com/jevvonn/reodora-backend/internal/app/auth/usecase"
-	userRepository "github.com/jevvonn/reodora-backend/internal/app/user/repository"
-	"github.com/jevvonn/reodora-backend/internal/infra/logger"
-	"github.com/jevvonn/reodora-backend/internal/infra/postgresql"
-	"github.com/jevvonn/reodora-backend/internal/infra/validator"
-	"github.com/jevvonn/reodora-backend/internal/models"
+	"github.com/jevvonn/readora-backend/config"
+	authHandler "github.com/jevvonn/readora-backend/internal/app/auth/interface/rest"
+	authUsecase "github.com/jevvonn/readora-backend/internal/app/auth/usecase"
+	userRepository "github.com/jevvonn/readora-backend/internal/app/user/repository"
+	"github.com/jevvonn/readora-backend/internal/infra/logger"
+	"github.com/jevvonn/readora-backend/internal/infra/postgresql"
+	"github.com/jevvonn/readora-backend/internal/infra/validator"
+	"github.com/jevvonn/readora-backend/internal/models"
 )
 
 const idleTimeout = 5 * time.Second

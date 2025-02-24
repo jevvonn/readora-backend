@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/jevvonn/reodora-backend/config"
+	"github.com/jevvonn/readora-backend/config"
 )
 
 func CreateAuthToken(userId string, username string) (string, error) {

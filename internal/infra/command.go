@@ -4,7 +4,7 @@ import (
 	"flag"
 	"os"
 
-	"github.com/jevvonn/reodora-backend/internal/infra/postgresql"
+	"github.com/jevvonn/readora-backend/internal/infra/postgresql"
 	"gorm.io/gorm"
 )
 
