@@ -58,5 +58,5 @@ func (h *AuthHandler) Register(ctx *fiber.Ctx) error {
 		return h.response.BadRequest(ctx, err, nil)
 	}
 
-	return ctx.SendString("Hello, World 👋!")
+	return h.response.Success(ctx, "User Registered Successfully")
 }
