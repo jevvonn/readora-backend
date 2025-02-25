@@ -12,6 +12,7 @@ import (
 	"github.com/jevvonn/readora-backend/internal/domain/entity"
 	"github.com/jevvonn/readora-backend/internal/infra/jwt"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
+	"github.com/jevvonn/readora-backend/internal/models"
 	"gorm.io/gorm"
 )
 
@@ -83,12 +84,16 @@ func (u *AuthUsecase) Login(ctx *fiber.Ctx, req dto.LoginRequest) (dto.LoginResp
 	}
 
 	if user.ID == uuid.Nil {
-		return dto.LoginResponse{}, errors.New("invalid username or email or password")
+		return dto.LoginResponse{}, models.ErrEmailOrUsernameExists
+	}
+
+	if !user.EmailVerified {
+		return dto.LoginResponse{}, models.ErrEmailNotVerified
 	}
 
 	// Check password
 	if !helper.VerifyPassword(req.Password, user.Password) {
-		return dto.LoginResponse{}, errors.New("invalid username or email or password")
+		return dto.LoginResponse{}, models.ErrEmailOrUsernameExists
 	}
 
 	// Create Jwt token
