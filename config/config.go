@@ -7,7 +7,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type config struct {
+type Config struct {
 	AppEnv  string `env:"APP_ENV"`
 	AppPort string `env:"APP_PORT"`
 
@@ -23,11 +23,17 @@ type config struct {
 	RedisPort     string `env:"REDIS_PORT"`
 	RedisPassword string `env:"REDIS_PASSWORD"`
 	RedisDB       int    `env:"REDIS_DB"`
+
+	SMTPHost     string `env:"SMTP_HOST"`
+	SMTPPort     int    `env:"SMTP_PORT"`
+	SMTPUsername string `env:"SMTP_USERNAME"`
+	SMTPPassword string `env:"SMTP_PASSWORD"`
+	SMTPEmail    string `env:"SMTP_EMAIL"`
 }
 
-var cfg config
+var cfg Config
 
-func Load() config {
+func Load() Config {
 	if cfg.AppEnv == "" {
 		New()
 	}
@@ -35,7 +41,7 @@ func Load() config {
 	return cfg
 }
 
-func New() config {
+func New() Config {
 	// Load .env file
 	err := godotenv.Load()
 	if err != nil {
