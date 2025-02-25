@@ -10,4 +10,5 @@ var (
 	ErrEmailAlreadyVerified     = errors.New("email already verified")
 	ErrInvalidOTP               = errors.New("invalid otp")
 	ErrorInvalidEmailOrPassword = errors.New("invalid email/username or password")
+	ErrOTPSent                  = errors.New("wait for 3 minutes before sending another OTP")
 )

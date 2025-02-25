@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"errors"
+	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -172,6 +174,27 @@ func (u *AuthUsecase) SendRegisterOTP(ctx *fiber.Ctx, email string) error {
 	// Check if email already verified
 	if user.EmailVerified {
 		return models.ErrEmailAlreadyVerified
+	}
+
+	// Check if OTP already sent
+	otpCreatedAt, err := u.authRepo.GetRegisterOTPTime(ctx.Context(), email)
+	if err != nil && !errors.Is(err, models.ErrInvalidOTP) {
+		u.log.Error(log, err)
+		return err
+	}
+
+	// Check if OTP sent within 3 minutes
+	if otpCreatedAt != "" {
+		createdUnix, err := strconv.Atoi(otpCreatedAt)
+		if err != nil {
+			u.log.Error(log, err)
+			return err
+		}
+
+		createdTime := time.Unix(int64(createdUnix), 0)
+		if time.Since(createdTime) < time.Minute*3 {
+			return models.ErrOTPSent
+		}
 	}
 
 	// Generate OTP

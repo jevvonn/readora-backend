@@ -15,6 +15,7 @@ type AuthRepositoryItf interface {
 	SetRegisterOTP(ctx context.Context, email string, otp string) error
 	GetRegisterOTP(ctx context.Context, email string) (string, error)
 	DeleteRegisterOTP(ctx context.Context, email string) error
+	GetRegisterOTPTime(ctx context.Context, email string) (string, error)
 }
 
 type AuthRepository struct {
@@ -34,11 +35,42 @@ func (r *AuthRepository) SetRegisterOTP(ctx context.Context, email string, otp s
 		r.log.Error("[AuthRepository][SendRegisterOTP]", err)
 	}
 
+	keyTime := fmt.Sprintf("auth:register:otp:%s:time", email)
+	err = r.rdb.SetEx(ctx, keyTime, time.Now().Unix(), time.Minute*3).Err()
+
+	if err != nil {
+		r.log.Error("[AuthRepository][SendRegisterOTP]", err)
+	}
+
 	return err
 }
 
 func (r *AuthRepository) GetRegisterOTP(ctx context.Context, email string) (string, error) {
 	key := fmt.Sprintf("auth:register:otp:%s", email)
+	cmd := r.rdb.Get(ctx, key)
+
+	err := cmd.Err()
+	if err != nil {
+		if errors.Is(err, redis.Nil) {
+			r.log.Error("[AuthRepository][SendRegisterOTP]", err)
+			return "", models.ErrInvalidOTP
+		}
+
+		r.log.Error("[AuthRepository][SendRegisterOTP]", err)
+		return "", err
+	}
+
+	otp, err := cmd.Result()
+	if err != nil {
+		r.log.Error("[AuthRepository][SendRegisterOTP]", err)
+		return "", err
+	}
+
+	return otp, nil
+}
+
+func (r *AuthRepository) GetRegisterOTPTime(ctx context.Context, email string) (string, error) {
+	key := fmt.Sprintf("auth:register:otp:%s:time", email)
 	cmd := r.rdb.Get(ctx, key)
 
 	err := cmd.Err()
