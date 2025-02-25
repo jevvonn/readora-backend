@@ -8,11 +8,13 @@ import (
 	"github.com/jevvonn/readora-backend/config"
 )
 
-func CreateAuthToken(userId string, username string) (string, error) {
+func CreateAuthToken(userId string, username string, role string) (string, error) {
 	data := jwt.MapClaims{
 		"sub":      userId,
-		"username": username,
+		"iat":      time.Now().Unix(),
 		"exp":      time.Now().Add(time.Hour * 1).Unix(),
+		"username": username,
+		"role":     role,
 	}
 
 	config := config.Load()

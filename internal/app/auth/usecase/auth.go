@@ -114,7 +114,7 @@ func (u *AuthUsecase) Login(ctx *fiber.Ctx, req dto.LoginRequest) (dto.LoginResp
 	}
 
 	// Create Jwt token
-	token, err := jwt.CreateAuthToken(user.ID.String(), user.Username)
+	token, err := jwt.CreateAuthToken(user.ID.String(), user.Username, user.Role)
 
 	if err != nil {
 		u.log.Error(log, err)

@@ -19,7 +19,6 @@ func Authenticated(ctx *fiber.Ctx) error {
 	}
 
 	tokenString := strings.Replace(headers, "Bearer ", "", 1)
-
 	claims, err := jwt.ParseAuthToken(tokenString)
 
 	if err != nil {
@@ -39,6 +38,7 @@ func Authenticated(ctx *fiber.Ctx) error {
 
 	ctx.Locals("userId", claims["sub"])
 	ctx.Locals("username", claims["username"])
+	ctx.Locals("role", claims["role"])
 
 	return ctx.Next()
 }
