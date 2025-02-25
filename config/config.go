@@ -18,6 +18,11 @@ type config struct {
 	DbUser     string `env:"DB_USER"`
 	DbPassword string `env:"DB_PASSWORD"`
 	DbName     string `env:"DB_NAME"`
+
+	RedisHost     string `env:"REDIS_HOST"`
+	RedisPort     string `env:"REDIS_PORT"`
+	RedisPassword string `env:"REDIS_PASSWORD"`
+	RedisDB       int    `env:"REDIS_DB"`
 }
 
 var cfg config

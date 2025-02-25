@@ -7,19 +7,19 @@ import (
 
 func Migrate(db *gorm.DB, command string) {
 	migrator := db.Migrator()
-	tables := []any{
-		&entity.User{},
-	}
-
 	createUserRoleEnum := `
 	DO $$ 
 	BEGIN 
-	    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE LOWER(typname) = 'userrole') THEN 
-	        CREATE TYPE "userRole" AS ENUM('ADMIN', 'USER'); 
-	    END IF; 
+		IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'userrole') THEN 
+			CREATE TYPE userrole AS ENUM ('ADMIN', 'USER'); 
+		END IF; 
 	END $$;
 	`
 	db.Exec(createUserRoleEnum)
+
+	tables := []any{
+		&entity.User{},
+	}
 
 	var err error
 	if command == "up" {

@@ -14,6 +14,7 @@ import (
 	userRepository "github.com/jevvonn/readora-backend/internal/app/user/repository"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"github.com/jevvonn/readora-backend/internal/infra/postgresql"
+	"github.com/jevvonn/readora-backend/internal/infra/redis"
 	"github.com/jevvonn/readora-backend/internal/infra/validator"
 	"github.com/jevvonn/readora-backend/internal/models"
 )
@@ -48,6 +49,9 @@ func Start() error {
 		conf.DbName,
 	)
 	db, err := postgresql.New(dsn)
+
+	// Connect to Redis
+	_ = redis.New()
 
 	if err != nil {
 		return err

@@ -9,11 +9,24 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
-      - volume:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - network
+  redis:
+    container_name: readora-redis
+    image: redis:7.4-alpine
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    volumes:
+      - redis:/data
     networks:
       - network
 
 volumes:
-  volume:
+  postgres:
+    driver: local
+  redis:
+    driver: local
+
 networks:
   network:
