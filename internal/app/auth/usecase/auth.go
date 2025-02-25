@@ -6,12 +6,14 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/jevvonn/readora-backend/helper"
-	"github.com/jevvonn/readora-backend/internal/app/user/repository"
+	authRepo "github.com/jevvonn/readora-backend/internal/app/auth/repository"
+	userRepo "github.com/jevvonn/readora-backend/internal/app/user/repository"
 	"github.com/jevvonn/readora-backend/internal/constant"
 	"github.com/jevvonn/readora-backend/internal/domain/dto"
 	"github.com/jevvonn/readora-backend/internal/domain/entity"
 	"github.com/jevvonn/readora-backend/internal/infra/jwt"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
+	"github.com/jevvonn/readora-backend/internal/infra/mailer"
 	"github.com/jevvonn/readora-backend/internal/models"
 	"gorm.io/gorm"
 )
@@ -20,15 +22,23 @@ type AuthUsecaseItf interface {
 	Register(ctx *fiber.Ctx, req dto.RegisterRequest) error
 	Login(ctx *fiber.Ctx, req dto.LoginRequest) (dto.LoginResponse, error)
 	Session(ctx *fiber.Ctx) (dto.SessionResponse, error)
+	SendRegisterOTP(ctx *fiber.Ctx, email string) error
 }
 
 type AuthUsecase struct {
-	userRepo repository.UserPostgreSQLItf
+	userRepo userRepo.UserPostgreSQLItf
+	authRepo authRepo.AuthRepositoryItf
+	mailer   mailer.MailerItf
 	log      logger.LoggerItf
 }
 
-func NewAuthUsecase(userRepo repository.UserPostgreSQLItf, log logger.LoggerItf) AuthUsecaseItf {
-	return &AuthUsecase{userRepo, log}
+func NewAuthUsecase(
+	userRepo userRepo.UserPostgreSQLItf,
+	authRepo authRepo.AuthRepositoryItf,
+	log logger.LoggerItf,
+	mailer mailer.MailerItf,
+) AuthUsecaseItf {
+	return &AuthUsecase{userRepo, authRepo, mailer, log}
 }
 
 func (u *AuthUsecase) Register(ctx *fiber.Ctx, req dto.RegisterRequest) error {
@@ -134,4 +144,46 @@ func (u *AuthUsecase) Session(ctx *fiber.Ctx) (dto.SessionResponse, error) {
 		Username: user.Username,
 		Email:    user.Email,
 	}, nil
+}
+
+func (u *AuthUsecase) SendRegisterOTP(ctx *fiber.Ctx, email string) error {
+	log := "[AuthUsecase][SendRegisterOTP]"
+
+	// Check user exists
+	user, err := u.userRepo.GetSpecificUser(entity.User{
+		Email: email,
+	})
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		u.log.Error(log, err)
+		return err
+	}
+
+	if user.ID == uuid.Nil {
+		return models.ErrEmailOrUsernameNotExists
+	}
+
+	// Check if email already verified
+	if user.EmailVerified {
+		return models.ErrEmailAlreadyVerified
+	}
+
+	// Generate OTP
+	otp := helper.RandomNumber(6)
+
+	// Save OTP to Redis
+	err = u.authRepo.SetRegisterOTP(ctx.Context(), email, otp)
+	if err != nil {
+		u.log.Error(log, err)
+		return err
+	}
+
+	// Send OTP to email
+	go func() {
+		err = u.mailer.Send([]string{email}, "Register OTP", "Your OTP is "+otp)
+		if err != nil {
+			u.log.Error(log, err)
+		}
+	}()
+
+	return nil
 }

@@ -10,9 +10,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/jevvonn/readora-backend/config"
 	authHandler "github.com/jevvonn/readora-backend/internal/app/auth/interface/rest"
+	authRepository "github.com/jevvonn/readora-backend/internal/app/auth/repository"
 	authUsecase "github.com/jevvonn/readora-backend/internal/app/auth/usecase"
 	userRepository "github.com/jevvonn/readora-backend/internal/app/user/repository"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
+	"github.com/jevvonn/readora-backend/internal/infra/mailer"
 	"github.com/jevvonn/readora-backend/internal/infra/postgresql"
 	"github.com/jevvonn/readora-backend/internal/infra/redis"
 	"github.com/jevvonn/readora-backend/internal/infra/validator"
@@ -51,7 +53,10 @@ func Start() error {
 	db, err := postgresql.New(dsn)
 
 	// Connect to Redis
-	_ = redis.New()
+	rdb := redis.New()
+
+	// Connect to Mailer
+	mailer := mailer.New()
 
 	if err != nil {
 		return err
@@ -70,7 +75,8 @@ func Start() error {
 	userRepo := userRepository.NewUserPostgreSQL(db, logger)
 
 	// Auth Instance
-	authUsecase := authUsecase.NewAuthUsecase(userRepo, logger)
+	authRepo := authRepository.NewAuthRepository(rdb, logger)
+	authUsecase := authUsecase.NewAuthUsecase(userRepo, authRepo, logger, mailer)
 	authHandler.NewAuthHandler(apiRouter, authUsecase, vd, logger, res)
 
 	// Swagger Docs

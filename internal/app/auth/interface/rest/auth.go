@@ -29,6 +29,8 @@ func NewAuthHandler(
 
 	router.Post("/auth/login", handler.Login)
 	router.Post("/auth/register", handler.Register)
+	router.Post("/auth/otp", handler.SendRegisterOTP)
+
 	router.Get("/auth/session", middleware.Authenticated, handler.Session)
 }
 
@@ -122,4 +124,29 @@ func (h *AuthHandler) Session(ctx *fiber.Ctx) error {
 	}
 
 	return h.response.SetData(res).Success(ctx, "Session Retrieved Successfully")
+}
+
+func (h *AuthHandler) SendRegisterOTP(ctx *fiber.Ctx) error {
+	log := "[AuthHandler][SendRegisterOTP]"
+
+	var req dto.SendRegisterOTPRequest
+	err := ctx.BodyParser(&req)
+	if err != nil {
+		h.log.Error(log, err)
+		return h.response.BadRequest(ctx, err, nil)
+	}
+
+	erorrsMap, err := h.validator.Validate(req)
+	if err != nil {
+		h.log.Error(log, err)
+		return h.response.BadRequest(ctx, err, erorrsMap)
+	}
+
+	err = h.authUsecase.SendRegisterOTP(ctx, req.Email)
+	if err != nil {
+		h.log.Error(log, err)
+		return h.response.BadRequest(ctx, err, nil)
+	}
+
+	return h.response.Success(ctx, "OTP Sent Successfully")
 }
