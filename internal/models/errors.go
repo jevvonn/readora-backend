@@ -9,4 +9,5 @@ var (
 	ErrEmailNotVerified         = errors.New("email not verified")
 	ErrEmailAlreadyVerified     = errors.New("email already verified")
 	ErrInvalidOTP               = errors.New("invalid otp")
+	ErrorInvalidEmailOrPassword = errors.New("invalid email/username or password")
 )

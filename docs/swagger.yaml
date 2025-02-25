@@ -1,4 +1,14 @@
 definitions:
+  dto.CheckRegisterOTPRequest:
+    properties:
+      email:
+        type: string
+      otp:
+        type: string
+    required:
+    - email
+    - otp
+    type: object
   dto.LoginRequest:
     properties:
       password:
@@ -28,6 +38,13 @@ definitions:
     - name
     - password
     - username
+    type: object
+  dto.SendRegisterOTPRequest:
+    properties:
+      email:
+        type: string
+    required:
+    - email
     type: object
   dto.SessionResponse:
     properties:
@@ -99,6 +116,108 @@ paths:
                   type: object
               type: object
       summary: Login User
+      tags:
+      - Auth
+  /api/auth/otp:
+    post:
+      consumes:
+      - application/json
+      description: Send OTP for Register
+      parameters:
+      - description: Send OTP for Register Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SendRegisterOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      summary: Send OTP for Register
+      tags:
+      - Auth
+  /api/auth/otp/check:
+    post:
+      consumes:
+      - application/json
+      description: Check OTP for Register
+      parameters:
+      - description: Check OTP for Register Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CheckRegisterOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      summary: Check OTP for Register
       tags:
       - Auth
   /api/auth/register:

@@ -101,16 +101,16 @@ func (u *AuthUsecase) Login(ctx *fiber.Ctx, req dto.LoginRequest) (dto.LoginResp
 	}
 
 	if user.ID == uuid.Nil {
-		return dto.LoginResponse{}, models.ErrEmailOrUsernameExists
-	}
-
-	if !user.EmailVerified {
-		return dto.LoginResponse{}, models.ErrEmailNotVerified
+		return dto.LoginResponse{}, models.ErrorInvalidEmailOrPassword
 	}
 
 	// Check password
 	if !helper.VerifyPassword(req.Password, user.Password) {
-		return dto.LoginResponse{}, models.ErrEmailOrUsernameExists
+		return dto.LoginResponse{}, models.ErrorInvalidEmailOrPassword
+	}
+
+	if !user.EmailVerified {
+		return dto.LoginResponse{}, models.ErrEmailNotVerified
 	}
 
 	// Create Jwt token

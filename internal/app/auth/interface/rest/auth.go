@@ -127,6 +127,16 @@ func (h *AuthHandler) Session(ctx *fiber.Ctx) error {
 	return h.response.SetData(res).Success(ctx, "Session Retrieved Successfully")
 }
 
+// @Summary      Send OTP for Register
+// @Description  Send OTP for Register
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        req body dto.SendRegisterOTPRequest true "Send OTP for Register Request"
+// @Success      200  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Router       /api/auth/otp [post]
 func (h *AuthHandler) SendRegisterOTP(ctx *fiber.Ctx) error {
 	log := "[AuthHandler][SendRegisterOTP]"
 
@@ -152,6 +162,16 @@ func (h *AuthHandler) SendRegisterOTP(ctx *fiber.Ctx) error {
 	return h.response.Success(ctx, "OTP Sent Successfully")
 }
 
+// @Summary      Check OTP for Register
+// @Description  Check OTP for Register
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        req body dto.CheckRegisterOTPRequest true "Check OTP for Register Request"
+// @Success      200  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Router       /api/auth/otp/check [post]
 func (h *AuthHandler) CheckRegisterOTP(ctx *fiber.Ctx) error {
 	log := "[AuthHandler][CheckRegisterOTP]"
 
