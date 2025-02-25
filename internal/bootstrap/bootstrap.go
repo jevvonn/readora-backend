@@ -1,4 +1,4 @@
-package infra
+package bootstrap
 
 import (
 	"fmt"
@@ -20,7 +20,7 @@ import (
 
 const idleTimeout = 5 * time.Second
 
-func Bootstrap() error {
+func Start() error {
 	// Load .env file
 	conf := config.New()
 

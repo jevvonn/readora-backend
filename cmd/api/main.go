@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/jevvonn/readora-backend/internal/infra"
+	"github.com/jevvonn/readora-backend/internal/bootstrap"
 )
 
 // First Time Init For Swagger Documentation
@@ -13,7 +13,7 @@ import (
 // @description "Type 'Bearer TOKEN' to correctly set the API Key"
 
 func main() {
-	err := infra.Bootstrap()
+	err := bootstrap.Start()
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
