@@ -30,6 +30,7 @@ func NewAuthHandler(
 	router.Post("/auth/login", handler.Login)
 	router.Post("/auth/register", handler.Register)
 	router.Post("/auth/otp", handler.SendRegisterOTP)
+	router.Post("/auth/otp/check", handler.CheckRegisterOTP)
 
 	router.Get("/auth/session", middleware.Authenticated, handler.Session)
 }
@@ -149,4 +150,29 @@ func (h *AuthHandler) SendRegisterOTP(ctx *fiber.Ctx) error {
 	}
 
 	return h.response.Success(ctx, "OTP Sent Successfully")
+}
+
+func (h *AuthHandler) CheckRegisterOTP(ctx *fiber.Ctx) error {
+	log := "[AuthHandler][CheckRegisterOTP]"
+
+	var req dto.CheckRegisterOTPRequest
+	err := ctx.BodyParser(&req)
+	if err != nil {
+		h.log.Error(log, err)
+		return h.response.BadRequest(ctx, err, nil)
+	}
+
+	erorrsMap, err := h.validator.Validate(req)
+	if err != nil {
+		h.log.Error(log, err)
+		return h.response.BadRequest(ctx, err, erorrsMap)
+	}
+
+	err = h.authUsecase.CheckRegisterOTP(ctx, req.Email, req.OTP)
+	if err != nil {
+		h.log.Error(log, err)
+		return h.response.BadRequest(ctx, err, nil)
+	}
+
+	return h.response.Success(ctx, "Email Verified Successfully")
 }

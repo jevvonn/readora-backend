@@ -27,3 +27,8 @@ type SessionResponse struct {
 type SendRegisterOTPRequest struct {
 	Email string `json:"email" validate:"required,email"`
 }
+
+type CheckRegisterOTPRequest struct {
+	Email string `json:"email" validate:"required,email"`
+	OTP   string `json:"otp" validate:"required"`
+}
