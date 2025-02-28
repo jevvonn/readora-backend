@@ -1,0 +1,32 @@
+services:
+  db:
+    container_name: readora-database
+    image: postgres:16.1-alpine
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - network
+  redis:
+    container_name: readora-redis
+    image: redis:7.4-alpine
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    volumes:
+      - redis:/data
+    networks:
+      - network
+
+volumes:
+  postgres:
+    driver: local
+  redis:
+    driver: local
+
+networks:
+  network:
