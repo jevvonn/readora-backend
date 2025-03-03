@@ -1,3 +1,5 @@
+# There's no database service in this file. This is because database managed seperately in production environment.
+
 services:
   app:
     container_name: readora-app
@@ -8,21 +10,7 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
       - redis
-    networks:
-      - network
-  db:
-    container_name: readora-database
-    image: postgres:16.1-alpine
-    ports:
-      - ${DB_PORT}:${DB_PORT}
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-    volumes:
-      - postgres:/var/lib/postgresql/data
     networks:
       - network
   redis:
@@ -36,10 +24,7 @@ services:
       - network
 
 volumes:
-  postgres:
-    driver: local
   redis:
-    driver: local
 
 networks:
   network:
