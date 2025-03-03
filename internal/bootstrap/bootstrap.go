@@ -90,8 +90,7 @@ func Start() error {
 	// Swagger Docs
 	docs.SwaggerInfo.Title = "Readora Backend Service Documentation"
 	swaggerHandler := swagger.New(swagger.Config{
-		ConfigURL: conf.AppBaseURL,
-		URL:       conf.AppBaseURL + "/docs/doc.json",
+		URL: conf.AppBaseURL + "/docs/doc.json",
 	})
 
 	app.Get("/docs/*", swaggerHandler)
