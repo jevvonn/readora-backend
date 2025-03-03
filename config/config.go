@@ -3,32 +3,33 @@ package config
 import (
 	"log"
 
-	"github.com/caarlos0/env/v11"
+	"github.com/caarlos0/env/v6"
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	AppEnv  string `env:"APP_ENV"`
-	AppPort string `env:"APP_PORT"`
+	AppEnv     string `env:"APP_ENV,required"`
+	AppPort    string `env:"APP_PORT,required"`
+	AppBaseURL string `env:"APP_BASE_URL,required"`
 
-	JWTSecret string `env:"JWT_SECRET"`
+	JWTSecret string `env:"JWT_SECRET,required"`
 
-	DbHost     string `env:"DB_HOST"`
-	DbPort     string `env:"DB_PORT"`
-	DbUser     string `env:"DB_USER"`
-	DbPassword string `env:"DB_PASSWORD"`
-	DbName     string `env:"DB_NAME"`
+	DbHost     string `env:"DB_HOST,required"`
+	DbPort     string `env:"DB_PORT,required"`
+	DbUser     string `env:"DB_USER,required"`
+	DbPassword string `env:"DB_PASSWORD,required"`
+	DbName     string `env:"DB_NAME,required"`
 
-	RedisHost     string `env:"REDIS_HOST"`
-	RedisPort     string `env:"REDIS_PORT"`
-	RedisPassword string `env:"REDIS_PASSWORD"`
-	RedisDB       int    `env:"REDIS_DB"`
+	RedisHost     string `env:"REDIS_HOST,required"`
+	RedisPort     string `env:"REDIS_PORT,required"`
+	RedisPassword string `env:"REDIS_PASSWORD,required"`
+	RedisDB       int    `env:"REDIS_DB,required"`
 
-	SMTPHost     string `env:"SMTP_HOST"`
-	SMTPPort     int    `env:"SMTP_PORT"`
-	SMTPUsername string `env:"SMTP_USERNAME"`
-	SMTPPassword string `env:"SMTP_PASSWORD"`
-	SMTPEmail    string `env:"SMTP_EMAIL"`
+	SMTPHost     string `env:"SMTP_HOST,required"`
+	SMTPPort     int    `env:"SMTP_PORT,required"`
+	SMTPUsername string `env:"SMTP_USERNAME,required"`
+	SMTPPassword string `env:"SMTP_PASSWORD,required"`
+	SMTPEmail    string `env:"SMTP_EMAIL,required"`
 }
 
 var cfg Config
