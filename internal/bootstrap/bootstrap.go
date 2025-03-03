@@ -88,9 +88,16 @@ func Start() error {
 	authHandler.NewAuthHandler(apiRouter, authUsecase, vd, logger, res)
 
 	// Swagger Docs
+	httpProtocol := "http"
+	if conf.AppEnv == "production" {
+		httpProtocol = "https"
+	}
+
+	docs.SwaggerInfo.Version = "1.0.0"
+	docs.SwaggerInfo.Host = conf.AppBaseURL
 	docs.SwaggerInfo.Title = "Readora Backend Service Documentation"
 	swaggerHandler := swagger.New(swagger.Config{
-		URL: conf.AppBaseURL + "/docs/doc.json",
+		URL: fmt.Sprintf("%s://%s/docs/doc.json", httpProtocol, conf.AppBaseURL),
 	})
 
 	app.Get("/docs/*", swaggerHandler)
