@@ -30,7 +30,8 @@ func Start() error {
 
 	// Create a new Fiber instance
 	app := fiber.New(fiber.Config{
-		IdleTimeout: idleTimeout,
+		IdleTimeout:  idleTimeout,
+		ErrorHandler: FiberErrorHandler,
 	})
 
 	// Logger

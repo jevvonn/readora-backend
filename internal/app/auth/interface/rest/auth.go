@@ -52,7 +52,7 @@ func (h *AuthHandler) Login(ctx *fiber.Ctx) error {
 	err := ctx.BodyParser(&req)
 	if err != nil {
 		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
 	erorrsMap, err := h.validator.Validate(req)
@@ -64,7 +64,7 @@ func (h *AuthHandler) Login(ctx *fiber.Ctx) error {
 	res, err := h.authUsecase.Login(ctx, req)
 	if err != nil {
 		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
 	return h.response.SetData(res).Success(ctx, "User Logged In Successfully")
@@ -76,7 +76,7 @@ func (h *AuthHandler) Login(ctx *fiber.Ctx) error {
 // @Accept       json
 // @Produce      json
 // @Param        req body dto.RegisterRequest true "Register Request"
-// @Success      200  object   models.JSONResponseModel{data=dto.RegisterRequest,errors=nil}
+// @Success      200  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Router       /api/auth/register [post]
@@ -99,7 +99,7 @@ func (h *AuthHandler) Register(ctx *fiber.Ctx) error {
 	err = h.authUsecase.Register(ctx, req)
 	if err != nil {
 		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
 	return h.response.Success(ctx, "User Registered Successfully")
@@ -121,7 +121,7 @@ func (h *AuthHandler) Session(ctx *fiber.Ctx) error {
 	res, err := h.authUsecase.Session(ctx)
 	if err != nil {
 		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
 	return h.response.SetData(res).Success(ctx, "Session Retrieved Successfully")
@@ -156,7 +156,7 @@ func (h *AuthHandler) SendRegisterOTP(ctx *fiber.Ctx) error {
 	err = h.authUsecase.SendRegisterOTP(ctx, req.Email)
 	if err != nil {
 		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
 	return h.response.Success(ctx, "OTP Sent Successfully")
@@ -191,7 +191,7 @@ func (h *AuthHandler) CheckRegisterOTP(ctx *fiber.Ctx) error {
 	err = h.authUsecase.CheckRegisterOTP(ctx, req.Email, req.OTP)
 	if err != nil {
 		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
 	return h.response.Success(ctx, "Email Verified Successfully")

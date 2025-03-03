@@ -324,7 +324,7 @@ const docTemplate = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/dto.RegisterRequest"
+                                            "type": "object"
                                         },
                                         "errors": {
                                             "type": "object"
