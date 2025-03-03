@@ -88,10 +88,10 @@ func Start() error {
 	authHandler.NewAuthHandler(apiRouter, authUsecase, vd, logger, res)
 
 	// Swagger Docs
-	docs.SwaggerInfo.Host = conf.AppBaseURL
 	docs.SwaggerInfo.Title = "Readora Backend Service Documentation"
 	swaggerHandler := swagger.New(swagger.Config{
-		URL: conf.AppBaseURL + "/docs/doc.json",
+		ConfigURL: conf.AppBaseURL,
+		URL:       conf.AppBaseURL + "/docs/doc.json",
 	})
 
 	app.Get("/docs/*", swaggerHandler)
