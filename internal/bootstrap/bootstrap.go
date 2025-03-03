@@ -8,6 +8,7 @@ import (
 	docs "github.com/jevvonn/readora-backend/docs"
 
 	"github.com/gofiber/fiber/v2"
+	cors "github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/jevvonn/readora-backend/config"
 	authHandler "github.com/jevvonn/readora-backend/internal/app/auth/interface/rest"
 	authRepository "github.com/jevvonn/readora-backend/internal/app/auth/repository"
@@ -71,6 +72,13 @@ func Start() error {
 		return c.SendString("Hello world!")
 	})
 
+	// Cors Middleware
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowMethods: "GET,POST,PUT,DELETE",
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
+
 	// User Instance
 	userRepo := userRepository.NewUserPostgreSQL(db, logger)
 
@@ -80,11 +88,16 @@ func Start() error {
 	authHandler.NewAuthHandler(apiRouter, authUsecase, vd, logger, res)
 
 	// Swagger Docs
+	docs.SwaggerInfo.Host = conf.AppBaseURL
 	docs.SwaggerInfo.Title = "Readora Backend Service Documentation"
-	app.Get("/docs/*", swagger.HandlerDefault)
+	swaggerHandler := swagger.New(swagger.Config{
+		URL: conf.AppBaseURL + "/docs/doc.json",
+	})
+
+	app.Get("/docs/*", swaggerHandler)
 
 	// Start the server
-	listenAddr := fmt.Sprintf("localhost:%s", conf.AppPort)
+	listenAddr := fmt.Sprintf("127.0.0.1:%s", conf.AppPort)
 	if conf.AppEnv == "production" {
 		listenAddr = fmt.Sprintf(":%s", conf.AppPort)
 	}
