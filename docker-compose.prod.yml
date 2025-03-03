@@ -3,8 +3,7 @@
 services:
   app:
     container_name: readora-app
-    # build: .
-    image: readora-be:latest
+    build: .
     ports:
       - ${APP_PORT}:${APP_PORT}
     env_file:
