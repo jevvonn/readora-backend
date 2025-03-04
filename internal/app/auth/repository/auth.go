@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/jevvonn/readora-backend/internal/infra/errorpkg"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
-	"github.com/jevvonn/readora-backend/internal/models"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -53,7 +53,7 @@ func (r *AuthRepository) GetRegisterOTP(ctx context.Context, email string) (stri
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			r.log.Error("[AuthRepository][SendRegisterOTP]", err)
-			return "", models.ErrInvalidOTP
+			return "", errorpkg.ErrInvalidOTP
 		}
 
 		r.log.Error("[AuthRepository][SendRegisterOTP]", err)
@@ -77,7 +77,7 @@ func (r *AuthRepository) GetRegisterOTPTime(ctx context.Context, email string) (
 	if err != nil {
 		if errors.Is(err, redis.Nil) {
 			r.log.Error("[AuthRepository][SendRegisterOTP]", err)
-			return "", models.ErrInvalidOTP
+			return "", errorpkg.ErrInvalidOTP
 		}
 
 		r.log.Error("[AuthRepository][SendRegisterOTP]", err)

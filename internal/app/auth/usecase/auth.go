@@ -17,7 +17,6 @@ import (
 	"github.com/jevvonn/readora-backend/internal/infra/jwt"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"github.com/jevvonn/readora-backend/internal/infra/mailer"
-	"github.com/jevvonn/readora-backend/internal/models"
 	"gorm.io/gorm"
 )
 
@@ -178,7 +177,7 @@ func (u *AuthUsecase) SendRegisterOTP(ctx *fiber.Ctx, email string) error {
 
 	// Check if OTP already sent
 	otpCreatedAt, err := u.authRepo.GetRegisterOTPTime(ctx.Context(), email)
-	if err != nil && !errors.Is(err, models.ErrInvalidOTP) {
+	if err != nil && !errors.Is(err, errorpkg.ErrInvalidOTP) {
 		u.log.Error(log, err)
 		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
