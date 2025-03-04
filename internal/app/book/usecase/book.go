@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"encoding/json"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/jevvonn/readora-backend/helper"
@@ -28,6 +30,18 @@ func NewBookUsecase(userRepo repository.BookPostgreSQLItf, storage storage.Stora
 
 func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) error {
 	log := "[BookUsecase][CreateBook]"
+
+	var genresReq []string
+	err := json.Unmarshal([]byte(req.Genres), &genresReq)
+	if err != nil {
+		u.log.Error(log, err)
+		return errorpkg.ErrValidationGenresArray
+	}
+
+	var genres []entity.Genre
+	for _, genre := range genresReq {
+		genres = append(genres, entity.Genre{Name: genre})
+	}
 
 	publishDate, err := helper.StringISOToDateTime(req.PublishDate)
 	if err != nil {
@@ -68,6 +82,7 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 	}
 
 	userId := ctx.Locals("userId").(string)
+
 	book := entity.Book{
 		ID:          uuid.New(),
 		Title:       req.Title,
@@ -77,6 +92,8 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 		FileKey:     fileKey,
 		FileURL:     pdfURL,
 		OwnerID:     uuid.MustParse(userId),
+		Genres:      genres,
+
 		// COVER IMAGE NOT DONE YET
 		CoverImageKey: "-",
 		CoverImageURL: "-",

@@ -11,6 +11,10 @@ var (
 		"internal server error", http.StatusInternalServerError,
 	)
 
+	ErrBadRequest = NewError(
+		"internal server error", http.StatusBadRequest,
+	)
+
 	ErrEmailOrUsernameExists = NewError(
 		"user with this username or email already exists", http.StatusBadRequest,
 	)
@@ -51,6 +55,13 @@ var (
 			},
 		}, "Invalid date format")
 	}
+
+	ErrValidationGenresArray = validator.NewValidationErr([]validator.ErrorField{
+		{
+			Field:   "genres",
+			Message: "genres must be an array of string, e.g: ['Romance', 'Fiction']",
+		},
+	}, "genres must be an array of string, e.g: ['Romance', 'Fiction']")
 
 	ErrValidationFileRequired = func(field string) error {
 		return validator.NewValidationErr([]validator.ErrorField{
