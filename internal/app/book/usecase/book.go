@@ -7,6 +7,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jevvonn/readora-backend/helper"
 	"github.com/jevvonn/readora-backend/internal/app/book/repository"
+	"github.com/jevvonn/readora-backend/internal/constant"
 	"github.com/jevvonn/readora-backend/internal/domain/dto"
 	"github.com/jevvonn/readora-backend/internal/domain/entity"
 	"github.com/jevvonn/readora-backend/internal/infra/errorpkg"
@@ -16,6 +17,7 @@ import (
 
 type BookUsecaseItf interface {
 	CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) error
+	GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) ([]dto.GetBooksResponse, int, int, error)
 }
 
 type BookUsecase struct {
@@ -106,4 +108,67 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 	}
 
 	return nil
+}
+
+func (u *BookUsecase) GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) (res []dto.GetBooksResponse, page, limit int, err error) {
+	log := "[BookUsecase][GetBooks]"
+
+	if query.Limit == 0 {
+		query.Limit = 10
+	}
+
+	if query.Page == 0 {
+		query.Page = 1
+	}
+
+	if query.SortOrder == "" {
+		query.SortOrder = "asc"
+	}
+
+	userId := ctx.Locals("userId").(string)
+	filter := repository.GetBooksFilter{
+		Search:    query.Search,
+		Genre:     query.Genre,
+		Limit:     query.Limit,
+		Page:      query.Page,
+		SortBy:    query.SortBy,
+		SortOrder: query.SortOrder,
+		Role:      constant.RoleAdmin,
+	}
+
+	if query.OwnerID != "" {
+		if userId == query.OwnerID {
+			filter.Role = constant.RoleUser
+			filter.OwnerID = uuid.MustParse(userId)
+		}
+	}
+
+	books, err := u.bookRepo.GetBooks(filter)
+	if err != nil {
+		u.log.Error(log, err)
+		return nil, filter.Page, filter.Limit, errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	var booksRes []dto.GetBooksResponse
+	for _, book := range books {
+		booksRes = append(booksRes, dto.GetBooksResponse{
+			ID:            book.ID,
+			Title:         book.Title,
+			Description:   book.Description,
+			Author:        book.Author,
+			PublishDate:   book.PublishDate,
+			CoverImageKey: book.CoverImageKey,
+			CoverImageURL: book.CoverImageURL,
+			FileKey:       book.FileKey,
+			FileURL:       book.FileURL,
+			OwnerID:       book.OwnerID,
+			Owner: entity.User{
+				ID:       book.Owner.ID,
+				Username: book.Owner.Username,
+			},
+			Genres: book.Genres,
+		})
+	}
+
+	return booksRes, filter.Page, filter.Limit, nil
 }
