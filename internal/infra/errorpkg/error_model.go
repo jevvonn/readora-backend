@@ -1,41 +1,43 @@
-package models
+package errorpkg
 
 import (
 	"net/http"
-
-	"github.com/jevvonn/readora-backend/internal/infra/errorpkg"
 )
 
 var (
-	ErrEmailOrUsernameExists = errorpkg.NewError(
+	ErrInternalServerError = NewError(
+		"internal server error", http.StatusInternalServerError,
+	)
+
+	ErrEmailOrUsernameExists = NewError(
 		"user with this username or email already exists", http.StatusBadRequest,
 	)
 
-	ErrEmailOrUsernameNotExists = errorpkg.NewError(
+	ErrEmailOrUsernameNotExists = NewError(
 		"user with this username or email doesn't exists", http.StatusBadRequest,
 	)
 
-	ErrEmailNotExists = errorpkg.NewError(
+	ErrEmailNotExists = NewError(
 		"user with this email doesn't exists", http.StatusBadRequest,
 	)
 
-	ErrEmailNotVerified = errorpkg.NewError(
+	ErrEmailNotVerified = NewError(
 		"email not verified", http.StatusBadRequest,
 	)
 
-	ErrEmailAlreadyVerified = errorpkg.NewError(
+	ErrEmailAlreadyVerified = NewError(
 		"email already verified", http.StatusBadRequest,
 	)
 
-	ErrInvalidOTP = errorpkg.NewError(
+	ErrInvalidOTP = NewError(
 		"invalid otp", http.StatusBadRequest,
 	)
 
-	ErrorInvalidEmailOrPassword = errorpkg.NewError(
+	ErrorInvalidEmailOrPassword = NewError(
 		"invalid email/username or password", http.StatusBadRequest,
 	)
 
-	ErrOTPSent = errorpkg.NewError(
+	ErrOTPSent = NewError(
 		"wait for 3 minutes before sending another OTP", http.StatusBadRequest,
 	)
 )

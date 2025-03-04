@@ -19,7 +19,6 @@ import (
 	"github.com/jevvonn/readora-backend/internal/infra/postgresql"
 	"github.com/jevvonn/readora-backend/internal/infra/redis"
 	"github.com/jevvonn/readora-backend/internal/infra/validator"
-	"github.com/jevvonn/readora-backend/internal/models"
 )
 
 const idleTimeout = 5 * time.Second
@@ -30,7 +29,8 @@ func Start() error {
 
 	// Create a new Fiber instance
 	app := fiber.New(fiber.Config{
-		IdleTimeout: idleTimeout,
+		IdleTimeout:  idleTimeout,
+		ErrorHandler: FiberErrorHandler,
 	})
 
 	// Logger
@@ -38,9 +38,6 @@ func Start() error {
 
 	// Validator
 	vd := validator.NewValidator()
-
-	// Response
-	res := models.NewResponseModel()
 
 	// Connect to PostgreSQL
 	dsn := fmt.Sprintf(
@@ -85,7 +82,7 @@ func Start() error {
 	// Auth Instance
 	authRepo := authRepository.NewAuthRepository(rdb, logger)
 	authUsecase := authUsecase.NewAuthUsecase(userRepo, authRepo, logger, mailer)
-	authHandler.NewAuthHandler(apiRouter, authUsecase, vd, logger, res)
+	authHandler.NewAuthHandler(apiRouter, authUsecase, vd)
 
 	// Swagger Docs
 	httpProtocol := "http"

@@ -32,6 +32,10 @@ RUN go mod download
 # Copy local code to the container image.
 COPY . ./
 
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+
+RUN swag init -g cmd/api/main.go
+
 # Build the binary.
 RUN CGO_ENABLED=0 GOOS=linux go build -o server ./cmd/api
 
