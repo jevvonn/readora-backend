@@ -4,7 +4,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/jevvonn/readora-backend/internal/app/auth/usecase"
 	"github.com/jevvonn/readora-backend/internal/domain/dto"
-	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"github.com/jevvonn/readora-backend/internal/infra/validator"
 	"github.com/jevvonn/readora-backend/internal/middleware"
 	"github.com/jevvonn/readora-backend/internal/models"
@@ -14,18 +13,14 @@ type AuthHandler struct {
 	router      fiber.Router
 	authUsecase usecase.AuthUsecaseItf
 	validator   validator.ValidationService
-	log         logger.LoggerItf
-	response    models.ResponseItf
 }
 
 func NewAuthHandler(
 	router fiber.Router,
 	authUsecase usecase.AuthUsecaseItf,
 	validator validator.ValidationService,
-	log logger.LoggerItf,
-	response models.ResponseItf,
 ) {
-	handler := AuthHandler{router, authUsecase, validator, log, response}
+	handler := AuthHandler{router, authUsecase, validator}
 
 	router.Post("/auth/login", handler.Login)
 	router.Post("/auth/register", handler.Register)
@@ -46,28 +41,28 @@ func NewAuthHandler(
 // @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Router       /api/auth/login [post]
 func (h *AuthHandler) Login(ctx *fiber.Ctx) error {
-	log := "[AuthHandler][Login]"
-
 	var req dto.LoginRequest
 	err := ctx.BodyParser(&req)
 	if err != nil {
-		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
-	erorrsMap, err := h.validator.Validate(req)
+	err = h.validator.Validate(req)
 	if err != nil {
-		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, erorrsMap)
+		return err
 	}
 
 	res, err := h.authUsecase.Login(ctx, req)
 	if err != nil {
-		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
-	return h.response.SetData(res).Success(ctx, "User Logged In Successfully")
+	return ctx.Status(fiber.StatusOK).JSON(
+		models.JSONResponseModel{
+			Message: "User Logged In Successfully",
+			Data:    res,
+		},
+	)
 }
 
 // @Summary      Register User
@@ -76,33 +71,32 @@ func (h *AuthHandler) Login(ctx *fiber.Ctx) error {
 // @Accept       json
 // @Produce      json
 // @Param        req body dto.RegisterRequest true "Register Request"
-// @Success      200  object   models.JSONResponseModel{data=dto.RegisterRequest,errors=nil}
+// @Success      200  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Router       /api/auth/register [post]
 func (h *AuthHandler) Register(ctx *fiber.Ctx) error {
-	log := "[AuthHandler][Register]"
-
 	var req dto.RegisterRequest
 	err := ctx.BodyParser(&req)
 	if err != nil {
-		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
-	erorrsMap, err := h.validator.Validate(req)
+	err = h.validator.Validate(req)
 	if err != nil {
-		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, erorrsMap)
+		return err
 	}
 
 	err = h.authUsecase.Register(ctx, req)
 	if err != nil {
-		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
-	return h.response.Success(ctx, "User Registered Successfully")
+	return ctx.Status(fiber.StatusOK).JSON(
+		models.JSONResponseModel{
+			Message: "User Registered Successfully",
+		},
+	)
 }
 
 // @Summary      Get Session User Data
@@ -116,15 +110,17 @@ func (h *AuthHandler) Register(ctx *fiber.Ctx) error {
 // @Security     BearerAuth
 // @Router       /api/auth/session [get]
 func (h *AuthHandler) Session(ctx *fiber.Ctx) error {
-	log := "[AuthHandler][Session]"
-
 	res, err := h.authUsecase.Session(ctx)
 	if err != nil {
-		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
-	return h.response.SetData(res).Success(ctx, "Session Retrieved Successfully")
+	return ctx.Status(fiber.StatusOK).JSON(
+		models.JSONResponseModel{
+			Message: "Session Data",
+			Data:    res,
+		},
+	)
 }
 
 // @Summary      Send OTP for Register
@@ -138,28 +134,27 @@ func (h *AuthHandler) Session(ctx *fiber.Ctx) error {
 // @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Router       /api/auth/otp [post]
 func (h *AuthHandler) SendRegisterOTP(ctx *fiber.Ctx) error {
-	log := "[AuthHandler][SendRegisterOTP]"
-
 	var req dto.SendRegisterOTPRequest
 	err := ctx.BodyParser(&req)
 	if err != nil {
-		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
-	erorrsMap, err := h.validator.Validate(req)
+	err = h.validator.Validate(req)
 	if err != nil {
-		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, erorrsMap)
+		return err
 	}
 
 	err = h.authUsecase.SendRegisterOTP(ctx, req.Email)
 	if err != nil {
-		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
-	return h.response.Success(ctx, "OTP Sent Successfully")
+	return ctx.Status(fiber.StatusOK).JSON(
+		models.JSONResponseModel{
+			Message: "OTP Sent Successfully",
+		},
+	)
 }
 
 // @Summary      Check OTP for Register
@@ -173,26 +168,25 @@ func (h *AuthHandler) SendRegisterOTP(ctx *fiber.Ctx) error {
 // @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Router       /api/auth/otp/check [post]
 func (h *AuthHandler) CheckRegisterOTP(ctx *fiber.Ctx) error {
-	log := "[AuthHandler][CheckRegisterOTP]"
-
 	var req dto.CheckRegisterOTPRequest
 	err := ctx.BodyParser(&req)
 	if err != nil {
-		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
-	erorrsMap, err := h.validator.Validate(req)
+	err = h.validator.Validate(req)
 	if err != nil {
-		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, erorrsMap)
+		return err
 	}
 
 	err = h.authUsecase.CheckRegisterOTP(ctx, req.Email, req.OTP)
 	if err != nil {
-		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
-	return h.response.Success(ctx, "Email Verified Successfully")
+	return ctx.Status(fiber.StatusOK).JSON(
+		models.JSONResponseModel{
+			Message: "Email Verified Successfully",
+		},
+	)
 }

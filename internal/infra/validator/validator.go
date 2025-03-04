@@ -1,8 +1,6 @@
 package validator
 
 import (
-	"errors"
-
 	"github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
@@ -10,7 +8,7 @@ import (
 )
 
 type ValidationService interface {
-	Validate(req interface{}) ([]map[string]string, error)
+	Validate(req any) error
 }
 
 type Validator struct {
@@ -30,21 +28,21 @@ func NewValidator() ValidationService {
 	}
 }
 
-func (v *Validator) Validate(req interface{}) ([]map[string]string, error) {
+func (v *Validator) Validate(req any) error {
 	err := v.vd.Struct(req)
 	if err != nil {
-		errorMap := []map[string]string{}
+		errorMap := []ErrorField{}
 
 		for _, e := range err.(validator.ValidationErrors) {
 			message := e.Translate(v.translator)
-			errorMap = append(errorMap, map[string]string{
-				"field":   e.Field(),
-				"message": message,
+			errorMap = append(errorMap, ErrorField{
+				Field:   e.Field(),
+				Message: message,
 			})
 		}
 
-		return errorMap, errors.New("validation errors")
+		return NewValidationErr(errorMap, "validation errors")
 	}
 
-	return []map[string]string{}, nil
+	return nil
 }

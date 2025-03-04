@@ -13,6 +13,7 @@ import (
 	"github.com/jevvonn/readora-backend/internal/constant"
 	"github.com/jevvonn/readora-backend/internal/domain/dto"
 	"github.com/jevvonn/readora-backend/internal/domain/entity"
+	"github.com/jevvonn/readora-backend/internal/infra/errorpkg"
 	"github.com/jevvonn/readora-backend/internal/infra/jwt"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"github.com/jevvonn/readora-backend/internal/infra/mailer"
@@ -51,19 +52,18 @@ func (u *AuthUsecase) Register(ctx *fiber.Ctx, req dto.RegisterRequest) error {
 	user, err := u.userRepo.GetUserByEmailOrUsername(req.Email, req.Username)
 
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
-		u.log.Error(log, err)
-		return err
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	if user.ID != uuid.Nil {
-		return errors.New("user with this username or email already exists")
+		return errorpkg.ErrEmailOrUsernameExists
 	}
 
 	// Hash password
 	hashedPassword, err := helper.HashPassword(req.Password)
 	if err != nil {
 		u.log.Error(log, err)
-		return err
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	// Create user
@@ -79,7 +79,7 @@ func (u *AuthUsecase) Register(ctx *fiber.Ctx, req dto.RegisterRequest) error {
 
 	if err != nil {
 		u.log.Error(log, err)
-		return err
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	// Send OTP to email
@@ -99,20 +99,20 @@ func (u *AuthUsecase) Login(ctx *fiber.Ctx, req dto.LoginRequest) (dto.LoginResp
 	user, err := u.userRepo.GetUserByEmailOrUsername(req.Username, req.Username)
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		u.log.Error(log, err)
-		return dto.LoginResponse{}, err
+		return dto.LoginResponse{}, errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	if user.ID == uuid.Nil {
-		return dto.LoginResponse{}, models.ErrorInvalidEmailOrPassword
+		return dto.LoginResponse{}, errorpkg.ErrorInvalidEmailOrPassword
 	}
 
 	// Check password
 	if !helper.VerifyPassword(req.Password, user.Password) {
-		return dto.LoginResponse{}, models.ErrorInvalidEmailOrPassword
+		return dto.LoginResponse{}, errorpkg.ErrorInvalidEmailOrPassword
 	}
 
 	if !user.EmailVerified {
-		return dto.LoginResponse{}, models.ErrEmailNotVerified
+		return dto.LoginResponse{}, errorpkg.ErrEmailNotVerified
 	}
 
 	// Create Jwt token
@@ -120,7 +120,7 @@ func (u *AuthUsecase) Login(ctx *fiber.Ctx, req dto.LoginRequest) (dto.LoginResp
 
 	if err != nil {
 		u.log.Error(log, err)
-		return dto.LoginResponse{}, err
+		return dto.LoginResponse{}, errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	return dto.LoginResponse{
@@ -136,7 +136,7 @@ func (u *AuthUsecase) Session(ctx *fiber.Ctx) (dto.SessionResponse, error) {
 	uuidUser, err := uuid.Parse(userId)
 	if err != nil {
 		u.log.Error(log, err)
-		return dto.SessionResponse{}, err
+		return dto.SessionResponse{}, errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	user, err := u.userRepo.GetSpecificUser(entity.User{
@@ -144,7 +144,7 @@ func (u *AuthUsecase) Session(ctx *fiber.Ctx) (dto.SessionResponse, error) {
 	})
 	if err != nil {
 		u.log.Error(log, err)
-		return dto.SessionResponse{}, err
+		return dto.SessionResponse{}, errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	return dto.SessionResponse{
@@ -164,23 +164,23 @@ func (u *AuthUsecase) SendRegisterOTP(ctx *fiber.Ctx, email string) error {
 	})
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		u.log.Error(log, err)
-		return err
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	if user.ID == uuid.Nil {
-		return models.ErrEmailNotExists
+		return errorpkg.ErrEmailNotExists
 	}
 
 	// Check if email already verified
 	if user.EmailVerified {
-		return models.ErrEmailAlreadyVerified
+		return errorpkg.ErrEmailAlreadyVerified
 	}
 
 	// Check if OTP already sent
 	otpCreatedAt, err := u.authRepo.GetRegisterOTPTime(ctx.Context(), email)
 	if err != nil && !errors.Is(err, models.ErrInvalidOTP) {
 		u.log.Error(log, err)
-		return err
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	// Check if OTP sent within 3 minutes
@@ -188,12 +188,12 @@ func (u *AuthUsecase) SendRegisterOTP(ctx *fiber.Ctx, email string) error {
 		createdUnix, err := strconv.Atoi(otpCreatedAt)
 		if err != nil {
 			u.log.Error(log, err)
-			return err
+			return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 		}
 
 		createdTime := time.Unix(int64(createdUnix), 0)
 		if time.Since(createdTime) < time.Minute*3 {
-			return models.ErrOTPSent
+			return errorpkg.ErrOTPSent
 		}
 	}
 
@@ -204,16 +204,14 @@ func (u *AuthUsecase) SendRegisterOTP(ctx *fiber.Ctx, email string) error {
 	err = u.authRepo.SetRegisterOTP(ctx.Context(), email, otp)
 	if err != nil {
 		u.log.Error(log, err)
-		return err
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	// Send OTP to email
-	go func() {
-		err = u.mailer.Send([]string{email}, "Register OTP", "Your OTP is "+otp)
-		if err != nil {
-			u.log.Error(log, err)
-		}
-	}()
+	err = u.mailer.Send([]string{email}, "Register OTP", "Your OTP is "+otp)
+	if err != nil {
+		u.log.Error(log, err)
+	}
 
 	return nil
 }
@@ -227,28 +225,28 @@ func (u *AuthUsecase) CheckRegisterOTP(ctx *fiber.Ctx, email, otp string) error 
 	})
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		u.log.Error(log, err)
-		return err
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	if user.ID == uuid.Nil {
-		return models.ErrEmailNotExists
+		return errorpkg.ErrEmailNotExists
 	}
 
 	// Check if email already verified
 	if user.EmailVerified {
-		return models.ErrEmailAlreadyVerified
+		return errorpkg.ErrEmailAlreadyVerified
 	}
 
 	// Get OTP from Redis
 	savedOTP, err := u.authRepo.GetRegisterOTP(ctx.Context(), email)
 	if err != nil {
 		u.log.Error(log, err)
-		return err
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	// Check OTP
 	if savedOTP != otp {
-		return models.ErrInvalidOTP
+		return errorpkg.ErrInvalidOTP
 	}
 
 	// Update user email verified
@@ -258,7 +256,7 @@ func (u *AuthUsecase) CheckRegisterOTP(ctx *fiber.Ctx, email, otp string) error 
 	})
 	if err != nil {
 		u.log.Error(log, err)
-		return err
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	// Delete OTP from Redis

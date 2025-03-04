@@ -242,7 +242,7 @@ paths:
             - $ref: '#/definitions/models.JSONResponseModel'
             - properties:
                 data:
-                  $ref: '#/definitions/dto.RegisterRequest'
+                  type: object
                 errors:
                   type: object
               type: object
