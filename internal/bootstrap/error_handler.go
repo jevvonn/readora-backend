@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jevvonn/readora-backend/internal/infra/errorpkg"
+	"github.com/jevvonn/readora-backend/internal/infra/validator"
 	"github.com/jevvonn/readora-backend/internal/models"
 )
 
@@ -13,6 +14,14 @@ func FiberErrorHandler(ctx *fiber.Ctx, err error) error {
 	if errors.As(err, &e) {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(models.JSONResponseModel{
 			Message: e.Message,
+		})
+	}
+
+	var valErr *validator.ValidationError
+	if errors.As(err, &valErr) {
+		return ctx.Status(fiber.StatusUnprocessableEntity).JSON(models.JSONResponseModel{
+			Message: valErr.Message,
+			Errors:  valErr.Errors,
 		})
 	}
 

@@ -55,10 +55,10 @@ func (h *AuthHandler) Login(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	erorrsMap, err := h.validator.Validate(req)
+	err = h.validator.Validate(req)
 	if err != nil {
 		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, erorrsMap)
+		return err
 	}
 
 	res, err := h.authUsecase.Login(ctx, req)
@@ -67,7 +67,12 @@ func (h *AuthHandler) Login(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return h.response.SetData(res).Success(ctx, "User Logged In Successfully")
+	return ctx.Status(fiber.StatusOK).JSON(
+		models.JSONResponseModel{
+			Message: "User Logged In Successfully",
+			Data:    res,
+		},
+	)
 }
 
 // @Summary      Register User
@@ -87,13 +92,13 @@ func (h *AuthHandler) Register(ctx *fiber.Ctx) error {
 	err := ctx.BodyParser(&req)
 	if err != nil {
 		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
-	erorrsMap, err := h.validator.Validate(req)
+	err = h.validator.Validate(req)
 	if err != nil {
 		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, erorrsMap)
+		return err
 	}
 
 	err = h.authUsecase.Register(ctx, req)
@@ -102,7 +107,11 @@ func (h *AuthHandler) Register(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return h.response.Success(ctx, "User Registered Successfully")
+	return ctx.Status(fiber.StatusOK).JSON(
+		models.JSONResponseModel{
+			Message: "User Registered Successfully",
+		},
+	)
 }
 
 // @Summary      Get Session User Data
@@ -124,7 +133,12 @@ func (h *AuthHandler) Session(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return h.response.SetData(res).Success(ctx, "Session Retrieved Successfully")
+	return ctx.Status(fiber.StatusOK).JSON(
+		models.JSONResponseModel{
+			Message: "Session Data",
+			Data:    res,
+		},
+	)
 }
 
 // @Summary      Send OTP for Register
@@ -144,13 +158,13 @@ func (h *AuthHandler) SendRegisterOTP(ctx *fiber.Ctx) error {
 	err := ctx.BodyParser(&req)
 	if err != nil {
 		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
-	erorrsMap, err := h.validator.Validate(req)
+	err = h.validator.Validate(req)
 	if err != nil {
 		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, erorrsMap)
+		return err
 	}
 
 	err = h.authUsecase.SendRegisterOTP(ctx, req.Email)
@@ -159,7 +173,11 @@ func (h *AuthHandler) SendRegisterOTP(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return h.response.Success(ctx, "OTP Sent Successfully")
+	return ctx.Status(fiber.StatusOK).JSON(
+		models.JSONResponseModel{
+			Message: "OTP Sent Successfully",
+		},
+	)
 }
 
 // @Summary      Check OTP for Register
@@ -179,13 +197,13 @@ func (h *AuthHandler) CheckRegisterOTP(ctx *fiber.Ctx) error {
 	err := ctx.BodyParser(&req)
 	if err != nil {
 		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, nil)
+		return err
 	}
 
-	erorrsMap, err := h.validator.Validate(req)
+	err = h.validator.Validate(req)
 	if err != nil {
 		h.log.Error(log, err)
-		return h.response.BadRequest(ctx, err, erorrsMap)
+		return err
 	}
 
 	err = h.authUsecase.CheckRegisterOTP(ctx, req.Email, req.OTP)
@@ -194,5 +212,9 @@ func (h *AuthHandler) CheckRegisterOTP(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	return h.response.Success(ctx, "Email Verified Successfully")
+	return ctx.Status(fiber.StatusOK).JSON(
+		models.JSONResponseModel{
+			Message: "Email Verified Successfully",
+		},
+	)
 }
