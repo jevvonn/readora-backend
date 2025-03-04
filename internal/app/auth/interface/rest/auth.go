@@ -10,7 +10,6 @@ import (
 )
 
 type AuthHandler struct {
-	router      fiber.Router
 	authUsecase usecase.AuthUsecaseItf
 	validator   validator.ValidationService
 }
@@ -20,7 +19,7 @@ func NewAuthHandler(
 	authUsecase usecase.AuthUsecaseItf,
 	validator validator.ValidationService,
 ) {
-	handler := AuthHandler{router, authUsecase, validator}
+	handler := AuthHandler{authUsecase, validator}
 
 	router.Post("/auth/login", handler.Login)
 	router.Post("/auth/register", handler.Register)
