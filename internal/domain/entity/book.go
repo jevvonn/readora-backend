@@ -22,7 +22,7 @@ type Book struct {
 	OwnerID uuid.UUID `gorm:"type:varchar(255);not null" json:"owner_id"`
 	Owner   User      `gorm:"foreignKey:OwnerID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"owner"`
 
-	Genres []Genre `gorm:"many2many:book_genres;" json:"genres"`
+	Genres []Genre `gorm:"many2many:book_genres;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"genres"`
 
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
