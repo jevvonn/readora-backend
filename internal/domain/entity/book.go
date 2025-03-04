@@ -19,6 +19,9 @@ type Book struct {
 	FileKey string `gorm:"type:varchar(255);not null" json:"file_key"`
 	FileURL string `gorm:"type:varchar(255);not null" json:"file_url"`
 
+	OwnerID uuid.UUID `gorm:"type:varchar(255);not null" json:"owner_id"`
+	Owner   User      `gorm:"foreignKey:OwnerID" json:"owner"`
+
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

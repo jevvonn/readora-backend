@@ -2,6 +2,8 @@ package errorpkg
 
 import (
 	"net/http"
+
+	"github.com/jevvonn/readora-backend/internal/infra/validator"
 )
 
 var (
@@ -40,4 +42,42 @@ var (
 	ErrOTPSent = NewError(
 		"wait for 3 minutes before sending another OTP", http.StatusBadRequest,
 	)
+
+	ErrValidationTimeFormat = func(field string) error {
+		return validator.NewValidationErr([]validator.ErrorField{
+			{
+				Field:   field,
+				Message: "Invalid date format, must be in ISO 8601 format",
+			},
+		}, "Invalid date format")
+	}
+
+	ErrValidationFileRequired = func(field string) error {
+		return validator.NewValidationErr([]validator.ErrorField{
+			{
+				Field:   field,
+				Message: "File is required",
+			},
+		}, "File is required")
+	}
+
+	ErrValidationFileMimeType = func(field string, types []string) error {
+		mimeTypesJoined := ""
+		for i, t := range types {
+			if i == 0 {
+				mimeTypesJoined = t
+			} else {
+				mimeTypesJoined = mimeTypesJoined + ", " + t
+			}
+		}
+
+		msg := "File type is not allowed, allowed types: " + mimeTypesJoined
+
+		return validator.NewValidationErr([]validator.ErrorField{
+			{
+				Field:   field,
+				Message: msg,
+			},
+		}, msg)
+	}
 )
