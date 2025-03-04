@@ -34,6 +34,24 @@ func Seed(db *gorm.DB) {
 		EmailVerified: true,
 	}
 
+	genres := []entity.Genre{
+		{Name: "Fiction"},
+		{Name: "Non-Fiction"},
+		{Name: "Fantasy"},
+		{Name: "Science Fiction"},
+		{Name: "Romance"},
+		{Name: "Mystery"},
+		{Name: "Horror"},
+		{Name: "Thriller"},
+		{Name: "Historical Fiction"},
+		{Name: "Young Adult"},
+	}
+
+	err = db.Create(&genres).Error
+	if err != nil {
+		panic(err)
+	}
+
 	err = db.Create(&adminAccount).Error
 	if err != nil {
 		panic(err)
