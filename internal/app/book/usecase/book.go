@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"encoding/json"
+	"errors"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -12,22 +14,25 @@ import (
 	"github.com/jevvonn/readora-backend/internal/domain/entity"
 	"github.com/jevvonn/readora-backend/internal/infra/errorpkg"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
-	"github.com/jevvonn/readora-backend/internal/infra/storage"
+	"github.com/jevvonn/readora-backend/internal/infra/worker"
+	"gorm.io/gorm"
 )
 
 type BookUsecaseItf interface {
 	CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) error
 	GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) ([]dto.GetBooksResponse, int, int, error)
+	GetSpecificBook(ctx *fiber.Ctx) (res dto.GetBooksResponse, err error)
+	DeleteBook(ctx *fiber.Ctx) error
 }
 
 type BookUsecase struct {
 	bookRepo repository.BookPostgreSQLItf
-	storage  storage.StorageItf
+	worker   worker.WorkerItf
 	log      logger.LoggerItf
 }
 
-func NewBookUsecase(userRepo repository.BookPostgreSQLItf, storage storage.StorageItf, log logger.LoggerItf) BookUsecaseItf {
-	return &BookUsecase{userRepo, storage, log}
+func NewBookUsecase(userRepo repository.BookPostgreSQLItf, worker worker.WorkerItf, log logger.LoggerItf) BookUsecaseItf {
+	return &BookUsecase{userRepo, worker, log}
 }
 
 func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) error {
@@ -73,32 +78,44 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 	}
 
 	// Upload PDF File
-	uniqueId := uuid.New().String()
-	fileName := uniqueId + ".pdf"
+	bookId := uuid.New()
+	fileName := bookId.String() + ".pdf"
 	fileKey := "books/" + fileName
+	tempFile := "./tmp/" + fileName
 
-	pdfURL, err := u.storage.UploadFile(pdfFile, "books", fileName, "application/pdf")
+	err = ctx.SaveFile(pdfFile, tempFile)
 	if err != nil {
 		u.log.Error(log, err)
-		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error() + " - failed to upload file")
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	err = u.worker.NewBooksFileUpload(tempFile, fileName, bookId.String())
+	if err != nil {
+		u.log.Error(log, err)
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	userId := ctx.Locals("userId").(string)
+	role := ctx.Locals("role").(string)
 
 	book := entity.Book{
-		ID:          uuid.New(),
+		ID:          bookId,
 		Title:       req.Title,
 		Description: req.Description,
 		Author:      req.Author,
 		PublishDate: publishDate,
 		FileKey:     fileKey,
-		FileURL:     pdfURL,
+		FileURL:     "-",
 		OwnerID:     uuid.MustParse(userId),
 		Genres:      genres,
 
 		// COVER IMAGE NOT DONE YET
 		CoverImageKey: "-",
 		CoverImageURL: "-",
+	}
+
+	if role == constant.RoleAdmin {
+		book.IsPublic = true
 	}
 
 	err = u.bookRepo.Create(book)
@@ -138,7 +155,6 @@ func (u *BookUsecase) GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) (res []d
 
 	if query.OwnerID != "" {
 		if userId == query.OwnerID {
-			filter.Role = constant.RoleUser
 			filter.OwnerID = uuid.MustParse(userId)
 		}
 	}
@@ -152,16 +168,18 @@ func (u *BookUsecase) GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) (res []d
 	var booksRes []dto.GetBooksResponse
 	for _, book := range books {
 		booksRes = append(booksRes, dto.GetBooksResponse{
-			ID:            book.ID,
-			Title:         book.Title,
-			Description:   book.Description,
-			Author:        book.Author,
-			PublishDate:   book.PublishDate,
-			CoverImageKey: book.CoverImageKey,
-			CoverImageURL: book.CoverImageURL,
-			FileKey:       book.FileKey,
-			FileURL:       book.FileURL,
-			OwnerID:       book.OwnerID,
+			ID:             book.ID,
+			Title:          book.Title,
+			Description:    book.Description,
+			Author:         book.Author,
+			PublishDate:    book.PublishDate,
+			CoverImageKey:  book.CoverImageKey,
+			CoverImageURL:  book.CoverImageURL,
+			FileKey:        book.FileKey,
+			FileURL:        book.FileURL,
+			OwnerID:        book.OwnerID,
+			IsPublic:       book.IsPublic,
+			BookFileStatus: book.BookFileStatus,
 			Owner: entity.User{
 				ID:       book.Owner.ID,
 				Username: book.Owner.Username,
@@ -171,4 +189,84 @@ func (u *BookUsecase) GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) (res []d
 	}
 
 	return booksRes, filter.Page, filter.Limit, nil
+}
+
+func (u *BookUsecase) GetSpecificBook(ctx *fiber.Ctx) (res dto.GetBooksResponse, err error) {
+	log := "[BookUsecase][GetSpecificBook]"
+
+	bookId := ctx.Params("bookId")
+	book, err := u.bookRepo.GetSpecificBook(bookId)
+	if err != nil {
+		u.log.Error(log, err)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return res, errorpkg.ErrNotFoundResource.WithCustomMessage("Book not found")
+		}
+		return res, errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	userId := ctx.Locals("userId").(string)
+
+	if !book.IsPublic {
+		if userId != book.OwnerID.String() {
+			return res, errorpkg.ErrForbiddenResource
+		}
+	}
+
+	booksRes := dto.GetBooksResponse{
+		ID:             book.ID,
+		Title:          book.Title,
+		Description:    book.Description,
+		Author:         book.Author,
+		PublishDate:    book.PublishDate,
+		CoverImageKey:  book.CoverImageKey,
+		CoverImageURL:  book.CoverImageURL,
+		FileKey:        book.FileKey,
+		FileURL:        book.FileURL,
+		OwnerID:        book.OwnerID,
+		IsPublic:       book.IsPublic,
+		BookFileStatus: book.BookFileStatus,
+		Owner: entity.User{
+			ID:       book.Owner.ID,
+			Username: book.Owner.Username,
+		},
+		Genres: book.Genres,
+	}
+
+	return booksRes, nil
+}
+
+func (u *BookUsecase) DeleteBook(ctx *fiber.Ctx) error {
+	log := "[BookUsecase][DeleteBook]"
+
+	bookId := ctx.Params("bookId")
+	userId := ctx.Locals("userId").(string)
+	role := ctx.Locals("role").(string)
+
+	book, err := u.bookRepo.GetSpecificBook(bookId)
+	if err != nil {
+		u.log.Error(log, err)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return errorpkg.ErrNotFoundResource.WithCustomMessage("Book not found")
+		}
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	if book.OwnerID.String() != userId && role != constant.RoleAdmin {
+		return errorpkg.ErrForbiddenResource
+	}
+
+	err = u.bookRepo.DeleteBook(bookId)
+	if err != nil {
+		u.log.Error(log, err)
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	fileName := strings.Split(book.FileKey, "/")[1]
+	err = u.worker.NewBooksFileDelete(fileName)
+	if err != nil {
+		u.log.Error(log, err)
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	return nil
 }

@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"fmt"
 	"net/url"
+	"os"
 	"time"
 
 	"github.com/gofiber/swagger"
@@ -21,7 +22,6 @@ import (
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"github.com/jevvonn/readora-backend/internal/infra/postgresql"
 	"github.com/jevvonn/readora-backend/internal/infra/redis"
-	"github.com/jevvonn/readora-backend/internal/infra/storage"
 	"github.com/jevvonn/readora-backend/internal/infra/validator"
 	"github.com/jevvonn/readora-backend/internal/infra/worker"
 )
@@ -36,6 +36,7 @@ func Start() error {
 	app := fiber.New(fiber.Config{
 		IdleTimeout:  idleTimeout,
 		ErrorHandler: FiberErrorHandler,
+		BodyLimit:    50 * 1024 * 1024 * 1024, // 50 MB
 	})
 
 	// Logger
@@ -65,11 +66,16 @@ func Start() error {
 		return err
 	}
 
-	// Supabase Storage
-	storage := storage.New()
-
 	// Command flag check (migration, seeder)
 	CommandHandler(db)
+
+	// Check for aditional folder
+	requiredFolder := []string{"tmp", "logs"}
+	for _, folder := range requiredFolder {
+		if _, err := os.Stat(folder); os.IsNotExist(err) {
+			os.Mkdir(folder, 0755)
+		}
+	}
 
 	// Routes Group
 	apiRouter := app.Group("/api")
@@ -91,7 +97,7 @@ func Start() error {
 
 	// Usecase Instance
 	authUsecase := authUsecase.NewAuthUsecase(userRepo, authRepo, workerClient, logger)
-	bookUsecase := bookUsecase.NewBookUsecase(bookRepo, storage, logger)
+	bookUsecase := bookUsecase.NewBookUsecase(bookRepo, workerClient, logger)
 
 	// Handler Instance
 	authHandler.NewAuthHandler(apiRouter, authUsecase, vd)

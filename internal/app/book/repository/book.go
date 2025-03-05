@@ -2,7 +2,6 @@ package repository
 
 import (
 	"github.com/google/uuid"
-	"github.com/jevvonn/readora-backend/internal/constant"
 	"github.com/jevvonn/readora-backend/internal/domain/entity"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"gorm.io/gorm"
@@ -11,6 +10,8 @@ import (
 type BookPostgreSQLItf interface {
 	Create(req entity.Book) error
 	GetBooks(filter GetBooksFilter) ([]entity.Book, error)
+	GetSpecificBook(bookId string) (entity.Book, error)
+	DeleteBook(bookId string) error
 }
 
 type BookPostgreSQL struct {
@@ -46,13 +47,11 @@ func (r *BookPostgreSQL) GetBooks(filter GetBooksFilter) ([]entity.Book, error) 
 	var books []entity.Book
 	query := r.db.Model(&entity.Book{}).Preload("Owner").Preload("Genres")
 
-	if filter.Role == constant.RoleAdmin {
-		query = query.Joins("JOIN users ON users.id = books.owner_id")
-		query = query.Where("users.role = ?", constant.RoleAdmin)
-	}
-
 	if filter.OwnerID != uuid.Nil {
 		query = query.Where("owner_id = ?", filter.OwnerID.String())
+		query = query.Where("is_public = ?", false)
+	} else {
+		query = query.Where("is_public = ?", true)
 	}
 
 	if filter.Search != "" {
@@ -83,4 +82,26 @@ func (r *BookPostgreSQL) GetBooks(filter GetBooksFilter) ([]entity.Book, error) 
 	}
 
 	return books, nil
+}
+
+func (r *BookPostgreSQL) GetSpecificBook(bookId string) (entity.Book, error) {
+	var books entity.Book
+	err := r.db.Preload("Owner").Preload("Genres").Where("id = ?", bookId).First(&books).Error
+
+	if err != nil {
+		r.log.Error("[BookPostgreSQL][GetBooks]", err)
+		return entity.Book{}, err
+	}
+
+	return books, nil
+}
+
+func (r *BookPostgreSQL) DeleteBook(bookId string) error {
+	err := r.db.Where("id = ?", bookId).Delete(&entity.Book{}).Error
+
+	if err != nil {
+		r.log.Error("[BookPostgreSQL][DeleteBook]", err)
+	}
+
+	return err
 }

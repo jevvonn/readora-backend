@@ -15,7 +15,16 @@ func Migrate(db *gorm.DB, command string) {
 		END IF; 
 	END $$;
 	`
+	createBookFileStatusEnum := `
+	DO $$ 
+	BEGIN 
+		IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'bookfilestatus') THEN 
+			CREATE TYPE bookfilestatus AS ENUM ('PROCESSING', 'READY'); 
+		END IF; 
+	END $$;
+	`
 	db.Exec(createUserRoleEnum)
+	db.Exec(createBookFileStatusEnum)
 
 	tables := []any{
 		&entity.User{},

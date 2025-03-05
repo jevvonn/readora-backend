@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"mime/multipart"
+	"os"
 
 	"github.com/jevvonn/readora-backend/config"
 	storage_go "github.com/supabase-community/storage-go"
@@ -9,7 +9,8 @@ import (
 )
 
 type StorageItf interface {
-	UploadFile(file *multipart.FileHeader, bucket, fileName, mimeType string) (string, error)
+	UploadFile(file *os.File, bucket, fileName, mimeType string) (string, error)
+	DeleteFile(bucket string, fileNames []string) error
 }
 
 type Storage struct {
@@ -29,15 +30,10 @@ func New() StorageItf {
 	}
 }
 
-func (s *Storage) UploadFile(file *multipart.FileHeader, bucket, fileName, mimeType string) (string, error) {
-	src, err := file.Open()
-	if err != nil {
-		return "", err
-	}
-
+func (s *Storage) UploadFile(file *os.File, bucket, fileName, mimeType string) (string, error) {
 	typeFile := new(string)
 	*typeFile = mimeType
-	_, err = s.client.Storage.UploadFile(bucket, fileName, src, storage_go.FileOptions{
+	_, err := s.client.Storage.UploadFile(bucket, fileName, file, storage_go.FileOptions{
 		ContentType: typeFile,
 	})
 	if err != nil {
@@ -47,4 +43,9 @@ func (s *Storage) UploadFile(file *multipart.FileHeader, bucket, fileName, mimeT
 	publicURL := s.client.Storage.GetPublicUrl(bucket, fileName).SignedURL
 
 	return publicURL, nil
+}
+
+func (s *Storage) DeleteFile(bucket string, fileNames []string) error {
+	_, err := s.client.Storage.RemoveFile(bucket, fileNames)
+	return err
 }

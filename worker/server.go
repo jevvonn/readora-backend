@@ -6,12 +6,27 @@ import (
 	"github.com/hibiken/asynq"
 	"github.com/jevvonn/readora-backend/config"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
+	"github.com/jevvonn/readora-backend/internal/infra/postgresql"
 	"github.com/jevvonn/readora-backend/worker/tasks"
 )
 
 func main() {
 	conf := config.New()
 	log := logger.New()
+
+	dsn := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable TimeZone=Asia/Jakarta",
+		conf.DbHost,
+		conf.DbPort,
+		conf.DbUser,
+		conf.DbPassword,
+		conf.DbName,
+	)
+	db, err := postgresql.New(dsn)
+	if err != nil {
+		log.Error("[Worker][DB]", err)
+		panic("could not connect to database")
+	}
 
 	redisAddr := fmt.Sprintf("%s:%s", conf.RedisHost, conf.RedisPort)
 	srv := asynq.NewServer(
@@ -33,14 +48,13 @@ func main() {
 
 	mux := asynq.NewServeMux()
 
-	mountTasks(mux)
+	// Mount Tasks
+	mux.HandleFunc(tasks.SendOTPRegisterTaskName, tasks.HandleSendOTPRegisterTask)
+	mux.HandleFunc(tasks.BooksFileUploadTaskName, tasks.HandleBooksFileUploadTask(db))
+	mux.HandleFunc(tasks.BooksFileDeleteTaskName, tasks.HandleBooksFileDeleteTask)
 
 	if err := srv.Run(mux); err != nil {
 		log.Error("[Worker][Server]", err)
 		panic("could not run worker server")
 	}
-}
-
-func mountTasks(mux *asynq.ServeMux) {
-	mux.HandleFunc(tasks.SendOTPRegisterTaskName, tasks.HandleSendOTPRegisterTask)
 }
