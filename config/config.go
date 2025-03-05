@@ -12,6 +12,8 @@ type Config struct {
 	AppPort    string `env:"APP_PORT,required"`
 	AppBaseURL string `env:"APP_BASE_URL,required"`
 
+	FrontendBaseURL string `env:"FRONTEND_BASE_URL,required"`
+
 	JWTSecret string `env:"JWT_SECRET,required"`
 
 	DbHost     string `env:"DB_HOST,required"`

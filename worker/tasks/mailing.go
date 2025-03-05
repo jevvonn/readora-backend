@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/hibiken/asynq"
+	"github.com/jevvonn/readora-backend/config"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"github.com/jevvonn/readora-backend/internal/infra/mailer"
 )
@@ -28,12 +29,18 @@ func HandleSendOTPRegisterTask(ctx context.Context, t *asynq.Task) error {
 	}
 
 	log := logger.New()
+	conf := config.Load()
 
 	mailer := mailer.New()
-	err := mailer.Send([]string{payload.Email}, "Register OTP", "Your OTP is "+payload.OTP)
+	OTPLink := fmt.Sprintf("%s/auth/verify-otp?email=%s&otp=%s", conf.FrontendBaseURL, payload.Email, payload.OTP)
+	err := mailer.Send([]string{payload.Email}, "Register OTP Link", fmt.Sprintf(`
+		<h3>Register OTP Link</h3>
+		<p>Here is your OTP Link: <a href="%s">Click Here</a></p>
+		
+		<p>Or you can copy this link: %s</p>
+	`, OTPLink, OTPLink))
 
 	if err != nil {
-		fmt.Println("[Task][SendOtpRegister] Abort" + err.Error())
 		log.Error("[Task][SendOtpRegister]", err)
 		return err
 	}
