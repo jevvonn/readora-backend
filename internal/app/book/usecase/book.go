@@ -38,9 +38,11 @@ func NewBookUsecase(userRepo repository.BookPostgreSQLItf, worker worker.WorkerI
 func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) error {
 	log := "[BookUsecase][CreateBook]"
 
+	userId := ctx.Locals("userId").(string)
+	role := ctx.Locals("role").(string)
 	// Validate Genres
 	genres := []entity.Genre{}
-	if req.Genres != "" {
+	if req.Genres != "" && role == constant.RoleAdmin {
 		genresReq := strings.Split(req.Genres, ",")
 
 		for _, genre := range genresReq {
@@ -99,9 +101,6 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
-	userId := ctx.Locals("userId").(string)
-	role := ctx.Locals("role").(string)
-
 	book := entity.Book{
 		ID:          bookId,
 		Title:       req.Title,
@@ -112,6 +111,7 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 		FileURL:     "-",
 		OwnerID:     uuid.MustParse(userId),
 		Genres:      genres,
+		IsPublic:    false,
 
 		// COVER IMAGE NOT DONE YET
 		CoverImageKey: "-",
@@ -120,8 +120,6 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 
 	if role == constant.RoleAdmin {
 		book.IsPublic = true
-	} else {
-		book.IsPublic = false
 	}
 
 	err = u.bookRepo.Create(book)
