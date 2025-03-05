@@ -2,12 +2,15 @@ package usecase
 
 import (
 	"github.com/jevvonn/readora-backend/internal/app/genre/repository"
+	"github.com/jevvonn/readora-backend/internal/domain/dto"
+	"github.com/jevvonn/readora-backend/internal/domain/entity"
 	"github.com/jevvonn/readora-backend/internal/infra/errorpkg"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
 )
 
 type GenreUsecaseItf interface {
 	GetAllGenres() ([]string, error)
+	CreateGenre(req dto.CreateGenreRequest) error
 }
 
 type GenreUsecase struct {
@@ -19,16 +22,6 @@ func NewGenreUsecase(genreRepo repository.GenreRepositoryItf) *GenreUsecase {
 	return &GenreUsecase{genreRepo: genreRepo}
 }
 
-// @Summary      Get Genres
-// @Description  Get Genres
-// @Tags         Genres
-// @Accept       json
-// @Produce      json
-// @Success      200  object   models.JSONResponseModel{data=[]string,errors=nil}
-// @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
-// @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
-// @Security     BearerAuth
-// @Router       /api/genres [get]
 func (u *GenreUsecase) GetAllGenres() ([]string, error) {
 	log := "[GenreUsecase][GetAllGenres]"
 
@@ -39,4 +32,28 @@ func (u *GenreUsecase) GetAllGenres() ([]string, error) {
 	}
 
 	return genres, nil
+}
+
+func (u *GenreUsecase) CreateGenre(req dto.CreateGenreRequest) error {
+	log := "[GenreUsecase][CreateGenre]"
+
+	isGenreExist, err := u.genreRepo.IsGenreExist(req.Name)
+	if err != nil {
+		u.log.Error(log, err)
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	if isGenreExist {
+		return errorpkg.ErrBadRequest.WithCustomMessage("Genre already exist")
+	}
+
+	err = u.genreRepo.CreateGenre(entity.Genre{
+		Name: req.Name,
+	})
+	if err != nil {
+		u.log.Error(log, err)
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	return nil
 }

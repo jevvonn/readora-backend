@@ -7,8 +7,9 @@ import (
 )
 
 type GenreRepositoryItf interface {
-	// GetGenres returns all genres
 	GetAllGenres() ([]string, error)
+	CreateGenre(genre entity.Genre) error
+	IsGenreExist(genreName string) (bool, error)
 }
 
 type GenreRepository struct {
@@ -30,4 +31,31 @@ func (r *GenreRepository) GetAllGenres() ([]string, error) {
 	}
 
 	return genres, nil
+}
+
+func (r *GenreRepository) IsGenreExist(genreName string) (bool, error) {
+	log := "[GenreRepository][IsGenreExist]"
+
+	var genre entity.Genre
+	if err := r.db.Where("name = ?", genreName).First(&genre).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return false, nil
+		}
+
+		r.log.Error(log, err)
+		return false, err
+	}
+
+	return true, nil
+}
+
+func (r *GenreRepository) CreateGenre(genre entity.Genre) error {
+	log := "[GenreRepository][CreateGenre]"
+
+	if err := r.db.Create(&genre).Error; err != nil {
+		r.log.Error(log, err)
+		return err
+	}
+
+	return nil
 }
