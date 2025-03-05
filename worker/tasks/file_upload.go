@@ -18,12 +18,17 @@ import (
 // A list of task types.
 const (
 	BooksFileUploadTaskName = "file-upload:books"
+	BooksFileDeleteTaskName = "file-delete:books"
 )
 
 type BooksFileUploadPayload struct {
 	TmpFile  string
 	Filename string
 	BooksId  string
+}
+
+type BooksFileDeletePayload struct {
+	Filename string
 }
 
 // Create Task
@@ -74,4 +79,23 @@ func HandleBooksFileUploadTask(db *gorm.DB) asynq.HandlerFunc {
 		fmt.Println("[Task][BooksFileUpload] Run Succesfully")
 		return nil
 	}
+}
+
+func HandleBooksFileDeleteTask(ctx context.Context, t *asynq.Task) error {
+	var payload BooksFileDeletePayload
+	if err := json.Unmarshal(t.Payload(), &payload); err != nil {
+		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
+	}
+
+	log := logger.New()
+
+	storage := storage.New()
+	err := storage.DeleteFile("books", []string{payload.Filename})
+	if err != nil {
+		log.Error("[Task][BooksFileDelete]", err)
+		return err
+	}
+
+	fmt.Println("[Task][BooksFileDelete] Run Succesfully")
+	return nil
 }

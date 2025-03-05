@@ -3,6 +3,7 @@ package usecase
 import (
 	"encoding/json"
 	"errors"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -21,6 +22,7 @@ type BookUsecaseItf interface {
 	CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) error
 	GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) ([]dto.GetBooksResponse, int, int, error)
 	GetSpecificBook(ctx *fiber.Ctx) (res dto.GetBooksResponse, err error)
+	DeleteBook(ctx *fiber.Ctx) error
 }
 
 type BookUsecase struct {
@@ -231,4 +233,40 @@ func (u *BookUsecase) GetSpecificBook(ctx *fiber.Ctx) (res dto.GetBooksResponse,
 	}
 
 	return booksRes, nil
+}
+
+func (u *BookUsecase) DeleteBook(ctx *fiber.Ctx) error {
+	log := "[BookUsecase][DeleteBook]"
+
+	bookId := ctx.Params("bookId")
+	userId := ctx.Locals("userId").(string)
+	role := ctx.Locals("role").(string)
+
+	book, err := u.bookRepo.GetSpecificBook(bookId)
+	if err != nil {
+		u.log.Error(log, err)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return errorpkg.ErrNotFoundResource.WithCustomMessage("Book not found")
+		}
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	if book.OwnerID.String() != userId && role != constant.RoleAdmin {
+		return errorpkg.ErrForbiddenResource
+	}
+
+	err = u.bookRepo.DeleteBook(bookId)
+	if err != nil {
+		u.log.Error(log, err)
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	fileName := strings.Split(book.FileKey, "/")[1]
+	err = u.worker.NewBooksFileDelete(fileName)
+	if err != nil {
+		u.log.Error(log, err)
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	return nil
 }

@@ -11,6 +11,7 @@ type BookPostgreSQLItf interface {
 	Create(req entity.Book) error
 	GetBooks(filter GetBooksFilter) ([]entity.Book, error)
 	GetSpecificBook(bookId string) (entity.Book, error)
+	DeleteBook(bookId string) error
 }
 
 type BookPostgreSQL struct {
@@ -93,4 +94,14 @@ func (r *BookPostgreSQL) GetSpecificBook(bookId string) (entity.Book, error) {
 	}
 
 	return books, nil
+}
+
+func (r *BookPostgreSQL) DeleteBook(bookId string) error {
+	err := r.db.Where("id = ?", bookId).Delete(&entity.Book{}).Error
+
+	if err != nil {
+		r.log.Error("[BookPostgreSQL][DeleteBook]", err)
+	}
+
+	return err
 }

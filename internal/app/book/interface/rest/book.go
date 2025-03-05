@@ -26,6 +26,7 @@ func NewBookHandler(
 
 	router.Get("/books", middleware.Authenticated, handler.GetBooks)
 	router.Get("/books/:bookId", middleware.Authenticated, handler.GetSpecificBook)
+	router.Delete("/books/:bookId", middleware.Authenticated, handler.DeleteBook)
 	router.Post("/books", middleware.Authenticated, handler.CreateBook)
 }
 
@@ -85,5 +86,16 @@ func (h *BookHandler) GetSpecificBook(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(models.JSONResponseModel{
 		Message: "Book fetched successfully",
 		Data:    book,
+	})
+}
+
+func (h *BookHandler) DeleteBook(ctx *fiber.Ctx) error {
+	err := h.bookUsecase.DeleteBook(ctx)
+	if err != nil {
+		return err
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(models.JSONResponseModel{
+		Message: "Book deleted successfully",
 	})
 }

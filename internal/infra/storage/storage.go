@@ -10,6 +10,7 @@ import (
 
 type StorageItf interface {
 	UploadFile(file *os.File, bucket, fileName, mimeType string) (string, error)
+	DeleteFile(bucket string, fileNames []string) error
 }
 
 type Storage struct {
@@ -42,4 +43,9 @@ func (s *Storage) UploadFile(file *os.File, bucket, fileName, mimeType string) (
 	publicURL := s.client.Storage.GetPublicUrl(bucket, fileName).SignedURL
 
 	return publicURL, nil
+}
+
+func (s *Storage) DeleteFile(bucket string, fileNames []string) error {
+	_, err := s.client.Storage.RemoveFile(bucket, fileNames)
+	return err
 }

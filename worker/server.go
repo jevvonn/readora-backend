@@ -51,6 +51,7 @@ func main() {
 	// Mount Tasks
 	mux.HandleFunc(tasks.SendOTPRegisterTaskName, tasks.HandleSendOTPRegisterTask)
 	mux.HandleFunc(tasks.BooksFileUploadTaskName, tasks.HandleBooksFileUploadTask(db))
+	mux.HandleFunc(tasks.BooksFileDeleteTaskName, tasks.HandleBooksFileDeleteTask)
 
 	if err := srv.Run(mux); err != nil {
 		log.Error("[Worker][Server]", err)

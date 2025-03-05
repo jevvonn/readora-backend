@@ -12,6 +12,7 @@ import (
 type WorkerItf interface {
 	NewSendOTPRegisterTask(email string, otp string) error
 	NewBooksFileUpload(tmpFile, fileName, booksId string) error
+	NewBooksFileDelete(fileName string) error
 }
 
 type Worker struct {
@@ -63,6 +64,21 @@ func (w *Worker) NewBooksFileUpload(tmpFile, fileName, booksId string) error {
 	}
 
 	task := asynq.NewTask(tasks.BooksFileUploadTaskName, payload, asynq.MaxRetry(3))
+	_, err = w.client.Enqueue(task)
+
+	return err
+}
+
+func (w *Worker) NewBooksFileDelete(fileName string) error {
+	payload, err := json.Marshal(tasks.BooksFileUploadPayload{
+		Filename: fileName,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	task := asynq.NewTask(tasks.BooksFileDeleteTaskName, payload, asynq.MaxRetry(3))
 	_, err = w.client.Enqueue(task)
 
 	return err
