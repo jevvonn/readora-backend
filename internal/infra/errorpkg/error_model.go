@@ -67,9 +67,9 @@ var (
 	ErrValidationGenresArray = validator.NewValidationErr([]validator.ErrorField{
 		{
 			Field:   "genres",
-			Message: "genres must be an array of string, e.g: ['Romance', 'Fiction']",
+			Message: "genres must be a string with comma separated, e.g: Romance,Non Fiction,Fiction",
 		},
-	}, "genres must be an array of string, e.g: ['Romance', 'Fiction']")
+	}, "genres must be a string with comma separated, e.g: Romance,Non Fiction,Fiction")
 
 	ErrValidationFileRequired = func(field string) error {
 		return validator.NewValidationErr([]validator.ErrorField{

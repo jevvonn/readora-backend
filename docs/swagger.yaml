@@ -536,12 +536,11 @@ paths:
         name: author
         required: true
         type: string
-      - description: Publish Date
+      - description: Publish Date e.g 2025-03-05T17:56:10.119Z
         in: formData
         name: publish_date
-        required: true
         type: string
-      - description: Genres
+      - description: 'Genres e.g: Romance, Fiction, Drama'
         in: formData
         name: genres
         type: string

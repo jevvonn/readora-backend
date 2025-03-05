@@ -84,11 +84,7 @@ func Start() error {
 	})
 
 	// Cors Middleware
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
-		AllowMethods: "GET,POST,PUT,DELETE",
-		AllowHeaders: "Origin, Content-Type, Accept",
-	}))
+	app.Use(cors.New())
 
 	// Repo Instance
 	authRepo := authRepository.NewAuthRepository(rdb, logger)

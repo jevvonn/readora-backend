@@ -661,14 +661,13 @@
                     },
                     {
                         "type": "string",
-                        "description": "Publish Date",
+                        "description": "Publish Date e.g 2025-03-05T17:56:10.119Z",
                         "name": "publish_date",
-                        "in": "formData",
-                        "required": true
+                        "in": "formData"
                     },
                     {
                         "type": "string",
-                        "description": "Genres",
+                        "description": "Genres e.g: Romance, Fiction, Drama",
                         "name": "genres",
                         "in": "formData"
                     }
