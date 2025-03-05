@@ -30,6 +30,9 @@ type Config struct {
 	SMTPUsername string `env:"SMTP_USERNAME,required"`
 	SMTPPassword string `env:"SMTP_PASSWORD,required"`
 	SMTPEmail    string `env:"SMTP_EMAIL,required"`
+
+	SupabaseProjectURL   string `env:"SUPABASE_PROJECT_URL,required"`
+	SupabaseProjectToken string `env:"SUPABASE_PROJECT_TOKEN,required"`
 }
 
 var cfg Config

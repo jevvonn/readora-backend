@@ -6,11 +6,26 @@ services:
       - ${APP_PORT}:${APP_PORT}
     env_file:
       - .env
+    environment:
+      - APP_ENV=production
     depends_on:
       - db
       - redis
     networks:
       - network
+    command: ["/app/server"]
+  worker:
+    container_name: readora-worker
+    build: .
+    env_file:
+      - .env
+    depends_on:
+      - app
+      - db
+      - redis
+    networks:
+      - network
+    command: ["/app/worker"]
   db:
     container_name: readora-database
     image: postgres:16.1-alpine

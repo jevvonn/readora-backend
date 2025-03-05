@@ -13,12 +13,16 @@ import (
 	authHandler "github.com/jevvonn/readora-backend/internal/app/auth/interface/rest"
 	authRepository "github.com/jevvonn/readora-backend/internal/app/auth/repository"
 	authUsecase "github.com/jevvonn/readora-backend/internal/app/auth/usecase"
+	bookHandler "github.com/jevvonn/readora-backend/internal/app/book/interface/rest"
+	bookRepository "github.com/jevvonn/readora-backend/internal/app/book/repository"
+	bookUsecase "github.com/jevvonn/readora-backend/internal/app/book/usecase"
 	userRepository "github.com/jevvonn/readora-backend/internal/app/user/repository"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
-	"github.com/jevvonn/readora-backend/internal/infra/mailer"
 	"github.com/jevvonn/readora-backend/internal/infra/postgresql"
 	"github.com/jevvonn/readora-backend/internal/infra/redis"
+	"github.com/jevvonn/readora-backend/internal/infra/storage"
 	"github.com/jevvonn/readora-backend/internal/infra/validator"
+	"github.com/jevvonn/readora-backend/internal/infra/worker"
 )
 
 const idleTimeout = 5 * time.Second
@@ -53,12 +57,15 @@ func Start() error {
 	// Connect to Redis
 	rdb := redis.New()
 
-	// Connect to Mailer
-	mailer := mailer.New()
+	// Connect Worker
+	workerClient := worker.NewWorkerClient()
 
 	if err != nil {
 		return err
 	}
+
+	// Supabase Storage
+	storage := storage.New()
 
 	// Command flag check (migration, seeder)
 	CommandHandler(db)
@@ -76,13 +83,18 @@ func Start() error {
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
-	// User Instance
-	userRepo := userRepository.NewUserPostgreSQL(db, logger)
-
-	// Auth Instance
+	// Repo Instance
 	authRepo := authRepository.NewAuthRepository(rdb, logger)
-	authUsecase := authUsecase.NewAuthUsecase(userRepo, authRepo, logger, mailer)
+	userRepo := userRepository.NewUserPostgreSQL(db, logger)
+	bookRepo := bookRepository.NewBookPostgreSQL(db, logger)
+
+	// Usecase Instance
+	authUsecase := authUsecase.NewAuthUsecase(userRepo, authRepo, workerClient, logger)
+	bookUsecase := bookUsecase.NewBookUsecase(bookRepo, storage, logger)
+
+	// Handler Instance
 	authHandler.NewAuthHandler(apiRouter, authUsecase, vd)
+	bookHandler.NewBookHandler(apiRouter, bookUsecase, vd)
 
 	// Swagger Docs
 	httpProtocol := "http"

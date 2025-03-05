@@ -16,8 +16,7 @@ import (
 	"github.com/jevvonn/readora-backend/internal/infra/errorpkg"
 	"github.com/jevvonn/readora-backend/internal/infra/jwt"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
-	"github.com/jevvonn/readora-backend/internal/infra/mailer"
-	"github.com/jevvonn/readora-backend/internal/models"
+	"github.com/jevvonn/readora-backend/internal/infra/worker"
 	"gorm.io/gorm"
 )
 
@@ -32,17 +31,17 @@ type AuthUsecaseItf interface {
 type AuthUsecase struct {
 	userRepo userRepo.UserPostgreSQLItf
 	authRepo authRepo.AuthRepositoryItf
-	mailer   mailer.MailerItf
+	worker   worker.WorkerItf
 	log      logger.LoggerItf
 }
 
 func NewAuthUsecase(
 	userRepo userRepo.UserPostgreSQLItf,
 	authRepo authRepo.AuthRepositoryItf,
+	worker worker.WorkerItf,
 	log logger.LoggerItf,
-	mailer mailer.MailerItf,
 ) AuthUsecaseItf {
-	return &AuthUsecase{userRepo, authRepo, mailer, log}
+	return &AuthUsecase{userRepo, authRepo, worker, log}
 }
 
 func (u *AuthUsecase) Register(ctx *fiber.Ctx, req dto.RegisterRequest) error {
@@ -178,7 +177,7 @@ func (u *AuthUsecase) SendRegisterOTP(ctx *fiber.Ctx, email string) error {
 
 	// Check if OTP already sent
 	otpCreatedAt, err := u.authRepo.GetRegisterOTPTime(ctx.Context(), email)
-	if err != nil && !errors.Is(err, models.ErrInvalidOTP) {
+	if err != nil && !errors.Is(err, errorpkg.ErrInvalidOTP) {
 		u.log.Error(log, err)
 		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
@@ -208,9 +207,9 @@ func (u *AuthUsecase) SendRegisterOTP(ctx *fiber.Ctx, email string) error {
 	}
 
 	// Send OTP to email
-	err = u.mailer.Send([]string{email}, "Register OTP", "Your OTP is "+otp)
+	err = u.worker.NewSendOTPRegisterTask(user.Email, otp)
 	if err != nil {
-		u.log.Error(log, err)
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	return nil
