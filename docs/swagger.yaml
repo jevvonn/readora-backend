@@ -9,6 +9,39 @@ definitions:
     - email
     - otp
     type: object
+  dto.GetBooksResponse:
+    properties:
+      author:
+        type: string
+      book_file_status:
+        type: string
+      cover_image_key:
+        type: string
+      cover_image_url:
+        type: string
+      description:
+        type: string
+      file_key:
+        type: string
+      file_url:
+        type: string
+      genres:
+        items:
+          $ref: '#/definitions/entity.Genre'
+        type: array
+      id:
+        type: string
+      is_public:
+        type: boolean
+      owner:
+        $ref: '#/definitions/entity.User'
+      owner_id:
+        type: string
+      publish_date:
+        type: string
+      title:
+        type: string
+    type: object
   dto.LoginRequest:
     properties:
       password:
@@ -53,6 +86,77 @@ definitions:
       id:
         type: string
       name:
+        type: string
+      username:
+        type: string
+    type: object
+  entity.Book:
+    properties:
+      author:
+        type: string
+      book_file_status:
+        type: string
+      cover_image_key:
+        type: string
+      cover_image_url:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      file_key:
+        type: string
+      file_url:
+        type: string
+      genres:
+        items:
+          $ref: '#/definitions/entity.Genre'
+        type: array
+      id:
+        type: string
+      is_public:
+        type: boolean
+      owner:
+        $ref: '#/definitions/entity.User'
+      owner_id:
+        type: string
+      publish_date:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.Genre:
+    properties:
+      books:
+        items:
+          $ref: '#/definitions/entity.Book'
+        type: array
+      created_at:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      email_verified:
+        type: boolean
+      id:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      updated_at:
         type: string
       username:
         type: string
@@ -317,6 +421,302 @@ paths:
       summary: Get Session User Data
       tags:
       - Auth
+  /api/books:
+    get:
+      consumes:
+      - application/json
+      description: Get Books
+      parameters:
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Genre
+        in: query
+        name: genre
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Sort By
+        in: query
+        name: sort_by
+        type: string
+      - description: Sort Order
+        in: query
+        name: sort_order
+        type: string
+      - description: Owner ID
+        in: query
+        name: owner_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  items:
+                    allOf:
+                    - $ref: '#/definitions/dto.GetBooksResponse'
+                    - properties:
+                        genres:
+                          items:
+                            allOf:
+                            - $ref: '#/definitions/entity.Genre'
+                            - properties:
+                                books:
+                                  type: object
+                              type: object
+                          type: array
+                        owner:
+                          type: object
+                      type: object
+                  type: array
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Get Books
+      tags:
+      - Books
+    post:
+      consumes:
+      - application/json
+      description: Create Book
+      parameters:
+      - description: PDF File
+        in: formData
+        name: pdf_file
+        required: true
+        type: file
+      - description: Title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Description
+        in: formData
+        name: description
+        type: string
+      - description: Author
+        in: formData
+        name: author
+        required: true
+        type: string
+      - description: Publish Date
+        in: formData
+        name: publish_date
+        required: true
+        type: string
+      - description: Genres
+        in: formData
+        name: genres
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Create Book
+      tags:
+      - Books
+  /api/books/{bookId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Book
+      parameters:
+      - description: Book ID
+        in: path
+        name: bookId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/dto.GetBooksResponse'
+                  - properties:
+                      genres:
+                        items:
+                          allOf:
+                          - $ref: '#/definitions/entity.Genre'
+                          - properties:
+                              books:
+                                type: object
+                            type: object
+                        type: array
+                      owner:
+                        type: object
+                    type: object
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Delete Book
+      tags:
+      - Books
+    get:
+      consumes:
+      - application/json
+      description: Get Specific Book
+      parameters:
+      - description: Book ID
+        in: path
+        name: bookId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/dto.GetBooksResponse'
+                  - properties:
+                      genres:
+                        items:
+                          allOf:
+                          - $ref: '#/definitions/entity.Genre'
+                          - properties:
+                              books:
+                                type: object
+                            type: object
+                        type: array
+                      owner:
+                        type: object
+                    type: object
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Get Specific Book
+      tags:
+      - Books
 securityDefinitions:
   BearerAuth:
     description: '"Type ''Bearer TOKEN'' to correctly set the API Key"'
