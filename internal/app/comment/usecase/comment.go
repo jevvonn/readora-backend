@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"slices"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -17,6 +18,7 @@ import (
 
 type CommentUsecaseItf interface {
 	CreateComment(ctx *fiber.Ctx, req dto.CreateCommentRequest) error
+	GetComments(ctx *fiber.Ctx, query dto.GetCommentsQuery) ([]dto.GetCommentsResponse, int, int, error)
 	DeleteComment(ctx *fiber.Ctx) error
 }
 
@@ -81,6 +83,75 @@ func (u *CommentUsecase) CreateComment(ctx *fiber.Ctx, req dto.CreateCommentRequ
 	}
 
 	return nil
+}
+
+func (u *CommentUsecase) GetComments(ctx *fiber.Ctx, query dto.GetCommentsQuery) ([]dto.GetCommentsResponse, int, int, error) {
+	log := "[CommentUsecase][GetComments]"
+
+	bookId := ctx.Params("bookId")
+
+	sortField := []string{"created_at", "rating"}
+	sortOrder := []string{"asc", "desc"}
+
+	if query.SortBy != "" && !slices.Contains(sortField, query.SortBy) {
+		query.SortBy = ""
+	}
+
+	if query.SortOrder != "" && !slices.Contains(sortOrder, query.SortOrder) {
+		query.SortOrder = "asc"
+	}
+
+	if query.Limit <= 0 {
+		query.Limit = 10
+	}
+
+	if query.Page <= 0 {
+		query.Page = 1
+	}
+
+	if query.SortOrder == "" {
+		query.SortOrder = "asc"
+	}
+
+	if bookId != "" {
+		query.BookId = bookId
+
+		book, err := u.bookRepo.GetSpecificBook(bookId)
+		if err != nil {
+			u.log.Error(log, err)
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return nil, 0, 0, errorpkg.ErrNotFoundResource.WithCustomMessage("Book not found")
+			}
+			return nil, 0, 0, errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+		}
+
+		if !book.IsPublic {
+			return nil, 0, 0, errorpkg.ErrForbiddenResource.WithCustomMessage("Book is private")
+		}
+	}
+
+	comments, err := u.commentRepo.GetComments(query)
+	if err != nil {
+		u.log.Error(log, err)
+		return nil, 0, 0, errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	var response []dto.GetCommentsResponse
+	for _, comment := range comments {
+		response = append(response, dto.GetCommentsResponse{
+			ID:      comment.ID.String(),
+			Content: comment.Content,
+			Rating:  comment.Rating,
+			User: entity.User{
+				ID:       comment.UserId,
+				Username: comment.User.Username,
+			},
+			CreatedAt: comment.CreatedAt,
+			UpdatedAt: comment.UpdatedAt,
+		})
+	}
+
+	return response, query.Page, query.Limit, nil
 }
 
 func (u *CommentUsecase) DeleteComment(ctx *fiber.Ctx) error {

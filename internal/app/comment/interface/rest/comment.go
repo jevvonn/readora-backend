@@ -21,6 +21,8 @@ func NewCommentHandler(router fiber.Router, commentUsecase usecase.CommentUsecas
 	}
 
 	router.Post("/books/:bookId/comments", middleware.Authenticated, handler.CreateComment)
+	router.Get("/books/:bookId/comments", middleware.Authenticated, handler.GetComments)
+	router.Get("/comments", middleware.Authenticated, handler.GetComments)
 	router.Delete("/books/:bookId/comments/:commentId", middleware.Authenticated, handler.DeleteComment)
 }
 
@@ -43,6 +45,28 @@ func (h *CommentHandler) CreateComment(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusCreated).JSON(models.JSONResponseModel{
 		Message: "Comment created successfully",
+	})
+}
+
+func (h *CommentHandler) GetComments(ctx *fiber.Ctx) error {
+	var query dto.GetCommentsQuery
+	err := ctx.QueryParser(&query)
+	if err != nil {
+		return errorpkg.ErrBadRequest.WithCustomMessage(err.Error())
+	}
+
+	comments, page, limit, err := h.commentUsecase.GetComments(ctx, query)
+	if err != nil {
+		return err
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(models.JSONResponseModel{
+		Data: map[string]any{
+			"comments": comments,
+			"page":     page,
+			"limit":    limit,
+			"total":    len(comments),
+		},
 	})
 }
 
