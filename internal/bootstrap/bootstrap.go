@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/gofiber/swagger"
@@ -97,16 +98,19 @@ func Start() error {
 	bookHandler.NewBookHandler(apiRouter, bookUsecase, vd)
 
 	// Swagger Docs
-	httpProtocol := "http"
-	if conf.AppEnv == "production" {
-		httpProtocol = "https"
+	parsedURL, err := url.Parse(conf.AppBaseURL)
+	if err != nil {
+		fmt.Println("Error parsing URL:", err)
+		return err
 	}
 
+	host := parsedURL.Host + parsedURL.Path
+
 	docs.SwaggerInfo.Version = "1.0.0"
-	docs.SwaggerInfo.Host = conf.AppBaseURL
+	docs.SwaggerInfo.Host = host
 	docs.SwaggerInfo.Title = "Readora Backend Service Documentation"
 	swaggerHandler := swagger.New(swagger.Config{
-		URL: fmt.Sprintf("%s://%s/docs/doc.json", httpProtocol, conf.AppBaseURL),
+		URL: conf.AppBaseURL + "/docs/doc.json",
 	})
 
 	app.Get("/docs/*", swaggerHandler)
