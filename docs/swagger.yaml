@@ -9,6 +9,18 @@ definitions:
     - email
     - otp
     type: object
+  dto.CreateCommentRequest:
+    properties:
+      content:
+        type: string
+      rating:
+        maximum: 5
+        minimum: 1
+        type: number
+    required:
+    - content
+    - rating
+    type: object
   dto.CreateGenreRequest:
     properties:
       name:
@@ -48,6 +60,21 @@ definitions:
         type: string
       title:
         type: string
+    type: object
+  dto.GetCommentsResponse:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      rating:
+        type: number
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/entity.User'
     type: object
   dto.LoginRequest:
     properties:
@@ -103,6 +130,10 @@ definitions:
         type: string
       book_file_status:
         type: string
+      comments:
+        items:
+          $ref: '#/definitions/entity.Comment'
+        type: array
       cover_image_key:
         type: string
       cover_image_url:
@@ -132,6 +163,27 @@ definitions:
       title:
         type: string
       updated_at:
+        type: string
+    type: object
+  entity.Comment:
+    properties:
+      book:
+        $ref: '#/definitions/entity.Book'
+      book_id:
+        type: string
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      rating:
+        type: number
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/entity.User'
+      user_id:
         type: string
     type: object
   entity.Genre:
@@ -613,21 +665,7 @@ paths:
             - $ref: '#/definitions/models.JSONResponseModel'
             - properties:
                 data:
-                  allOf:
-                  - $ref: '#/definitions/dto.GetBooksResponse'
-                  - properties:
-                      genres:
-                        items:
-                          allOf:
-                          - $ref: '#/definitions/entity.Genre'
-                          - properties:
-                              books:
-                                type: object
-                            type: object
-                        type: array
-                      owner:
-                        type: object
-                    type: object
+                  type: object
                 errors:
                   type: object
               type: object
@@ -723,6 +761,270 @@ paths:
       summary: Get Specific Book
       tags:
       - Books
+  /api/books/{bookId}/comments:
+    get:
+      consumes:
+      - application/json
+      description: Get Comments of a Book
+      parameters:
+      - description: Book ID
+        in: path
+        name: bookId
+        required: true
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Sort By
+        in: query
+        name: sort_by
+        type: string
+      - description: Sort Order
+        in: query
+        name: sort_order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  items:
+                    allOf:
+                    - $ref: '#/definitions/dto.GetCommentsResponse'
+                    - properties:
+                        book:
+                          type: object
+                      type: object
+                  type: array
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Get Comments of a Book
+      tags:
+      - Comments
+    post:
+      consumes:
+      - application/json
+      description: Create Comments
+      parameters:
+      - description: Book ID
+        in: path
+        name: bookId
+        required: true
+        type: string
+      - description: Create Comment Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCommentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Create Comments
+      tags:
+      - Comments
+  /api/books/{bookId}/comments/{comentId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Comment
+      parameters:
+      - description: Book ID
+        in: path
+        name: bookId
+        required: true
+        type: string
+      - description: Comment ID
+        in: path
+        name: commentId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Delete Comment
+      tags:
+      - Comments
+  /api/comments:
+    get:
+      consumes:
+      - application/json
+      description: Get All Comments
+      parameters:
+      - description: Book ID
+        in: path
+        name: bookId
+        required: true
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Sort By
+        in: query
+        name: sort_by
+        type: string
+      - description: Sort Order
+        in: query
+        name: sort_order
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  items:
+                    allOf:
+                    - $ref: '#/definitions/dto.GetCommentsResponse'
+                    - properties:
+                        book:
+                          type: object
+                      type: object
+                  type: array
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Get All Comments
+      tags:
+      - Comments
   /api/genres:
     get:
       consumes:

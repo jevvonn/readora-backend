@@ -15,6 +15,21 @@ type CommentHandler struct {
 	validator      validator.ValidationService
 }
 
+// @Summary      Get All Comments
+// @Description  Get All Comments
+// @Tags         Comments
+// @Accept       json
+// @Produce      json
+// @Param        bookId path string true "Book ID"
+// @Param        limit query int false "Limit"
+// @Param        page query int false "Page"
+// @Param        sort_by query string false "Sort By"
+// @Param        sort_order query string false "Sort Order"
+// @Success      200  object   models.JSONResponseModel{data=[]dto.GetCommentsResponse{book=nil},errors=nil}
+// @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Security     BearerAuth
+// @Router       /api/comments [get]
 func NewCommentHandler(router fiber.Router, commentUsecase usecase.CommentUsecaseItf, validator validator.ValidationService) {
 	handler := &CommentHandler{
 		commentUsecase, validator,
@@ -26,6 +41,18 @@ func NewCommentHandler(router fiber.Router, commentUsecase usecase.CommentUsecas
 	router.Delete("/books/:bookId/comments/:commentId", middleware.Authenticated, handler.DeleteComment)
 }
 
+// @Summary      Create Comments
+// @Description  Create Comments
+// @Tags         Comments
+// @Accept       json
+// @Produce      json
+// @Param        bookId path string true "Book ID"
+// @Param        req body dto.CreateCommentRequest true "Create Comment Request"
+// @Success      200  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Security     BearerAuth
+// @Router       /api/books/{bookId}/comments [post]
 func (h *CommentHandler) CreateComment(ctx *fiber.Ctx) error {
 	var req dto.CreateCommentRequest
 	err := ctx.BodyParser(&req)
@@ -48,6 +75,21 @@ func (h *CommentHandler) CreateComment(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Summary      Get Comments of a Book
+// @Description  Get Comments of a Book
+// @Tags         Comments
+// @Accept       json
+// @Produce      json
+// @Param        bookId path string true "Book ID"
+// @Param        limit query int false "Limit"
+// @Param        page query int false "Page"
+// @Param        sort_by query string false "Sort By"
+// @Param        sort_order query string false "Sort Order"
+// @Success      200  object   models.JSONResponseModel{data=[]dto.GetCommentsResponse{book=nil},errors=nil}
+// @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Security     BearerAuth
+// @Router       /api/books/{bookId}/comments [get]
 func (h *CommentHandler) GetComments(ctx *fiber.Ctx) error {
 	var query dto.GetCommentsQuery
 	err := ctx.QueryParser(&query)
@@ -70,6 +112,18 @@ func (h *CommentHandler) GetComments(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Summary      Delete Comment
+// @Description  Delete Comment
+// @Tags         Comments
+// @Accept       json
+// @Produce      json
+// @Param        bookId path string true "Book ID"
+// @Param        commentId path string true "Comment ID"
+// @Success      200  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Security     BearerAuth
+// @Router       /api/books/{bookId}/comments/{comentId} [delete]
 func (h *CommentHandler) DeleteComment(ctx *fiber.Ctx) error {
 	err := h.commentUsecase.DeleteComment(ctx)
 	if err != nil {

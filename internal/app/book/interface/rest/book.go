@@ -137,7 +137,7 @@ func (h *BookHandler) GetSpecificBook(ctx *fiber.Ctx) error {
 // @Accept       json
 // @Produce      json
 // @Param        bookId path string true "Book ID"
-// @Success      200  object   models.JSONResponseModel{data=dto.GetBooksResponse{genres=[]entity.Genre{books=nil},owner=nil},errors=nil}
+// @Success      200  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Security     BearerAuth
