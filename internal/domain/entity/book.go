@@ -27,6 +27,8 @@ type Book struct {
 	Genres         []Genre `gorm:"many2many:book_genres;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"genres,omitempty"`
 	BookFileStatus string  `gorm:"type:bookFileStatus;not null;DEFAULT:'PROCESSING';" json:"book_file_status,omitempty"`
 
+	Comments []Comment `gorm:"foreignKey:BookId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"comments,omitempty"`
+
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }

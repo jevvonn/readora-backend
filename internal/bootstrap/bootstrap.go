@@ -15,13 +15,20 @@ import (
 	authHandler "github.com/jevvonn/readora-backend/internal/app/auth/interface/rest"
 	authRepository "github.com/jevvonn/readora-backend/internal/app/auth/repository"
 	authUsecase "github.com/jevvonn/readora-backend/internal/app/auth/usecase"
+
 	bookHandler "github.com/jevvonn/readora-backend/internal/app/book/interface/rest"
 	bookRepository "github.com/jevvonn/readora-backend/internal/app/book/repository"
 	bookUsecase "github.com/jevvonn/readora-backend/internal/app/book/usecase"
+
 	genreHandler "github.com/jevvonn/readora-backend/internal/app/genre/interface/rest"
 	genreRepository "github.com/jevvonn/readora-backend/internal/app/genre/repository"
 	genreUsecase "github.com/jevvonn/readora-backend/internal/app/genre/usecase"
+
 	userRepository "github.com/jevvonn/readora-backend/internal/app/user/repository"
+
+	commentHandler "github.com/jevvonn/readora-backend/internal/app/comment/interface/rest"
+	commentRepository "github.com/jevvonn/readora-backend/internal/app/comment/repository"
+	commentUsecase "github.com/jevvonn/readora-backend/internal/app/comment/usecase"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"github.com/jevvonn/readora-backend/internal/infra/postgresql"
 	"github.com/jevvonn/readora-backend/internal/infra/redis"
@@ -94,16 +101,19 @@ func Start() error {
 	userRepo := userRepository.NewUserPostgreSQL(db, logger)
 	bookRepo := bookRepository.NewBookPostgreSQL(db, logger)
 	genreRepo := genreRepository.NewGenreRepository(db, logger)
+	commentRepo := commentRepository.NewCommentPostgreSQL(db, logger)
 
 	// Usecase Instance
 	authUsecase := authUsecase.NewAuthUsecase(userRepo, authRepo, workerClient, logger)
 	bookUsecase := bookUsecase.NewBookUsecase(bookRepo, workerClient, logger)
 	genreUsecase := genreUsecase.NewGenreUsecase(genreRepo)
+	commentUsecase := commentUsecase.NewCommentUsecase(commentRepo, bookRepo, logger)
 
 	// Handler Instance
 	authHandler.NewAuthHandler(apiRouter, authUsecase, vd)
 	bookHandler.NewBookHandler(apiRouter, bookUsecase, vd)
 	genreHandler.NewGenreHandler(apiRouter, genreUsecase)
+	commentHandler.NewCommentHandler(apiRouter, commentUsecase, vd)
 
 	// Swagger Docs
 	parsedURL, err := url.Parse(conf.AppBaseURL)
