@@ -120,6 +120,8 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 
 	if role == constant.RoleAdmin {
 		book.IsPublic = true
+	} else {
+		book.IsPublic = false
 	}
 
 	err = u.bookRepo.Create(book)
