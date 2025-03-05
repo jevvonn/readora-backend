@@ -87,11 +87,9 @@ func (h *BookHandler) CreateBook(ctx *fiber.Ctx) error {
 // @Router       /api/books [get]
 func (h *BookHandler) GetBooks(ctx *fiber.Ctx) error {
 	var req dto.GetBooksQuery
-	_ = ctx.QueryParser(&req)
-
-	err := h.validator.Validate(req)
+	err := ctx.QueryParser(&req)
 	if err != nil {
-		return err
+		return errorpkg.ErrBadRequest.WithCustomMessage(err.Error())
 	}
 
 	books, page, limit, err := h.bookUsecase.GetBooks(ctx, req)
@@ -139,7 +137,7 @@ func (h *BookHandler) GetSpecificBook(ctx *fiber.Ctx) error {
 // @Accept       json
 // @Produce      json
 // @Param        bookId path string true "Book ID"
-// @Success      200  object   models.JSONResponseModel{data=dto.GetBooksResponse{genres=[]entity.Genre{books=nil},owner=nil},errors=nil}
+// @Success      200  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Security     BearerAuth
