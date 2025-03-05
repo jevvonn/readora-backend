@@ -716,6 +716,54 @@ paths:
       summary: Get Specific Book
       tags:
       - Books
+  /api/genres:
+    get:
+      consumes:
+      - application/json
+      description: Get Genres
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  items:
+                    type: string
+                  type: array
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Get Genres
+      tags:
+      - Genres
 securityDefinitions:
   BearerAuth:
     description: '"Type ''Bearer TOKEN'' to correctly set the API Key"'
