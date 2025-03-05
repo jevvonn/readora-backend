@@ -18,11 +18,11 @@ import (
 	bookUsecase "github.com/jevvonn/readora-backend/internal/app/book/usecase"
 	userRepository "github.com/jevvonn/readora-backend/internal/app/user/repository"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
-	"github.com/jevvonn/readora-backend/internal/infra/mailer"
 	"github.com/jevvonn/readora-backend/internal/infra/postgresql"
 	"github.com/jevvonn/readora-backend/internal/infra/redis"
 	"github.com/jevvonn/readora-backend/internal/infra/storage"
 	"github.com/jevvonn/readora-backend/internal/infra/validator"
+	"github.com/jevvonn/readora-backend/internal/infra/worker"
 )
 
 const idleTimeout = 5 * time.Second
@@ -57,8 +57,8 @@ func Start() error {
 	// Connect to Redis
 	rdb := redis.New()
 
-	// Connect to Mailer
-	mailer := mailer.New()
+	// Connect Worker
+	workerClient := worker.NewWorkerClient()
 
 	if err != nil {
 		return err
@@ -89,7 +89,7 @@ func Start() error {
 	bookRepo := bookRepository.NewBookPostgreSQL(db, logger)
 
 	// Usecase Instance
-	authUsecase := authUsecase.NewAuthUsecase(userRepo, authRepo, logger, mailer)
+	authUsecase := authUsecase.NewAuthUsecase(userRepo, authRepo, workerClient, logger)
 	bookUsecase := bookUsecase.NewBookUsecase(bookRepo, storage, logger)
 
 	// Handler Instance
