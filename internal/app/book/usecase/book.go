@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"slices"
 	"strings"
 	"time"
 
@@ -135,6 +136,17 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 
 func (u *BookUsecase) GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) (res []dto.GetBooksResponse, page, limit int, err error) {
 	log := "[BookUsecase][GetBooks]"
+
+	sortFields := []string{"title", "author", "publish_date"}
+	sortOrder := []string{"asc", "desc"}
+
+	if query.SortBy == "" || !slices.Contains(sortFields, query.SortBy) {
+		query.SortBy = ""
+	}
+
+	if query.SortOrder == "" || !slices.Contains(sortOrder, query.SortOrder) {
+		query.SortOrder = "asc"
+	}
 
 	if query.Limit <= 0 {
 		query.Limit = 10

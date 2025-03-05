@@ -87,11 +87,9 @@ func (h *BookHandler) CreateBook(ctx *fiber.Ctx) error {
 // @Router       /api/books [get]
 func (h *BookHandler) GetBooks(ctx *fiber.Ctx) error {
 	var req dto.GetBooksQuery
-	_ = ctx.QueryParser(&req)
-
-	err := h.validator.Validate(req)
+	err := ctx.QueryParser(&req)
 	if err != nil {
-		return err
+		return errorpkg.ErrBadRequest.WithCustomMessage(err.Error())
 	}
 
 	books, page, limit, err := h.bookUsecase.GetBooks(ctx, req)
