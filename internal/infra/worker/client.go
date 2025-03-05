@@ -1,13 +1,23 @@
 package worker
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/hibiken/asynq"
 	"github.com/jevvonn/readora-backend/config"
+	"github.com/jevvonn/readora-backend/worker/tasks"
 )
 
-func NewWorkerClient() *asynq.Client {
+type WorkerItf interface {
+	NewSendOTPRegisterTask(email string, otp string) error
+}
+
+type Worker struct {
+	client *asynq.Client
+}
+
+func NewWorkerClient() WorkerItf {
 	conf := config.Load()
 	redisAddr := fmt.Sprintf("%s:%s", conf.RedisHost, conf.RedisPort)
 	workerClient := asynq.NewClient(asynq.RedisClientOpt{
@@ -19,5 +29,23 @@ func NewWorkerClient() *asynq.Client {
 		panic("could not ping worker client")
 	}
 
-	return workerClient
+	return &Worker{
+		client: workerClient,
+	}
+}
+
+func (w *Worker) NewSendOTPRegisterTask(email string, otp string) error {
+	payload, err := json.Marshal(tasks.SendOTPRegisterPayload{
+		Email: email,
+		OTP:   otp,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	task := asynq.NewTask(tasks.SendOTPRegisterTaskName, payload)
+	_, err = w.client.Enqueue(task)
+
+	return err
 }

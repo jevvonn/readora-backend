@@ -21,19 +21,6 @@ type SendOTPRegisterPayload struct {
 }
 
 // Create Task
-func NewSendOTPRegisterTask(email string, otp string) (*asynq.Task, error) {
-	payload, err := json.Marshal(SendOTPRegisterPayload{
-		Email: email,
-		OTP:   otp,
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return asynq.NewTask(SendOTPRegisterTaskName, payload), nil
-}
-
 func HandleSendOTPRegisterTask(ctx context.Context, t *asynq.Task) error {
 	var payload SendOTPRegisterPayload
 	if err := json.Unmarshal(t.Payload(), &payload); err != nil {
@@ -46,10 +33,12 @@ func HandleSendOTPRegisterTask(ctx context.Context, t *asynq.Task) error {
 	err := mailer.Send([]string{payload.Email}, "Register OTP", "Your OTP is "+payload.OTP)
 
 	if err != nil {
+		fmt.Println("[Task][SendOtpRegister] Abort" + err.Error())
 		log.Error("[Task][SendOtpRegister]", err)
 		return err
 	}
 
 	log.Info("[Task][SendOtpRegister]", "Sending Email to User: email="+payload.Email)
+	fmt.Println("[Task][SendOtpRegister] Run Succesfully")
 	return nil
 }

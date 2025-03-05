@@ -7,7 +7,6 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/hibiken/asynq"
 	"github.com/jevvonn/readora-backend/helper"
 	authRepo "github.com/jevvonn/readora-backend/internal/app/auth/repository"
 	userRepo "github.com/jevvonn/readora-backend/internal/app/user/repository"
@@ -17,7 +16,7 @@ import (
 	"github.com/jevvonn/readora-backend/internal/infra/errorpkg"
 	"github.com/jevvonn/readora-backend/internal/infra/jwt"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
-	"github.com/jevvonn/readora-backend/worker/tasks"
+	"github.com/jevvonn/readora-backend/internal/infra/worker"
 	"gorm.io/gorm"
 )
 
@@ -32,14 +31,14 @@ type AuthUsecaseItf interface {
 type AuthUsecase struct {
 	userRepo userRepo.UserPostgreSQLItf
 	authRepo authRepo.AuthRepositoryItf
-	worker   *asynq.Client
+	worker   worker.WorkerItf
 	log      logger.LoggerItf
 }
 
 func NewAuthUsecase(
 	userRepo userRepo.UserPostgreSQLItf,
 	authRepo authRepo.AuthRepositoryItf,
-	worker *asynq.Client,
+	worker worker.WorkerItf,
 	log logger.LoggerItf,
 ) AuthUsecaseItf {
 	return &AuthUsecase{userRepo, authRepo, worker, log}
@@ -208,14 +207,8 @@ func (u *AuthUsecase) SendRegisterOTP(ctx *fiber.Ctx, email string) error {
 	}
 
 	// Send OTP to email
-	task, err := tasks.NewSendOTPRegisterTask(user.Email, otp)
+	err = u.worker.NewSendOTPRegisterTask(user.Email, otp)
 	if err != nil {
-		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
-	}
-
-	_, err = u.worker.Enqueue(task)
-	if err != nil {
-		u.log.Error(log, err)
 		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
