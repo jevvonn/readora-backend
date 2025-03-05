@@ -11,6 +11,7 @@ services:
     depends_on:
       - db
       - redis
+      - worker
     networks:
       - network
     command: ["/app/server"]
@@ -20,7 +21,6 @@ services:
     env_file:
       - .env
     depends_on:
-      - app
       - db
       - redis
     networks:
