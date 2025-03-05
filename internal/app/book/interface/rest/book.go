@@ -25,6 +25,7 @@ func NewBookHandler(
 	}
 
 	router.Get("/books", middleware.Authenticated, handler.GetBooks)
+	router.Get("/books/:bookId", middleware.Authenticated, handler.GetSpecificBook)
 	router.Post("/books", middleware.Authenticated, handler.CreateBook)
 }
 
@@ -72,5 +73,17 @@ func (h *BookHandler) GetBooks(ctx *fiber.Ctx) error {
 			"limit": limit,
 			"total": len(books),
 		},
+	})
+}
+
+func (h *BookHandler) GetSpecificBook(ctx *fiber.Ctx) error {
+	book, err := h.bookUsecase.GetSpecificBook(ctx)
+	if err != nil {
+		return err
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(models.JSONResponseModel{
+		Message: "Book fetched successfully",
+		Data:    book,
 	})
 }

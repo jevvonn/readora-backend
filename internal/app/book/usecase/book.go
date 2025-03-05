@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -13,11 +14,13 @@ import (
 	"github.com/jevvonn/readora-backend/internal/infra/errorpkg"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"github.com/jevvonn/readora-backend/internal/infra/worker"
+	"gorm.io/gorm"
 )
 
 type BookUsecaseItf interface {
 	CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) error
 	GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) ([]dto.GetBooksResponse, int, int, error)
+	GetSpecificBook(ctx *fiber.Ctx) (res dto.GetBooksResponse, err error)
 }
 
 type BookUsecase struct {
@@ -184,4 +187,48 @@ func (u *BookUsecase) GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) (res []d
 	}
 
 	return booksRes, filter.Page, filter.Limit, nil
+}
+
+func (u *BookUsecase) GetSpecificBook(ctx *fiber.Ctx) (res dto.GetBooksResponse, err error) {
+	log := "[BookUsecase][GetSpecificBook]"
+
+	bookId := ctx.Params("bookId")
+	book, err := u.bookRepo.GetSpecificBook(bookId)
+	if err != nil {
+		u.log.Error(log, err)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return res, errorpkg.ErrNotFoundResource.WithCustomMessage("Book not found")
+		}
+		return res, errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	userId := ctx.Locals("userId").(string)
+
+	if !book.IsPublic {
+		if userId != book.OwnerID.String() {
+			return res, errorpkg.ErrForbiddenResource
+		}
+	}
+
+	booksRes := dto.GetBooksResponse{
+		ID:             book.ID,
+		Title:          book.Title,
+		Description:    book.Description,
+		Author:         book.Author,
+		PublishDate:    book.PublishDate,
+		CoverImageKey:  book.CoverImageKey,
+		CoverImageURL:  book.CoverImageURL,
+		FileKey:        book.FileKey,
+		FileURL:        book.FileURL,
+		OwnerID:        book.OwnerID,
+		IsPublic:       book.IsPublic,
+		BookFileStatus: book.BookFileStatus,
+		Owner: entity.User{
+			ID:       book.Owner.ID,
+			Username: book.Owner.Username,
+		},
+		Genres: book.Genres,
+	}
+
+	return booksRes, nil
 }

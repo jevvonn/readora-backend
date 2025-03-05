@@ -11,6 +11,14 @@ var (
 		"internal server error", http.StatusInternalServerError,
 	)
 
+	ErrForbiddenResource = NewError(
+		"forbidden resource", http.StatusForbidden,
+	)
+
+	ErrNotFoundResource = NewError(
+		"forbidden resource", http.StatusNotFound,
+	)
+
 	ErrBadRequest = NewError(
 		"internal server error", http.StatusBadRequest,
 	)

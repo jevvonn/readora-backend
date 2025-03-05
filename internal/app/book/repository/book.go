@@ -10,6 +10,7 @@ import (
 type BookPostgreSQLItf interface {
 	Create(req entity.Book) error
 	GetBooks(filter GetBooksFilter) ([]entity.Book, error)
+	GetSpecificBook(bookId string) (entity.Book, error)
 }
 
 type BookPostgreSQL struct {
@@ -77,6 +78,18 @@ func (r *BookPostgreSQL) GetBooks(filter GetBooksFilter) ([]entity.Book, error) 
 	if err != nil {
 		r.log.Error("[BookPostgreSQL][GetBooks]", err)
 		return nil, err
+	}
+
+	return books, nil
+}
+
+func (r *BookPostgreSQL) GetSpecificBook(bookId string) (entity.Book, error) {
+	var books entity.Book
+	err := r.db.Preload("Owner").Preload("Genres").Where("id = ?", bookId).First(&books).Error
+
+	if err != nil {
+		r.log.Error("[BookPostgreSQL][GetBooks]", err)
+		return entity.Book{}, err
 	}
 
 	return books, nil
