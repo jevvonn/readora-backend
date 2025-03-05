@@ -29,5 +29,8 @@ logs
 # temp
 tmp
 
+# PLAN
+PLAN.md
+
 # Docker Compsoe
 docker-compose.prod.yml
