@@ -136,11 +136,11 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 func (u *BookUsecase) GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) (res []dto.GetBooksResponse, page, limit int, err error) {
 	log := "[BookUsecase][GetBooks]"
 
-	if query.Limit == 0 {
+	if query.Limit <= 0 {
 		query.Limit = 10
 	}
 
-	if query.Page == 0 {
+	if query.Page <= 0 {
 		query.Page = 1
 	}
 
