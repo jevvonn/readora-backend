@@ -43,7 +43,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o ./build/worker ./worker/server.go
 
 # Use the official Debian slim image for a lean production container.
 FROM alpine:latest
-RUN apk --no-cache add ca-certificates
+RUN apk update && apk add --no-cache ca-certificates && update-ca-certificates
 
 # Copy the binary to the production image from the builder stage.
 COPY --from=builder /app/build/server /app/server
