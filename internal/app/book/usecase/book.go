@@ -12,7 +12,7 @@ import (
 	"github.com/jevvonn/readora-backend/internal/domain/entity"
 	"github.com/jevvonn/readora-backend/internal/infra/errorpkg"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
-	"github.com/jevvonn/readora-backend/internal/infra/storage"
+	"github.com/jevvonn/readora-backend/internal/infra/worker"
 )
 
 type BookUsecaseItf interface {
@@ -22,12 +22,12 @@ type BookUsecaseItf interface {
 
 type BookUsecase struct {
 	bookRepo repository.BookPostgreSQLItf
-	storage  storage.StorageItf
+	worker   worker.WorkerItf
 	log      logger.LoggerItf
 }
 
-func NewBookUsecase(userRepo repository.BookPostgreSQLItf, storage storage.StorageItf, log logger.LoggerItf) BookUsecaseItf {
-	return &BookUsecase{userRepo, storage, log}
+func NewBookUsecase(userRepo repository.BookPostgreSQLItf, worker worker.WorkerItf, log logger.LoggerItf) BookUsecaseItf {
+	return &BookUsecase{userRepo, worker, log}
 }
 
 func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) error {
@@ -73,26 +73,33 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 	}
 
 	// Upload PDF File
-	uniqueId := uuid.New().String()
-	fileName := uniqueId + ".pdf"
+	bookId := uuid.New()
+	fileName := bookId.String() + ".pdf"
 	fileKey := "books/" + fileName
+	tempFile := "./tmp/" + fileName
 
-	pdfURL, err := u.storage.UploadFile(pdfFile, "books", fileName, "application/pdf")
+	err = ctx.SaveFile(pdfFile, tempFile)
 	if err != nil {
 		u.log.Error(log, err)
-		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error() + " - failed to upload file")
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	err = u.worker.NewBooksFileUpload(tempFile, fileName, bookId.String())
+	if err != nil {
+		u.log.Error(log, err)
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
 	userId := ctx.Locals("userId").(string)
 
 	book := entity.Book{
-		ID:          uuid.New(),
+		ID:          bookId,
 		Title:       req.Title,
 		Description: req.Description,
 		Author:      req.Author,
 		PublishDate: publishDate,
 		FileKey:     fileKey,
-		FileURL:     pdfURL,
+		FileURL:     "-",
 		OwnerID:     uuid.MustParse(userId),
 		Genres:      genres,
 

@@ -26,5 +26,8 @@ go.work
 # logs
 logs
 
+# temp
+tmp
+
 # Docker Compsoe
 docker-compose.prod.yml
