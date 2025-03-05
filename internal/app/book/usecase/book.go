@@ -1,9 +1,9 @@
 package usecase
 
 import (
-	"encoding/json"
 	"errors"
 	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -38,24 +38,30 @@ func NewBookUsecase(userRepo repository.BookPostgreSQLItf, worker worker.WorkerI
 func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) error {
 	log := "[BookUsecase][CreateBook]"
 
-	var genresReq []string
-	err := json.Unmarshal([]byte(req.Genres), &genresReq)
-	if err != nil {
-		u.log.Error(log, err)
-		return errorpkg.ErrValidationGenresArray
+	userId := ctx.Locals("userId").(string)
+	role := ctx.Locals("role").(string)
+	// Validate Genres
+	genres := []entity.Genre{}
+	if req.Genres != "" && role == constant.RoleAdmin {
+		genresReq := strings.Split(req.Genres, ",")
+
+		for _, genre := range genresReq {
+			genres = append(genres, entity.Genre{Name: strings.Trim(genre, " ")})
+		}
 	}
 
-	var genres []entity.Genre
-	for _, genre := range genresReq {
-		genres = append(genres, entity.Genre{Name: genre})
-	}
+	// Validate Publish Date
+	publishDate := time.Now()
+	if req.PublishDate != "" {
+		date, err := helper.StringISOToDateTime(req.PublishDate)
+		if err != nil {
+			errValidation := errorpkg.ErrValidationTimeFormat("publish_date")
+			u.log.Error(log, errValidation)
 
-	publishDate, err := helper.StringISOToDateTime(req.PublishDate)
-	if err != nil {
-		errValidation := errorpkg.ErrValidationTimeFormat("publish_date")
-		u.log.Error(log, errValidation)
+			return errValidation
+		}
 
-		return errValidation
+		publishDate = date
 	}
 
 	pdfFile, _ := ctx.FormFile("pdf_file")
@@ -95,9 +101,6 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
-	userId := ctx.Locals("userId").(string)
-	role := ctx.Locals("role").(string)
-
 	book := entity.Book{
 		ID:          bookId,
 		Title:       req.Title,
@@ -108,6 +111,7 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 		FileURL:     "-",
 		OwnerID:     uuid.MustParse(userId),
 		Genres:      genres,
+		IsPublic:    false,
 
 		// COVER IMAGE NOT DONE YET
 		CoverImageKey: "-",

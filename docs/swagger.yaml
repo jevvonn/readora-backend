@@ -9,6 +9,13 @@ definitions:
     - email
     - otp
     type: object
+  dto.CreateGenreRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
   dto.GetBooksResponse:
     properties:
       author:
@@ -536,12 +543,11 @@ paths:
         name: author
         required: true
         type: string
-      - description: Publish Date
+      - description: Publish Date e.g 2025-03-05T17:56:10.119Z
         in: formData
         name: publish_date
-        required: true
         type: string
-      - description: Genres
+      - description: 'Genres e.g: Romance, Fiction, Drama'
         in: formData
         name: genres
         type: string
@@ -717,6 +723,104 @@ paths:
       summary: Get Specific Book
       tags:
       - Books
+  /api/genres:
+    get:
+      consumes:
+      - application/json
+      description: Get Genres
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  items:
+                    type: string
+                  type: array
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      summary: Get Genres
+      tags:
+      - Genres
+    post:
+      consumes:
+      - application/json
+      description: Create Genres (Require Admin Account)
+      parameters:
+      - description: Create Genre Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateGenreRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Create Genres
+      tags:
+      - Genres
 securityDefinitions:
   BearerAuth:
     description: '"Type ''Bearer TOKEN'' to correctly set the API Key"'

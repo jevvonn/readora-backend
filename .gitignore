@@ -34,3 +34,4 @@ PLAN.md
 
 # Docker Compsoe
 docker-compose.prod.yml
+docker-compose.dev.yml

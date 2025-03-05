@@ -39,8 +39,8 @@ func NewBookHandler(
 // @Param        title formData string true "Title"
 // @Param        description formData string false "Description"
 // @Param        author formData string true "Author"
-// @Param        publish_date formData string true "Publish Date" example:"2021-01-02T15:04:05Z"
-// @Param        genres formData string false "Genres" default:"[]" example:"[\"Fiction\",\"Non-Fiction\"]"
+// @Param        publish_date formData string false "Publish Date e.g 2025-03-05T17:56:10.119Z"
+// @Param        genres formData string false "Genres e.g: Romance, Fiction, Drama"
 // @Success      200  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
@@ -64,7 +64,7 @@ func (h *BookHandler) CreateBook(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(models.JSONResponseModel{
-		Message: "Book created successfully",
+		Message: "Book created successfully. Please wait for the book to be processed.",
 	})
 }
 

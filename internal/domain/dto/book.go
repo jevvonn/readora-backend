@@ -12,7 +12,7 @@ type CreateBookRequest struct {
 	Title       string `form:"title" validate:"required"`
 	Description string `form:"description"`
 	Author      string `form:"author" validate:"required"`
-	PublishDate string `form:"publish_date" validate:"required"`
+	PublishDate string `form:"publish_date"`
 	Genres      string `form:"genres"`
 
 	PDFFile *multipart.FileHeader

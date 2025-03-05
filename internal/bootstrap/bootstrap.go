@@ -18,6 +18,9 @@ import (
 	bookHandler "github.com/jevvonn/readora-backend/internal/app/book/interface/rest"
 	bookRepository "github.com/jevvonn/readora-backend/internal/app/book/repository"
 	bookUsecase "github.com/jevvonn/readora-backend/internal/app/book/usecase"
+	genreHandler "github.com/jevvonn/readora-backend/internal/app/genre/interface/rest"
+	genreRepository "github.com/jevvonn/readora-backend/internal/app/genre/repository"
+	genreUsecase "github.com/jevvonn/readora-backend/internal/app/genre/usecase"
 	userRepository "github.com/jevvonn/readora-backend/internal/app/user/repository"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"github.com/jevvonn/readora-backend/internal/infra/postgresql"
@@ -84,24 +87,23 @@ func Start() error {
 	})
 
 	// Cors Middleware
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
-		AllowMethods: "GET,POST,PUT,DELETE",
-		AllowHeaders: "Origin, Content-Type, Accept",
-	}))
+	app.Use(cors.New())
 
 	// Repo Instance
 	authRepo := authRepository.NewAuthRepository(rdb, logger)
 	userRepo := userRepository.NewUserPostgreSQL(db, logger)
 	bookRepo := bookRepository.NewBookPostgreSQL(db, logger)
+	genreRepo := genreRepository.NewGenreRepository(db, logger)
 
 	// Usecase Instance
 	authUsecase := authUsecase.NewAuthUsecase(userRepo, authRepo, workerClient, logger)
 	bookUsecase := bookUsecase.NewBookUsecase(bookRepo, workerClient, logger)
+	genreUsecase := genreUsecase.NewGenreUsecase(genreRepo)
 
 	// Handler Instance
 	authHandler.NewAuthHandler(apiRouter, authUsecase, vd)
 	bookHandler.NewBookHandler(apiRouter, bookUsecase, vd)
+	genreHandler.NewGenreHandler(apiRouter, genreUsecase)
 
 	// Swagger Docs
 	parsedURL, err := url.Parse(conf.AppBaseURL)
