@@ -91,6 +91,7 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 	}
 
 	userId := ctx.Locals("userId").(string)
+	role := ctx.Locals("role").(string)
 
 	book := entity.Book{
 		ID:          bookId,
@@ -106,6 +107,10 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 		// COVER IMAGE NOT DONE YET
 		CoverImageKey: "-",
 		CoverImageURL: "-",
+	}
+
+	if role == constant.RoleAdmin {
+		book.IsPublic = true
 	}
 
 	err = u.bookRepo.Create(book)
@@ -145,7 +150,6 @@ func (u *BookUsecase) GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) (res []d
 
 	if query.OwnerID != "" {
 		if userId == query.OwnerID {
-			filter.Role = constant.RoleUser
 			filter.OwnerID = uuid.MustParse(userId)
 		}
 	}
@@ -159,16 +163,18 @@ func (u *BookUsecase) GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) (res []d
 	var booksRes []dto.GetBooksResponse
 	for _, book := range books {
 		booksRes = append(booksRes, dto.GetBooksResponse{
-			ID:            book.ID,
-			Title:         book.Title,
-			Description:   book.Description,
-			Author:        book.Author,
-			PublishDate:   book.PublishDate,
-			CoverImageKey: book.CoverImageKey,
-			CoverImageURL: book.CoverImageURL,
-			FileKey:       book.FileKey,
-			FileURL:       book.FileURL,
-			OwnerID:       book.OwnerID,
+			ID:             book.ID,
+			Title:          book.Title,
+			Description:    book.Description,
+			Author:         book.Author,
+			PublishDate:    book.PublishDate,
+			CoverImageKey:  book.CoverImageKey,
+			CoverImageURL:  book.CoverImageURL,
+			FileKey:        book.FileKey,
+			FileURL:        book.FileURL,
+			OwnerID:        book.OwnerID,
+			IsPublic:       book.IsPublic,
+			BookFileStatus: book.BookFileStatus,
 			Owner: entity.User{
 				ID:       book.Owner.ID,
 				Username: book.Owner.Username,

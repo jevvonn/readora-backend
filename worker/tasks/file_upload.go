@@ -8,6 +8,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/hibiken/asynq"
+	"github.com/jevvonn/readora-backend/internal/constant"
 	"github.com/jevvonn/readora-backend/internal/domain/entity"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"github.com/jevvonn/readora-backend/internal/infra/storage"
@@ -58,7 +59,10 @@ func HandleBooksFileUploadTask(db *gorm.DB) asynq.HandlerFunc {
 		// Update file_url in books
 		err = db.Model(&entity.Book{
 			ID: uuid.MustParse(payload.BooksId),
-		}).Update("file_url", publicUrl).Error
+		}).Updates(entity.Book{
+			FileURL:        publicUrl,
+			BookFileStatus: constant.BookFileStatusReady,
+		}).Error
 		if err != nil {
 			log.Error("[Task][BooksFileUpload]", err)
 			return err

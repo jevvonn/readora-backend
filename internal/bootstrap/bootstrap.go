@@ -36,6 +36,7 @@ func Start() error {
 	app := fiber.New(fiber.Config{
 		IdleTimeout:  idleTimeout,
 		ErrorHandler: FiberErrorHandler,
+		BodyLimit:    50 * 1024 * 1024 * 1024, // 50 MB
 	})
 
 	// Logger

@@ -2,7 +2,6 @@ package repository
 
 import (
 	"github.com/google/uuid"
-	"github.com/jevvonn/readora-backend/internal/constant"
 	"github.com/jevvonn/readora-backend/internal/domain/entity"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"gorm.io/gorm"
@@ -46,13 +45,11 @@ func (r *BookPostgreSQL) GetBooks(filter GetBooksFilter) ([]entity.Book, error) 
 	var books []entity.Book
 	query := r.db.Model(&entity.Book{}).Preload("Owner").Preload("Genres")
 
-	if filter.Role == constant.RoleAdmin {
-		query = query.Joins("JOIN users ON users.id = books.owner_id")
-		query = query.Where("users.role = ?", constant.RoleAdmin)
-	}
-
 	if filter.OwnerID != uuid.Nil {
 		query = query.Where("owner_id = ?", filter.OwnerID.String())
+		query = query.Where("is_public = ?", false)
+	} else {
+		query = query.Where("is_public = ?", true)
 	}
 
 	if filter.Search != "" {
