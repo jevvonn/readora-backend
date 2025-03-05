@@ -21,6 +21,7 @@ func NewCommentHandler(router fiber.Router, commentUsecase usecase.CommentUsecas
 	}
 
 	router.Post("/books/:bookId/comments", middleware.Authenticated, handler.CreateComment)
+	router.Delete("/books/:bookId/comments/:commentId", middleware.Authenticated, handler.DeleteComment)
 }
 
 func (h *CommentHandler) CreateComment(ctx *fiber.Ctx) error {
@@ -42,5 +43,16 @@ func (h *CommentHandler) CreateComment(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusCreated).JSON(models.JSONResponseModel{
 		Message: "Comment created successfully",
+	})
+}
+
+func (h *CommentHandler) DeleteComment(ctx *fiber.Ctx) error {
+	err := h.commentUsecase.DeleteComment(ctx)
+	if err != nil {
+		return err
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(models.JSONResponseModel{
+		Message: "Comment deleted",
 	})
 }

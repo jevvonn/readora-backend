@@ -9,6 +9,7 @@ import (
 type CommentPostgreSQLItf interface {
 	CreateComment(req entity.Comment) error
 	GetSpecificComment(req entity.Comment) (entity.Comment, error)
+	DeleteComment(req entity.Comment) error
 }
 
 type CommentPostgreSQL struct {
@@ -43,4 +44,16 @@ func (r *CommentPostgreSQL) GetSpecificComment(req entity.Comment) (entity.Comme
 	}
 
 	return comment, nil
+}
+
+func (r *CommentPostgreSQL) DeleteComment(req entity.Comment) error {
+	log := "[CommentPostgreSQL][DeleteComment]"
+	err := r.db.Delete(&req).Error
+
+	if err != nil {
+		r.logger.Error(log, err)
+		return err
+	}
+
+	return nil
 }
