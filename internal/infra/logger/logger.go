@@ -26,7 +26,22 @@ func New() LoggerItf {
 
 	todayDate := time.Now().Format("2006-01-02")
 	path := fmt.Sprintf("logs/%s.log", todayDate)
-	file, _ := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+
+	// Check path
+	if _, err := os.Stat("logs"); os.IsNotExist(err) {
+		os.Mkdir("logs", 0755)
+	}
+
+	// Check log file
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		os.Create(path)
+	}
+
+	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		panic(err)
+	}
+
 	logger.SetOutput(file)
 
 	return &Logger{logger}
