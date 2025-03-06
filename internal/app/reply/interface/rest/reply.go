@@ -22,6 +22,7 @@ func NewReplyHandler(router fiber.Router, replyUsecase usecase.ReplyUsecaseItf, 
 
 	router.Post("/comments/:commentId/replies", middleware.Authenticated, handler.CreateComment)
 	router.Get("/comments/:commentId/replies", middleware.Authenticated, handler.GetReplies)
+	router.Delete("/comments/:commentId/replies/:replyId", middleware.Authenticated, handler.DeleteReply)
 }
 
 func (h *ReplyHandler) CreateComment(ctx *fiber.Ctx) error {
@@ -68,5 +69,16 @@ func (h *ReplyHandler) GetReplies(ctx *fiber.Ctx) error {
 			"limit":   limit,
 			"total":   len(replies),
 		},
+	})
+}
+
+func (h *ReplyHandler) DeleteReply(ctx *fiber.Ctx) error {
+	err := h.replyUsecase.DeleteReply(ctx)
+	if err != nil {
+		return err
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(models.JSONResponseModel{
+		Message: "Reply deleted successfully",
 	})
 }

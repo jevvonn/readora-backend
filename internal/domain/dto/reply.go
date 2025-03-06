@@ -22,8 +22,8 @@ type GetRepliesQuery struct {
 type GetRepliesResponse struct {
 	ID        uuid.UUID   `json:"id"`
 	Content   string      `json:"content"`
-	ParentId  uuid.UUID   `json:"parent_id,omitempty"`
-	CommentId uuid.UUID   `json:"comment_id"`
+	ParentId  string      `json:"parent_id,omitempty"`
+	CommentId string      `json:"comment_id"`
 	User      entity.User `json:"user"`
 	CreatedAt time.Time   `json:"created_at"`
 }

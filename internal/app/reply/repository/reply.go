@@ -11,6 +11,7 @@ type ReplyPostgreSQLItf interface {
 	Create(req entity.Reply) error
 	GetSpecificReply(req entity.Reply) (entity.Reply, error)
 	GetRepliesByCommentId(commentId string, filter dto.GetRepliesQuery) ([]entity.Reply, error)
+	Delete(req entity.Reply) error
 }
 
 type ReplyPostgreSQL struct {
@@ -74,4 +75,16 @@ func (r *ReplyPostgreSQL) GetRepliesByCommentId(commentId string, filter dto.Get
 	}
 
 	return replies, nil
+}
+
+func (r *ReplyPostgreSQL) Delete(req entity.Reply) error {
+	log := "[ReplyPostgreSQL][Delete]"
+	err := r.db.Delete(&req).Error
+
+	if err != nil {
+		r.log.Error(log, err)
+		return err
+	}
+
+	return nil
 }

@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -11,9 +12,11 @@ import (
 	"github.com/jevvonn/readora-backend/internal/domain/entity"
 	"github.com/jevvonn/readora-backend/internal/infra/errorpkg"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
+	"gorm.io/gorm"
 )
 
 type ReplyUsecaseItf interface {
+	DeleteReply(ctx *fiber.Ctx) error
 	CreateComment(ctx *fiber.Ctx, req dto.CreateReplyRequest) error
 	GetRepliesByCommentId(ctx *fiber.Ctx, filter dto.GetRepliesQuery) ([]dto.GetRepliesResponse, int, int, error)
 }
@@ -108,7 +111,7 @@ func (u *ReplyUsecase) GetRepliesByCommentId(ctx *fiber.Ctx, filter dto.GetRepli
 		rep := dto.GetRepliesResponse{
 			ID:        reply.ID,
 			Content:   reply.Content,
-			CommentId: reply.CommentId,
+			CommentId: reply.CommentId.String(),
 			User: entity.User{
 				ID:       reply.User.ID,
 				Username: reply.User.Username,
@@ -117,11 +120,53 @@ func (u *ReplyUsecase) GetRepliesByCommentId(ctx *fiber.Ctx, filter dto.GetRepli
 		}
 
 		if reply.ParentId != uuid.Nil {
-			rep.ParentId = reply.ParentId
+			fmt.Println(reply.ParentId)
+			rep.ParentId = reply.ParentId.String()
 		}
 
 		res = append(res, rep)
 	}
 
 	return res, filter.Page, filter.Limit, nil
+}
+
+func (u *ReplyUsecase) DeleteReply(ctx *fiber.Ctx) error {
+	replyParam := ctx.Params("replyId")
+	commentParam := ctx.Params("commentId")
+	userId := ctx.Locals("userId").(string)
+
+	commentId, err := uuid.Parse(commentParam)
+	if err != nil {
+		return errorpkg.ErrBadRequest.WithCustomMessage("Invalid comment ID")
+	}
+
+	replyId, err := uuid.Parse(replyParam)
+	if err != nil {
+		return errorpkg.ErrBadRequest.WithCustomMessage("Invalid reply ID")
+	}
+
+	reply, err := u.replyRepo.GetSpecificReply(entity.Reply{
+		ID:        replyId,
+		CommentId: commentId,
+	})
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return errorpkg.ErrNotFoundResource.WithCustomMessage("Reply not found")
+		}
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	if reply.UserId.String() != userId {
+		return errorpkg.ErrForbiddenResource.WithCustomMessage("You are not authorized to delete this reply")
+	}
+
+	err = u.replyRepo.Delete(entity.Reply{
+		ID: replyId,
+	})
+	if err != nil {
+		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	return nil
 }
