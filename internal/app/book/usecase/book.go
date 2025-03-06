@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"encoding/json"
 	"errors"
 	"slices"
 	"strconv"
@@ -243,7 +242,7 @@ func (u *BookUsecase) GetSpecificBook(ctx *fiber.Ctx) (res dto.GetBooksResponse,
 		OwnerID:        book.OwnerID,
 		IsPublic:       book.IsPublic,
 		BookFileStatus: book.BookFileStatus,
-		Rating:         json.Number(strconv.FormatFloat(book.Rating, 'f', 1, 64)),
+		Rating:         strconv.FormatFloat(book.Rating, 'f', 1, 64),
 		Owner: entity.User{
 			ID:       book.Owner.ID,
 			Username: book.Owner.Username,
