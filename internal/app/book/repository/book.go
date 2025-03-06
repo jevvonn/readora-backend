@@ -85,19 +85,22 @@ func (r *BookPostgreSQL) GetBooks(filter GetBooksFilter) ([]entity.Book, error) 
 }
 
 func (r *BookPostgreSQL) GetSpecificBook(bookId string) (entity.Book, error) {
-	var books entity.Book
-	query := r.db.Preload("Owner").Model(&entity.Book{})
+	var book entity.Book
+	query := r.db.Debug().
+		Preload("Owner").
+		Model(&entity.Book{}).
+		Joins("LEFT JOIN comments ON comments.book_id = books.id").
+		Select("books.*, COALESCE(AVG(comments.rating), 0) as rating").
+		Where("books.id = ?", bookId).
+		Group("books.id")
 
-	query = query.Joins("JOIN comments ON comments.book_id = books.id").Select("books.*, AVG(comments.rating) as rating").Group("books.id")
-	query = query.Where("books.id = ?", bookId)
-
-	err := query.First(&books).Error
+	err := query.First(&book).Error
 	if err != nil {
 		r.log.Error("[BookPostgreSQL][GetBooks]", err)
 		return entity.Book{}, err
 	}
 
-	return books, nil
+	return book, nil
 }
 
 func (r *BookPostgreSQL) DeleteBook(bookId string) error {

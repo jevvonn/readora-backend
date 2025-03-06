@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"encoding/json"
 	"mime/multipart"
 	"time"
 
@@ -41,7 +42,7 @@ type GetBooksResponse struct {
 	FileKey string `json:"file_key,omitempty"`
 	FileURL string `json:"file_url,omitempty"`
 
-	Rating float64 `json:"rating,omitempty"`
+	Rating json.Number `json:"rating,omitempty"`
 
 	IsPublic       bool   `json:"is_public,omitempty"`
 	BookFileStatus string `json:"book_file_status,omitempty"`

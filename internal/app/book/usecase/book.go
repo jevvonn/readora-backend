@@ -1,8 +1,10 @@
 package usecase
 
 import (
+	"encoding/json"
 	"errors"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -196,7 +198,6 @@ func (u *BookUsecase) GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) (res []d
 			OwnerID:        book.OwnerID,
 			IsPublic:       book.IsPublic,
 			BookFileStatus: book.BookFileStatus,
-			Rating:         book.Rating,
 			Owner: entity.User{
 				ID:       book.Owner.ID,
 				Username: book.Owner.Username,
@@ -242,6 +243,7 @@ func (u *BookUsecase) GetSpecificBook(ctx *fiber.Ctx) (res dto.GetBooksResponse,
 		OwnerID:        book.OwnerID,
 		IsPublic:       book.IsPublic,
 		BookFileStatus: book.BookFileStatus,
+		Rating:         json.Number(strconv.FormatFloat(book.Rating, 'f', 1, 64)),
 		Owner: entity.User{
 			ID:       book.Owner.ID,
 			Username: book.Owner.Username,
