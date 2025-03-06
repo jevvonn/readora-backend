@@ -25,6 +25,18 @@ func NewReplyHandler(router fiber.Router, replyUsecase usecase.ReplyUsecaseItf, 
 	router.Delete("/comments/:commentId/replies/:replyId", middleware.Authenticated, handler.DeleteReply)
 }
 
+// @Summary      Get Reply of a Comment
+// @Description  Get Reply of a Comment
+// @Tags         Replies
+// @Accept       json
+// @Produce      json
+// @Param        commentId path string true "Comment ID"
+// @Param        req body dto.CreateReplyRequest true "Request Reply"
+// @Success      200  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Security     BearerAuth
+// @Router       /api/comments/{commentId}/replies [post]
 func (h *ReplyHandler) CreateComment(ctx *fiber.Ctx) error {
 	var req dto.CreateReplyRequest
 
@@ -48,6 +60,21 @@ func (h *ReplyHandler) CreateComment(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Summary      Get Replies
+// @Description  Get Replies
+// @Tags         Replies
+// @Accept       json
+// @Produce      json
+// @Param        commentId path string true "Comment ID"
+// @Param        limit query int false "Limit" default:10
+// @Param        page query int false "Page" default:1
+// @Param        sort_order query string false "Sort Order"
+// @Param        parent_id query string false "Reply Parent ID"
+// @Success      200  object   models.JSONResponseModel{data=[]dto.GetRepliesResponse{},errors=nil}
+// @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Security     BearerAuth
+// @Router       /api/comments/{commentId}/replies [get]
 func (h *ReplyHandler) GetReplies(ctx *fiber.Ctx) error {
 	var req dto.GetRepliesQuery
 
@@ -72,6 +99,18 @@ func (h *ReplyHandler) GetReplies(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Summary      Delete Reply
+// @Description  Delete Reply
+// @Tags         Replies
+// @Accept       json
+// @Produce      json
+// @Param        commentId path string true "Comment ID"
+// @Param        replyId path string true "Reply ID"
+// @Success      200  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Security     BearerAuth
+// @Router       /api/comments/{commentId}/replies/{replyId} [delete]
 func (h *ReplyHandler) DeleteReply(ctx *fiber.Ctx) error {
 	err := h.replyUsecase.DeleteReply(ctx)
 	if err != nil {

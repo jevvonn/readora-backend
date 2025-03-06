@@ -28,6 +28,15 @@ definitions:
     required:
     - name
     type: object
+  dto.CreateReplyRequest:
+    properties:
+      content:
+        type: string
+      parent_id:
+        type: string
+    required:
+    - content
+    type: object
   dto.GetBooksResponse:
     properties:
       author:
@@ -58,11 +67,15 @@ definitions:
         type: string
       publish_date:
         type: string
+      rating:
+        type: string
       title:
         type: string
     type: object
   dto.GetCommentsResponse:
     properties:
+      book_id:
+        type: string
       content:
         type: string
       created_at:
@@ -72,6 +85,21 @@ definitions:
       rating:
         type: number
       updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/entity.User'
+    type: object
+  dto.GetRepliesResponse:
+    properties:
+      comment_id:
+        type: string
+      content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      parent_id:
         type: string
       user:
         $ref: '#/definitions/entity.User'
@@ -160,6 +188,8 @@ definitions:
         type: string
       publish_date:
         type: string
+      rating:
+        type: number
       title:
         type: string
       updated_at:
@@ -1028,6 +1058,190 @@ paths:
       summary: Get All Comments
       tags:
       - Comments
+  /api/comments/{commentId}/replies:
+    get:
+      consumes:
+      - application/json
+      description: Get Replies
+      parameters:
+      - description: Comment ID
+        in: path
+        name: commentId
+        required: true
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Sort Order
+        in: query
+        name: sort_order
+        type: string
+      - description: Reply Parent ID
+        in: query
+        name: parent_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/dto.GetRepliesResponse'
+                  type: array
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Get Replies
+      tags:
+      - Replies
+    post:
+      consumes:
+      - application/json
+      description: Get Reply of a Comment
+      parameters:
+      - description: Comment ID
+        in: path
+        name: commentId
+        required: true
+        type: string
+      - description: Request Reply
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateReplyRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Get Reply of a Comment
+      tags:
+      - Replies
+  /api/comments/{commentId}/replies/{replyId}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Reply
+      parameters:
+      - description: Comment ID
+        in: path
+        name: commentId
+        required: true
+        type: string
+      - description: Reply ID
+        in: path
+        name: replyId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Delete Reply
+      tags:
+      - Replies
   /api/genres:
     get:
       consumes:
