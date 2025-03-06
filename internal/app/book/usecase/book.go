@@ -193,11 +193,10 @@ func (u *BookUsecase) GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) (res []d
 			PublishDate:    book.PublishDate,
 			CoverImageKey:  book.CoverImageKey,
 			CoverImageURL:  book.CoverImageURL,
-			FileKey:        book.FileKey,
-			FileURL:        book.FileURL,
 			OwnerID:        book.OwnerID,
 			IsPublic:       book.IsPublic,
 			BookFileStatus: book.BookFileStatus,
+			Rating:         book.Rating,
 			Owner: entity.User{
 				ID:       book.Owner.ID,
 				Username: book.Owner.Username,

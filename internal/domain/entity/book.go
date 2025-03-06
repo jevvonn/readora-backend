@@ -21,6 +21,8 @@ type Book struct {
 
 	IsPublic bool `gorm:"default:false;not null" json:"is_public,omitempty"`
 
+	Rating float64 `json:"rating,omitempty"`
+
 	OwnerID uuid.UUID `gorm:"type:varchar(255);not null" json:"owner_id,omitempty"`
 	Owner   User      `gorm:"foreignKey:OwnerID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"owner,omitempty"`
 
