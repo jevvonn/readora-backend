@@ -45,7 +45,7 @@ func (r *BookPostgreSQL) Create(req entity.Book) error {
 
 func (r *BookPostgreSQL) GetBooks(filter GetBooksFilter) ([]entity.Book, error) {
 	var books []entity.Book
-	query := r.db.Model(&entity.Book{}).Preload("Owner").Preload("Genres")
+	query := r.db.Debug().Model(&entity.Book{}).Preload("Owner").Preload("Genres")
 
 	if filter.OwnerID != uuid.Nil {
 		query = query.Where("owner_id = ?", filter.OwnerID.String())
@@ -85,15 +85,22 @@ func (r *BookPostgreSQL) GetBooks(filter GetBooksFilter) ([]entity.Book, error) 
 }
 
 func (r *BookPostgreSQL) GetSpecificBook(bookId string) (entity.Book, error) {
-	var books entity.Book
-	err := r.db.Preload("Owner").Preload("Genres").Where("id = ?", bookId).First(&books).Error
+	var book entity.Book
+	query := r.db.Debug().
+		Preload("Owner").
+		Model(&entity.Book{}).
+		Joins("LEFT JOIN comments ON comments.book_id = books.id").
+		Select("books.*, COALESCE(AVG(comments.rating), 0) as rating").
+		Where("books.id = ?", bookId).
+		Group("books.id")
 
+	err := query.First(&book).Error
 	if err != nil {
 		r.log.Error("[BookPostgreSQL][GetBooks]", err)
 		return entity.Book{}, err
 	}
 
-	return books, nil
+	return book, nil
 }
 
 func (r *BookPostgreSQL) DeleteBook(bookId string) error {

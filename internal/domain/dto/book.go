@@ -41,6 +41,8 @@ type GetBooksResponse struct {
 	FileKey string `json:"file_key,omitempty"`
 	FileURL string `json:"file_url,omitempty"`
 
+	Rating string `json:"rating,omitempty"`
+
 	IsPublic       bool   `json:"is_public,omitempty"`
 	BookFileStatus string `json:"book_file_status,omitempty"`
 

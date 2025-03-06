@@ -3,6 +3,7 @@ package usecase
 import (
 	"errors"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -193,8 +194,6 @@ func (u *BookUsecase) GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) (res []d
 			PublishDate:    book.PublishDate,
 			CoverImageKey:  book.CoverImageKey,
 			CoverImageURL:  book.CoverImageURL,
-			FileKey:        book.FileKey,
-			FileURL:        book.FileURL,
 			OwnerID:        book.OwnerID,
 			IsPublic:       book.IsPublic,
 			BookFileStatus: book.BookFileStatus,
@@ -243,6 +242,7 @@ func (u *BookUsecase) GetSpecificBook(ctx *fiber.Ctx) (res dto.GetBooksResponse,
 		OwnerID:        book.OwnerID,
 		IsPublic:       book.IsPublic,
 		BookFileStatus: book.BookFileStatus,
+		Rating:         strconv.FormatFloat(book.Rating, 'f', 1, 64),
 		Owner: entity.User{
 			ID:       book.Owner.ID,
 			Username: book.Owner.Username,

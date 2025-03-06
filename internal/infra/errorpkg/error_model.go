@@ -16,7 +16,7 @@ var (
 	)
 
 	ErrNotFoundResource = NewError(
-		"forbidden resource", http.StatusNotFound,
+		"resource not found", http.StatusNotFound,
 	)
 
 	ErrBadRequest = NewError(

@@ -20,11 +20,11 @@ type CommentHandler struct {
 // @Tags         Comments
 // @Accept       json
 // @Produce      json
-// @Param        bookId path string true "Book ID"
 // @Param        limit query int false "Limit"
 // @Param        page query int false "Page"
 // @Param        sort_by query string false "Sort By"
 // @Param        sort_order query string false "Sort Order"
+// @Param        top_comment_id query string false "Top Comment Id"
 // @Success      200  object   models.JSONResponseModel{data=[]dto.GetCommentsResponse{book=nil},errors=nil}
 // @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
@@ -85,6 +85,7 @@ func (h *CommentHandler) CreateComment(ctx *fiber.Ctx) error {
 // @Param        page query int false "Page"
 // @Param        sort_by query string false "Sort By"
 // @Param        sort_order query string false "Sort Order"
+// @Param        top_comment_id query string false "Top Comment Id"
 // @Success      200  object   models.JSONResponseModel{data=[]dto.GetCommentsResponse{book=nil},errors=nil}
 // @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
 // @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}

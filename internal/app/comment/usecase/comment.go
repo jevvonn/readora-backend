@@ -142,6 +142,7 @@ func (u *CommentUsecase) GetComments(ctx *fiber.Ctx, query dto.GetCommentsQuery)
 			ID:      comment.ID.String(),
 			Content: comment.Content,
 			Rating:  comment.Rating,
+			BookId:  comment.BookId,
 			User: entity.User{
 				ID:       comment.UserId,
 				Username: comment.User.Username,
