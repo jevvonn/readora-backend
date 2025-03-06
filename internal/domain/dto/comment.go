@@ -3,6 +3,7 @@ package dto
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/jevvonn/readora-backend/internal/domain/entity"
 )
 
@@ -25,6 +26,7 @@ type GetCommentsResponse struct {
 	Content   string      `json:"content"`
 	Rating    float64     `json:"rating"`
 	User      entity.User `json:"user"`
+	BookId    uuid.UUID   `json:"book_id"`
 	CreatedAt time.Time   `json:"created_at"`
 	UpdatedAt time.Time   `json:"updated_at"`
 }
