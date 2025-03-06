@@ -6,8 +6,8 @@ definitions:
       otp:
         type: string
     required:
-    - email
-    - otp
+      - email
+      - otp
     type: object
   dto.CreateCommentRequest:
     properties:
@@ -18,15 +18,15 @@ definitions:
         minimum: 1
         type: number
     required:
-    - content
-    - rating
+      - content
+      - rating
     type: object
   dto.CreateGenreRequest:
     properties:
       name:
         type: string
     required:
-    - name
+      - name
     type: object
   dto.CreateReplyRequest:
     properties:
@@ -35,7 +35,7 @@ definitions:
       parent_id:
         type: string
     required:
-    - content
+      - content
     type: object
   dto.GetBooksResponse:
     properties:
@@ -55,14 +55,14 @@ definitions:
         type: string
       genres:
         items:
-          $ref: '#/definitions/entity.Genre'
+          $ref: "#/definitions/entity.Genre"
         type: array
       id:
         type: string
       is_public:
         type: boolean
       owner:
-        $ref: '#/definitions/entity.User'
+        $ref: "#/definitions/entity.User"
       owner_id:
         type: string
       publish_date:
@@ -87,7 +87,7 @@ definitions:
       updated_at:
         type: string
       user:
-        $ref: '#/definitions/entity.User'
+        $ref: "#/definitions/entity.User"
     type: object
   dto.GetRepliesResponse:
     properties:
@@ -102,7 +102,7 @@ definitions:
       parent_id:
         type: string
       user:
-        $ref: '#/definitions/entity.User'
+        $ref: "#/definitions/entity.User"
     type: object
   dto.LoginRequest:
     properties:
@@ -111,8 +111,8 @@ definitions:
       username:
         type: string
     required:
-    - password
-    - username
+      - password
+      - username
     type: object
   dto.RegisterRequest:
     properties:
@@ -129,17 +129,17 @@ definitions:
         minLength: 5
         type: string
     required:
-    - email
-    - name
-    - password
-    - username
+      - email
+      - name
+      - password
+      - username
     type: object
   dto.SendRegisterOTPRequest:
     properties:
       email:
         type: string
     required:
-    - email
+      - email
     type: object
   dto.SessionResponse:
     properties:
@@ -160,7 +160,7 @@ definitions:
         type: string
       comments:
         items:
-          $ref: '#/definitions/entity.Comment'
+          $ref: "#/definitions/entity.Comment"
         type: array
       cover_image_key:
         type: string
@@ -176,14 +176,14 @@ definitions:
         type: string
       genres:
         items:
-          $ref: '#/definitions/entity.Genre'
+          $ref: "#/definitions/entity.Genre"
         type: array
       id:
         type: string
       is_public:
         type: boolean
       owner:
-        $ref: '#/definitions/entity.User'
+        $ref: "#/definitions/entity.User"
       owner_id:
         type: string
       publish_date:
@@ -198,7 +198,7 @@ definitions:
   entity.Comment:
     properties:
       book:
-        $ref: '#/definitions/entity.Book'
+        $ref: "#/definitions/entity.Book"
       book_id:
         type: string
       content:
@@ -212,7 +212,7 @@ definitions:
       updated_at:
         type: string
       user:
-        $ref: '#/definitions/entity.User'
+        $ref: "#/definitions/entity.User"
       user_id:
         type: string
     type: object
@@ -220,7 +220,7 @@ definitions:
     properties:
       books:
         items:
-          $ref: '#/definitions/entity.Book'
+          $ref: "#/definitions/entity.Book"
         type: array
       created_at:
         type: string
@@ -263,1083 +263,1083 @@ paths:
   /api/auth/login:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Login User
       parameters:
-      - description: Login Request
-        in: body
-        name: req
-        required: true
-        schema:
-          $ref: '#/definitions/dto.LoginRequest'
+        - description: Login Request
+          in: body
+          name: req
+          required: true
+          schema:
+            $ref: "#/definitions/dto.LoginRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  $ref: '#/definitions/dto.LoginRequest'
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    $ref: "#/definitions/dto.LoginRequest"
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       summary: Login User
       tags:
-      - Auth
+        - Auth
   /api/auth/otp:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Send OTP for Register
       parameters:
-      - description: Send OTP for Register Request
-        in: body
-        name: req
-        required: true
-        schema:
-          $ref: '#/definitions/dto.SendRegisterOTPRequest'
+        - description: Send OTP for Register Request
+          in: body
+          name: req
+          required: true
+          schema:
+            $ref: "#/definitions/dto.SendRegisterOTPRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       summary: Send OTP for Register
       tags:
-      - Auth
+        - Auth
   /api/auth/otp/check:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Check OTP for Register
       parameters:
-      - description: Check OTP for Register Request
-        in: body
-        name: req
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CheckRegisterOTPRequest'
+        - description: Check OTP for Register Request
+          in: body
+          name: req
+          required: true
+          schema:
+            $ref: "#/definitions/dto.CheckRegisterOTPRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       summary: Check OTP for Register
       tags:
-      - Auth
+        - Auth
   /api/auth/register:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Register User
       parameters:
-      - description: Register Request
-        in: body
-        name: req
-        required: true
-        schema:
-          $ref: '#/definitions/dto.RegisterRequest'
+        - description: Register Request
+          in: body
+          name: req
+          required: true
+          schema:
+            $ref: "#/definitions/dto.RegisterRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       summary: Register User
       tags:
-      - Auth
+        - Auth
   /api/auth/session:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Get Session User Data
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  $ref: '#/definitions/dto.SessionResponse'
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    $ref: "#/definitions/dto.SessionResponse"
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get Session User Data
       tags:
-      - Auth
+        - Auth
   /api/books:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Get Books
       parameters:
-      - description: Search
-        in: query
-        name: search
-        type: string
-      - description: Genre
-        in: query
-        name: genre
-        type: string
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      - description: Page
-        in: query
-        name: page
-        type: integer
-      - description: Sort By
-        in: query
-        name: sort_by
-        type: string
-      - description: Sort Order
-        in: query
-        name: sort_order
-        type: string
-      - description: Owner ID
-        in: query
-        name: owner_id
-        type: string
+        - description: Search
+          in: query
+          name: search
+          type: string
+        - description: Genre
+          in: query
+          name: genre
+          type: string
+        - description: Limit
+          in: query
+          name: limit
+          type: integer
+        - description: Page
+          in: query
+          name: page
+          type: integer
+        - description: Sort By
+          in: query
+          name: sort_by
+          type: string
+        - description: Sort Order
+          in: query
+          name: sort_order
+          type: string
+        - description: Owner ID
+          in: query
+          name: owner_id
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  items:
-                    allOf:
-                    - $ref: '#/definitions/dto.GetBooksResponse'
-                    - properties:
-                        genres:
-                          items:
-                            allOf:
-                            - $ref: '#/definitions/entity.Genre'
-                            - properties:
-                                books:
-                                  type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    items:
+                      allOf:
+                        - $ref: "#/definitions/dto.GetBooksResponse"
+                        - properties:
+                            genres:
+                              items:
+                                allOf:
+                                  - $ref: "#/definitions/entity.Genre"
+                                  - properties:
+                                      books:
+                                        type: object
+                                    type: object
+                              type: array
+                            owner:
                               type: object
-                          type: array
-                        owner:
                           type: object
-                      type: object
-                  type: array
-                errors:
-                  type: object
-              type: object
+                    type: array
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get Books
       tags:
-      - Books
+        - Books
     post:
       consumes:
-      - application/json
+        - application/json
       description: Create Book
       parameters:
-      - description: PDF File
-        in: formData
-        name: pdf_file
-        required: true
-        type: file
-      - description: Title
-        in: formData
-        name: title
-        required: true
-        type: string
-      - description: Description
-        in: formData
-        name: description
-        type: string
-      - description: Author
-        in: formData
-        name: author
-        required: true
-        type: string
-      - description: Publish Date e.g 2025-03-05T17:56:10.119Z
-        in: formData
-        name: publish_date
-        type: string
-      - description: 'Genres e.g: Romance, Fiction, Drama'
-        in: formData
-        name: genres
-        type: string
+        - description: PDF File
+          in: formData
+          name: pdf_file
+          required: true
+          type: file
+        - description: Title
+          in: formData
+          name: title
+          required: true
+          type: string
+        - description: Description
+          in: formData
+          name: description
+          type: string
+        - description: Author
+          in: formData
+          name: author
+          required: true
+          type: string
+        - description: Publish Date e.g 2025-03-05T17:56:10.119Z
+          in: formData
+          name: publish_date
+          type: string
+        - description: "Genres e.g: Romance, Fiction, Drama"
+          in: formData
+          name: genres
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Create Book
       tags:
-      - Books
+        - Books
   /api/books/{bookId}:
     delete:
       consumes:
-      - application/json
+        - application/json
       description: Delete Book
       parameters:
-      - description: Book ID
-        in: path
-        name: bookId
-        required: true
-        type: string
+        - description: Book ID
+          in: path
+          name: bookId
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Delete Book
       tags:
-      - Books
+        - Books
     get:
       consumes:
-      - application/json
+        - application/json
       description: Get Specific Book
       parameters:
-      - description: Book ID
-        in: path
-        name: bookId
-        required: true
-        type: string
+        - description: Book ID
+          in: path
+          name: bookId
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  allOf:
-                  - $ref: '#/definitions/dto.GetBooksResponse'
-                  - properties:
-                      genres:
-                        items:
-                          allOf:
-                          - $ref: '#/definitions/entity.Genre'
-                          - properties:
-                              books:
-                                type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    allOf:
+                      - $ref: "#/definitions/dto.GetBooksResponse"
+                      - properties:
+                          genres:
+                            items:
+                              allOf:
+                                - $ref: "#/definitions/entity.Genre"
+                                - properties:
+                                    books:
+                                      type: object
+                                  type: object
+                            type: array
+                          owner:
                             type: object
-                        type: array
-                      owner:
                         type: object
+                  errors:
                     type: object
-                errors:
-                  type: object
-              type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get Specific Book
       tags:
-      - Books
+        - Books
   /api/books/{bookId}/comments:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Get Comments of a Book
       parameters:
-      - description: Book ID
-        in: path
-        name: bookId
-        required: true
-        type: string
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      - description: Page
-        in: query
-        name: page
-        type: integer
-      - description: Sort By
-        in: query
-        name: sort_by
-        type: string
-      - description: Sort Order
-        in: query
-        name: sort_order
-        type: string
-      - description: Top Comment Id
-        in: query
-        name: top_comment_id
-        type: string
+        - description: Book ID
+          in: path
+          name: bookId
+          required: true
+          type: string
+        - description: Limit
+          in: query
+          name: limit
+          type: integer
+        - description: Page
+          in: query
+          name: page
+          type: integer
+        - description: Sort By
+          in: query
+          name: sort_by
+          type: string
+        - description: Sort Order
+          in: query
+          name: sort_order
+          type: string
+        - description: Top Comment Id
+          in: query
+          name: top_comment_id
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  items:
-                    allOf:
-                    - $ref: '#/definitions/dto.GetCommentsResponse'
-                    - properties:
-                        book:
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    items:
+                      allOf:
+                        - $ref: "#/definitions/dto.GetCommentsResponse"
+                        - properties:
+                            book:
+                              type: object
                           type: object
-                      type: object
-                  type: array
-                errors:
-                  type: object
-              type: object
+                    type: array
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get Comments of a Book
       tags:
-      - Comments
+        - Comments
     post:
       consumes:
-      - application/json
+        - application/json
       description: Create Comments
       parameters:
-      - description: Book ID
-        in: path
-        name: bookId
-        required: true
-        type: string
-      - description: Create Comment Request
-        in: body
-        name: req
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CreateCommentRequest'
+        - description: Book ID
+          in: path
+          name: bookId
+          required: true
+          type: string
+        - description: Create Comment Request
+          in: body
+          name: req
+          required: true
+          schema:
+            $ref: "#/definitions/dto.CreateCommentRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Create Comments
       tags:
-      - Comments
+        - Comments
   /api/books/{bookId}/comments/{comentId}:
     delete:
       consumes:
-      - application/json
+        - application/json
       description: Delete Comment
       parameters:
-      - description: Book ID
-        in: path
-        name: bookId
-        required: true
-        type: string
-      - description: Comment ID
-        in: path
-        name: commentId
-        required: true
-        type: string
+        - description: Book ID
+          in: path
+          name: bookId
+          required: true
+          type: string
+        - description: Comment ID
+          in: path
+          name: commentId
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Delete Comment
       tags:
-      - Comments
+        - Comments
   /api/comments:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Get All Comments
       parameters:
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      - description: Page
-        in: query
-        name: page
-        type: integer
-      - description: Sort By
-        in: query
-        name: sort_by
-        type: string
-      - description: Sort Order
-        in: query
-        name: sort_order
-        type: string
-      - description: Top Comment Id
-        in: query
-        name: top_comment_id
-        type: string
+        - description: Limit
+          in: query
+          name: limit
+          type: integer
+        - description: Page
+          in: query
+          name: page
+          type: integer
+        - description: Sort By
+          in: query
+          name: sort_by
+          type: string
+        - description: Sort Order
+          in: query
+          name: sort_order
+          type: string
+        - description: Top Comment Id
+          in: query
+          name: top_comment_id
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  items:
-                    allOf:
-                    - $ref: '#/definitions/dto.GetCommentsResponse'
-                    - properties:
-                        book:
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    items:
+                      allOf:
+                        - $ref: "#/definitions/dto.GetCommentsResponse"
+                        - properties:
+                            book:
+                              type: object
                           type: object
-                      type: object
-                  type: array
-                errors:
-                  type: object
-              type: object
+                    type: array
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get All Comments
       tags:
-      - Comments
+        - Comments
   /api/comments/{commentId}/replies:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Get Replies
       parameters:
-      - description: Comment ID
-        in: path
-        name: commentId
-        required: true
-        type: string
-      - description: Limit
-        in: query
-        name: limit
-        type: integer
-      - description: Page
-        in: query
-        name: page
-        type: integer
-      - description: Sort Order
-        in: query
-        name: sort_order
-        type: string
-      - description: Reply Parent ID
-        in: query
-        name: parent_id
-        type: string
+        - description: Comment ID
+          in: path
+          name: commentId
+          required: true
+          type: string
+        - description: Limit
+          in: query
+          name: limit
+          type: integer
+        - description: Page
+          in: query
+          name: page
+          type: integer
+        - description: Sort Order
+          in: query
+          name: sort_order
+          type: string
+        - description: Reply Parent ID
+          in: query
+          name: parent_id
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/dto.GetRepliesResponse'
-                  type: array
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    items:
+                      $ref: "#/definitions/dto.GetRepliesResponse"
+                    type: array
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get Replies
       tags:
-      - Replies
+        - Replies
     post:
       consumes:
-      - application/json
+        - application/json
       description: Get Reply of a Comment
       parameters:
-      - description: Comment ID
-        in: path
-        name: commentId
-        required: true
-        type: string
-      - description: Request Reply
-        in: body
-        name: req
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CreateReplyRequest'
+        - description: Comment ID
+          in: path
+          name: commentId
+          required: true
+          type: string
+        - description: Request Reply
+          in: body
+          name: req
+          required: true
+          schema:
+            $ref: "#/definitions/dto.CreateReplyRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get Reply of a Comment
       tags:
-      - Replies
+        - Replies
   /api/comments/{commentId}/replies/{replyId}:
     delete:
       consumes:
-      - application/json
+        - application/json
       description: Delete Reply
       parameters:
-      - description: Comment ID
-        in: path
-        name: commentId
-        required: true
-        type: string
-      - description: Reply ID
-        in: path
-        name: replyId
-        required: true
-        type: string
+        - description: Comment ID
+          in: path
+          name: commentId
+          required: true
+          type: string
+        - description: Reply ID
+          in: path
+          name: replyId
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Delete Reply
       tags:
-      - Replies
+        - Replies
   /api/genres:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Get Genres
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  items:
-                    type: string
-                  type: array
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    items:
+                      type: string
+                    type: array
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       summary: Get Genres
       tags:
-      - Genres
+        - Genres
     post:
       consumes:
-      - application/json
+        - application/json
       description: Create Genres (Require Admin Account)
       parameters:
-      - description: Create Genre Request
-        in: body
-        name: req
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CreateGenreRequest'
+        - description: Create Genre Request
+          in: body
+          name: req
+          required: true
+          schema:
+            $ref: "#/definitions/dto.CreateGenreRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "400":
           description: Bad Request
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
         "500":
           description: Internal Server Error
           schema:
             allOf:
-            - $ref: '#/definitions/models.JSONResponseModel'
-            - properties:
-                data:
-                  type: object
-                errors:
-                  type: object
-              type: object
+              - $ref: "#/definitions/models.JSONResponseModel"
+              - properties:
+                  data:
+                    type: object
+                  errors:
+                    type: object
+                type: object
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Create Genres
       tags:
-      - Genres
+        - Genres
 securityDefinitions:
   BearerAuth:
     description: '"Type ''Bearer TOKEN'' to correctly set the API Key"'
