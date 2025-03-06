@@ -12,11 +12,12 @@ type CreateCommentRequest struct {
 }
 
 type GetCommentsQuery struct {
-	Limit     int    `query:"limit" validate:"omitempty,numeric,min=1,max=100"`
-	Page      int    `query:"page" validate:"omitempty,numeric,min=1"`
-	SortBy    string `query:"sort_by" validate:"omitempty,oneof=created_at rating"`
-	SortOrder string `query:"sort_order" validate:"omitempty,oneof=asc desc"`
-	BookId    string `query:"book_id" validate:"required"`
+	Limit        int    `query:"limit" validate:"omitempty,numeric,min=1,max=100"`
+	Page         int    `query:"page" validate:"omitempty,numeric,min=1"`
+	SortBy       string `query:"sort_by" validate:"omitempty,oneof=created_at rating"`
+	SortOrder    string `query:"sort_order" validate:"omitempty,oneof=asc desc"`
+	BookId       string `query:"book_id" validate:"required"`
+	TopCommentId string `query:"top_comment_id" validate:"omitempty"`
 }
 
 type GetCommentsResponse struct {

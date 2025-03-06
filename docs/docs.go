@@ -1015,6 +1015,12 @@ const docTemplate = `{
                         "description": "Sort Order",
                         "name": "sort_order",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Top Comment Id",
+                        "name": "top_comment_id",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1321,13 +1327,6 @@ const docTemplate = `{
                 "summary": "Get All Comments",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Book ID",
-                        "name": "bookId",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "type": "integer",
                         "description": "Limit",
                         "name": "limit",
@@ -1349,6 +1348,12 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Sort Order",
                         "name": "sort_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Top Comment Id",
+                        "name": "top_comment_id",
                         "in": "query"
                     }
                 ],

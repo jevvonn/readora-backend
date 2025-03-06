@@ -52,6 +52,10 @@ func (r *CommentPostgreSQL) GetComments(filter dto.GetCommentsQuery) ([]entity.C
 		query = query.Offset((filter.Page - 1) * filter.Limit)
 	}
 
+	if filter.TopCommentId != "" {
+		query = query.Order("CASE WHEN id = '" + filter.TopCommentId + "' THEN 0 ELSE 1 END")
+	}
+
 	if filter.SortBy != "" {
 		query = query.Order(filter.SortBy + " " + filter.SortOrder)
 	}

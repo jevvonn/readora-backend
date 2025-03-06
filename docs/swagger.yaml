@@ -788,6 +788,10 @@ paths:
         in: query
         name: sort_order
         type: string
+      - description: Top Comment Id
+        in: query
+        name: top_comment_id
+        type: string
       produces:
       - application/json
       responses:
@@ -956,11 +960,6 @@ paths:
       - application/json
       description: Get All Comments
       parameters:
-      - description: Book ID
-        in: path
-        name: bookId
-        required: true
-        type: string
       - description: Limit
         in: query
         name: limit
@@ -976,6 +975,10 @@ paths:
       - description: Sort Order
         in: query
         name: sort_order
+        type: string
+      - description: Top Comment Id
+        in: query
+        name: top_comment_id
         type: string
       produces:
       - application/json
