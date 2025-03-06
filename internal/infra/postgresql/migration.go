@@ -31,6 +31,7 @@ func Migrate(db *gorm.DB, command string) {
 		&entity.Book{},
 		&entity.Genre{},
 		&entity.Comment{},
+		&entity.Reply{},
 	}
 
 	var err error

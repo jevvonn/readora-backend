@@ -29,6 +29,10 @@ import (
 	commentHandler "github.com/jevvonn/readora-backend/internal/app/comment/interface/rest"
 	commentRepository "github.com/jevvonn/readora-backend/internal/app/comment/repository"
 	commentUsecase "github.com/jevvonn/readora-backend/internal/app/comment/usecase"
+
+	replyHandler "github.com/jevvonn/readora-backend/internal/app/reply/interface/rest"
+	replyRepository "github.com/jevvonn/readora-backend/internal/app/reply/repository"
+	replyUsecase "github.com/jevvonn/readora-backend/internal/app/reply/usecase"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"github.com/jevvonn/readora-backend/internal/infra/postgresql"
 	"github.com/jevvonn/readora-backend/internal/infra/redis"
@@ -102,18 +106,21 @@ func Start() error {
 	bookRepo := bookRepository.NewBookPostgreSQL(db, logger)
 	genreRepo := genreRepository.NewGenreRepository(db, logger)
 	commentRepo := commentRepository.NewCommentPostgreSQL(db, logger)
+	replyRepo := replyRepository.NewReplyPostgreSQL(db, logger)
 
 	// Usecase Instance
 	authUsecase := authUsecase.NewAuthUsecase(userRepo, authRepo, workerClient, logger)
 	bookUsecase := bookUsecase.NewBookUsecase(bookRepo, workerClient, logger)
 	genreUsecase := genreUsecase.NewGenreUsecase(genreRepo)
 	commentUsecase := commentUsecase.NewCommentUsecase(commentRepo, bookRepo, logger)
+	replyUsecase := replyUsecase.NewReplyUsecase(replyRepo, commentRepo, logger)
 
 	// Handler Instance
 	authHandler.NewAuthHandler(apiRouter, authUsecase, vd)
 	bookHandler.NewBookHandler(apiRouter, bookUsecase, vd)
 	genreHandler.NewGenreHandler(apiRouter, genreUsecase)
 	commentHandler.NewCommentHandler(apiRouter, commentUsecase, vd)
+	replyHandler.NewReplyHandler(apiRouter, replyUsecase, vd)
 
 	// Swagger Docs
 	parsedURL, err := url.Parse(conf.AppBaseURL)
