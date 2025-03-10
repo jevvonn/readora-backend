@@ -10,6 +10,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/google/uuid"
 	"github.com/hibiken/asynq"
+	"github.com/jevvonn/readora-backend/config"
 	"github.com/jevvonn/readora-backend/internal/constant"
 	"github.com/jevvonn/readora-backend/internal/domain/entity"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
@@ -112,21 +113,22 @@ func HandleBooksFileParseTask(db *gorm.DB) asynq.HandlerFunc {
 			return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
 		}
 
-		// log := logger.New()
+		log := logger.New()
+		conf := config.Load()
 		err := db.Model(&entity.Book{
 			ID: uuid.MustParse(payload.BooksId),
 		}).Updates(entity.Book{
 			FileAIStatus: constant.BookFileAIStatusProcessing,
 		}).Error
 		if err != nil {
-			fmt.Println("[Task][BooksFileParsePayload]", err)
+			log.Error("[Task][BooksFileParsePayload]", err)
 			return err
 		}
 
 		// Check path
 		_, err = os.Stat(payload.TmpFile)
 		if os.IsNotExist(err) {
-			fmt.Println("[Task][BooksFileParsePayload]", err)
+			log.Error("[Task][BooksFileParsePayload]", err)
 			return err
 		}
 
@@ -137,20 +139,20 @@ func HandleBooksFileParseTask(db *gorm.DB) asynq.HandlerFunc {
 		}
 
 		client := resty.New()
+		url := fmt.Sprintf("%s/service/books/parse", conf.NodeApiBaseURL)
 		resp, err := client.R().
 			SetFile("file", payload.TmpFile).
 			SetFormData(map[string]string{
 				"bookId": payload.BooksId,
 			}).
-			Post("http://localhost:3001/service/books/parse")
+			Post(url)
 
 		if err != nil {
-			fmt.Println("Error:", err)
+			log.Error("Error:", err)
 			return err
 		}
 
 		if resp.StatusCode() != 200 {
-			fmt.Println("Error:", resp.String())
 			return errors.New("failed to parse file")
 		}
 
@@ -160,7 +162,7 @@ func HandleBooksFileParseTask(db *gorm.DB) asynq.HandlerFunc {
 		var response BooksFileProcessingResponse
 		err = json.Unmarshal(resp.Body(), &response)
 		if err != nil {
-			fmt.Println("[Task][BooksFileParsePayload]", err)
+			log.Error("[Task][BooksFileParsePayload]", err)
 			return err
 		}
 
@@ -171,7 +173,7 @@ func HandleBooksFileParseTask(db *gorm.DB) asynq.HandlerFunc {
 			FileAIStatus:  constant.BookFileAIStatusReady,
 		}).Error
 		if err != nil {
-			fmt.Println("[Task][BooksFileParsePayload]", err)
+			log.Error("[Task][BooksFileParsePayload]", err)
 			return err
 		}
 

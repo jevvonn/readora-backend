@@ -67,6 +67,11 @@ func (w *Worker) NewBooksFileUpload(tmpFile, fileName, booksId, fileType string)
 	task := asynq.NewTask(tasks.BooksFileUploadTaskName, payload, asynq.MaxRetry(3))
 	w.client.Enqueue(task)
 
+	w.NewBooksFileParsing(tmpFile, fileName, booksId)
+	return err
+}
+
+func (w *Worker) NewBooksFileParsing(tmpFile, fileName, booksId string) error {
 	payloadParse, err := json.Marshal(tasks.BooksFileParsePayload{
 		TmpFile:  tmpFile,
 		BooksId:  booksId,
@@ -77,7 +82,7 @@ func (w *Worker) NewBooksFileUpload(tmpFile, fileName, booksId, fileType string)
 		return err
 	}
 
-	task = asynq.NewTask(tasks.BooksFileProcessTaskName, payloadParse, asynq.MaxRetry(3))
+	task := asynq.NewTask(tasks.BooksFileProcessTaskName, payloadParse, asynq.MaxRetry(3))
 	w.client.Enqueue(task)
 
 	return err

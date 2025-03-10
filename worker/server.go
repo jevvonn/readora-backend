@@ -32,10 +32,10 @@ func main() {
 	srv := asynq.NewServer(
 		asynq.RedisClientOpt{Addr: redisAddr},
 		asynq.Config{
-			Concurrency: 4,
+			Concurrency: 8,
 			Queues: map[string]int{
 				"critical": 6,
-				"default":  3,
+				"default":  1,
 				"low":      1,
 			},
 		},

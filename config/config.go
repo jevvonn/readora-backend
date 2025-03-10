@@ -13,6 +13,7 @@ type Config struct {
 	AppBaseURL string `env:"APP_BASE_URL,required"`
 
 	FrontendBaseURL string `env:"FRONTEND_BASE_URL,required"`
+	NodeApiBaseURL  string `env:"NODE_API_BASE_URL,required"`
 
 	JWTSecret string `env:"JWT_SECRET,required"`
 
