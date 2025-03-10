@@ -79,15 +79,26 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 		u.log.Error(log, err)
 		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
-	if fileType != "application/pdf" {
-		errValidation := errorpkg.ErrValidationFileMimeType("pdf_file", []string{".pdf"})
+
+	if fileType != "application/pdf" &&
+		fileType != "application/zip" &&
+		strings.Contains(pdfFile.Filename, ".epub") &&
+		fileType != "application/epub+zip" &&
+		strings.Contains(pdfFile.Filename, ".pdf") {
+		errValidation := errorpkg.ErrValidationFileMimeType("pdf_file", []string{".pdf", ".epub"})
 		u.log.Error(log, errValidation)
 		return errValidation
 	}
 
 	// Upload PDF File
+	extension := ".pdf"
+	if strings.Contains(pdfFile.Filename, ".epub") {
+		extension = ".epub"
+		fileType = "application/epub+zip"
+	}
+
 	bookId := uuid.New()
-	fileName := bookId.String() + ".pdf"
+	fileName := bookId.String() + extension
 	fileKey := "books/" + fileName
 	tempFile := "./tmp/" + fileName
 
@@ -97,7 +108,7 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
-	err = u.worker.NewBooksFileUpload(tempFile, fileName, bookId.String())
+	err = u.worker.NewBooksFileUpload(tempFile, fileName, bookId.String(), fileType)
 	if err != nil {
 		u.log.Error(log, err)
 		return errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
@@ -114,10 +125,11 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 		OwnerID:     uuid.MustParse(userId),
 		Genres:      genres,
 		IsPublic:    false,
+		FileType:    fileType,
 
 		// COVER IMAGE NOT DONE YET
 		CoverImageKey: "-",
-		CoverImageURL: "-",
+		CoverImageURL: constant.GetBookDefultCoverImage(),
 	}
 
 	if role == constant.RoleAdmin {

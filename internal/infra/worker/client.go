@@ -11,7 +11,7 @@ import (
 
 type WorkerItf interface {
 	NewSendOTPRegisterTask(email string, otp string) error
-	NewBooksFileUpload(tmpFile, fileName, booksId string) error
+	NewBooksFileUpload(tmpFile, fileName, booksId, fileType string) error
 	NewBooksFileDelete(fileName string) error
 }
 
@@ -52,8 +52,22 @@ func (w *Worker) NewSendOTPRegisterTask(email string, otp string) error {
 	return err
 }
 
-func (w *Worker) NewBooksFileUpload(tmpFile, fileName, booksId string) error {
+func (w *Worker) NewBooksFileUpload(tmpFile, fileName, booksId, fileType string) error {
 	payload, err := json.Marshal(tasks.BooksFileUploadPayload{
+		TmpFile:  tmpFile,
+		BooksId:  booksId,
+		Filename: fileName,
+		FileType: fileType,
+	})
+
+	if err != nil {
+		return err
+	}
+
+	task := asynq.NewTask(tasks.BooksFileUploadTaskName, payload, asynq.MaxRetry(3))
+	w.client.Enqueue(task)
+
+	payloadParse, err := json.Marshal(tasks.BooksFileParsePayload{
 		TmpFile:  tmpFile,
 		BooksId:  booksId,
 		Filename: fileName,
@@ -63,8 +77,8 @@ func (w *Worker) NewBooksFileUpload(tmpFile, fileName, booksId string) error {
 		return err
 	}
 
-	task := asynq.NewTask(tasks.BooksFileUploadTaskName, payload, asynq.MaxRetry(3))
-	_, err = w.client.Enqueue(task)
+	task = asynq.NewTask(tasks.BooksFileProcessTaskName, payloadParse, asynq.MaxRetry(3))
+	w.client.Enqueue(task)
 
 	return err
 }

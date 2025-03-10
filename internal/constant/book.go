@@ -1,8 +1,13 @@
 package constant
 
+import (
+	"fmt"
+
+	"github.com/jevvonn/readora-backend/config"
+)
+
 const (
-	// BookFileStatusProcessing is a constant to represent the book file status processing.
-	BookFileUploadStatusQueue     = "UPLOADING"
+	BookFileUploadStatusQueue     = "QUEUE"
 	BookFileUploadStatusUploading = "UPLOADING"
 	BookFileUploadStatusUploaded  = "UPLOADED"
 
@@ -10,3 +15,8 @@ const (
 	BookFileAIStatusProcessing = "PROCESSING"
 	BookFileAIStatusReady      = "READY"
 )
+
+func GetBookDefultCoverImage() string {
+	conf := config.Load()
+	return fmt.Sprintf("%s/storage/v1/object/public/images//default-book-cover.png", conf.SupabaseProjectURL)
+}
