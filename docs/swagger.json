@@ -1,2202 +1,2333 @@
 {
-  "swagger": "2.0",
-  "info": {
-    "contact": {}
-  },
-  "paths": {
-    "/api/auth/login": {
-      "post": {
-        "description": "Login User",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Auth"],
-        "summary": "Login User",
-        "parameters": [
-          {
-            "description": "Login Request",
-            "name": "req",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dto.LoginRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/definitions/dto.LoginRequest"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
     },
-    "/api/auth/otp": {
-      "post": {
-        "description": "Send OTP for Register",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Auth"],
-        "summary": "Send OTP for Register",
-        "parameters": [
-          {
-            "description": "Send OTP for Register Request",
-            "name": "req",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dto.SendRegisterOTPRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
+    "paths": {
+        "/api/auth/login": {
+            "post": {
+                "description": "Login User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login User",
+                "parameters": [
+                    {
+                        "description": "Login Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LoginRequest"
+                        }
                     }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    "/api/auth/otp/check": {
-      "post": {
-        "description": "Check OTP for Register",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Auth"],
-        "summary": "Check OTP for Register",
-        "parameters": [
-          {
-            "description": "Check OTP for Register Request",
-            "name": "req",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dto.CheckRegisterOTPRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    "/api/auth/register": {
-      "post": {
-        "description": "Register User",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Auth"],
-        "summary": "Register User",
-        "parameters": [
-          {
-            "description": "Register Request",
-            "name": "req",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dto.RegisterRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    "/api/auth/session": {
-      "get": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Get Session User Data",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Auth"],
-        "summary": "Get Session User Data",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/definitions/dto.SessionResponse"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    "/api/books": {
-      "get": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Get Books",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Books"],
-        "summary": "Get Books",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Search",
-            "name": "search",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Genre",
-            "name": "genre",
-            "in": "query"
-          },
-          {
-            "type": "integer",
-            "description": "Limit",
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "type": "integer",
-            "description": "Page",
-            "name": "page",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Sort By",
-            "name": "sort_by",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Sort Order",
-            "name": "sort_order",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Owner ID",
-            "name": "owner_id",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "allOf": [
-                          {
-                            "$ref": "#/definitions/dto.GetBooksResponse"
-                          },
-                          {
-                            "type": "object",
-                            "properties": {
-                              "genres": {
-                                "type": "array",
-                                "items": {
-                                  "allOf": [
-                                    {
-                                      "$ref": "#/definitions/entity.Genre"
-                                    },
-                                    {
-                                      "type": "object",
-                                      "properties": {
-                                        "books": {
-                                          "type": "object"
-                                        }
-                                      }
-                                    }
-                                  ]
-                                }
-                              },
-                              "owner": {
-                                "type": "object"
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      },
-      "post": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Create Book",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Books"],
-        "summary": "Create Book",
-        "parameters": [
-          {
-            "type": "file",
-            "description": "PDF File",
-            "name": "pdf_file",
-            "in": "formData",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Title",
-            "name": "title",
-            "in": "formData",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Description",
-            "name": "description",
-            "in": "formData"
-          },
-          {
-            "type": "string",
-            "description": "Author",
-            "name": "author",
-            "in": "formData",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Publish Date e.g 2025-03-05T17:56:10.119Z",
-            "name": "publish_date",
-            "in": "formData"
-          },
-          {
-            "type": "string",
-            "description": "Genres e.g: Romance, Fiction, Drama",
-            "name": "genres",
-            "in": "formData"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    "/api/books/{bookId}": {
-      "get": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Get Specific Book",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Books"],
-        "summary": "Get Specific Book",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Book ID",
-            "name": "bookId",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "allOf": [
-                        {
-                          "$ref": "#/definitions/dto.GetBooksResponse"
-                        },
-                        {
-                          "type": "object",
-                          "properties": {
-                            "genres": {
-                              "type": "array",
-                              "items": {
-                                "allOf": [
-                                  {
-                                    "$ref": "#/definitions/entity.Genre"
-                                  },
-                                  {
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
                                     "type": "object",
                                     "properties": {
-                                      "books": {
-                                        "type": "object"
-                                      }
+                                        "data": {
+                                            "$ref": "#/definitions/dto.LoginRequest"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
                                     }
-                                  }
-                                ]
-                              }
-                            },
-                            "owner": {
-                              "type": "object"
-                            }
-                          }
+                                }
+                            ]
                         }
-                      ]
                     },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
                     },
-                    "errors": {
-                      "type": "object"
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
                     }
-                  }
                 }
-              ]
             }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
+        },
+        "/api/auth/otp": {
+            "post": {
+                "description": "Send OTP for Register",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Send OTP for Register",
+                "parameters": [
+                    {
+                        "description": "Send OTP for Register Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.SendRegisterOTPRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
                     },
-                    "errors": {
-                      "type": "object"
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
                     }
-                  }
                 }
-              ]
             }
-          }
+        },
+        "/api/auth/otp/check": {
+            "post": {
+                "description": "Check OTP for Register",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Check OTP for Register",
+                "parameters": [
+                    {
+                        "description": "Check OTP for Register Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CheckRegisterOTPRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/register": {
+            "post": {
+                "description": "Register User",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register User",
+                "parameters": [
+                    {
+                        "description": "Register Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/session": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get Session User Data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get Session User Data",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/dto.SessionResponse"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/books": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get Books",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Get Books",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Genre",
+                        "name": "genre",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort By",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort Order",
+                        "name": "sort_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Owner ID",
+                        "name": "owner_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "allOf": [
+                                                    {
+                                                        "$ref": "#/definitions/dto.GetBooksResponse"
+                                                    },
+                                                    {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "genres": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "allOf": [
+                                                                        {
+                                                                            "$ref": "#/definitions/entity.Genre"
+                                                                        },
+                                                                        {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "books": {
+                                                                                    "type": "object"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "owner": {
+                                                                "type": "object"
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create Book",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Create Book",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "PDF File",
+                        "name": "pdf_file",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Title",
+                        "name": "title",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Description",
+                        "name": "description",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Author",
+                        "name": "author",
+                        "in": "formData",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Publish Date e.g 2025-03-05T17:56:10.119Z",
+                        "name": "publish_date",
+                        "in": "formData"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Genres e.g: Romance, Fiction, Drama",
+                        "name": "genres",
+                        "in": "formData"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/books/{bookId}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get Specific Book",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Get Specific Book",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "bookId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/dto.GetBooksResponse"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "genres": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "allOf": [
+                                                                    {
+                                                                        "$ref": "#/definitions/entity.Genre"
+                                                                    },
+                                                                    {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "books": {
+                                                                                "type": "object"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        "owner": {
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete Book",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Delete Book",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "bookId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/books/{bookId}/comments": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get Comments of a Book",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Get Comments of a Book",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "bookId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort By",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort Order",
+                        "name": "sort_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Top Comment Id",
+                        "name": "top_comment_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "allOf": [
+                                                    {
+                                                        "$ref": "#/definitions/dto.GetCommentsResponse"
+                                                    },
+                                                    {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "book": {
+                                                                "type": "object"
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create Comments",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Create Comments",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "bookId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Create Comment Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateCommentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/books/{bookId}/comments/{comentId}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete Comment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Delete Comment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "bookId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Comment ID",
+                        "name": "commentId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comments": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get All Comments",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Comments"
+                ],
+                "summary": "Get All Comments",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort By",
+                        "name": "sort_by",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort Order",
+                        "name": "sort_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Top Comment Id",
+                        "name": "top_comment_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "allOf": [
+                                                    {
+                                                        "$ref": "#/definitions/dto.GetCommentsResponse"
+                                                    },
+                                                    {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "book": {
+                                                                "type": "object"
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comments/{commentId}/replies": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get Replies",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Replies"
+                ],
+                "summary": "Get Replies",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Comment ID",
+                        "name": "commentId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort Order",
+                        "name": "sort_order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Reply Parent ID",
+                        "name": "parent_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/dto.GetRepliesResponse"
+                                            }
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get Reply of a Comment",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Replies"
+                ],
+                "summary": "Get Reply of a Comment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Comment ID",
+                        "name": "commentId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request Reply",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateReplyRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/comments/{commentId}/replies/{replyId}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Delete Reply",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Replies"
+                ],
+                "summary": "Delete Reply",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Comment ID",
+                        "name": "commentId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Reply ID",
+                        "name": "replyId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/genres": {
+            "get": {
+                "description": "Get Genres",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Genres"
+                ],
+                "summary": "Get Genres",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create Genres (Require Admin Account)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Genres"
+                ],
+                "summary": "Create Genres",
+                "parameters": [
+                    {
+                        "description": "Create Genre Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateGenreRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
         }
-      },
-      "delete": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Delete Book",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Books"],
-        "summary": "Delete Book",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Book ID",
-            "name": "bookId",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
     },
-    "/api/books/{bookId}/comments": {
-      "get": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Get Comments of a Book",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Comments"],
-        "summary": "Get Comments of a Book",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Book ID",
-            "name": "bookId",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "integer",
-            "description": "Limit",
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "type": "integer",
-            "description": "Page",
-            "name": "page",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Sort By",
-            "name": "sort_by",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Sort Order",
-            "name": "sort_order",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Top Comment Id",
-            "name": "top_comment_id",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
+    "definitions": {
+        "dto.CheckRegisterOTPRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "otp"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
                 },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "allOf": [
-                          {
-                            "$ref": "#/definitions/dto.GetCommentsResponse"
-                          },
-                          {
-                            "type": "object",
-                            "properties": {
-                              "book": {
-                                "type": "object"
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
+                "otp": {
+                    "type": "string"
                 }
-              ]
             }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
+        },
+        "dto.CreateCommentRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "rating"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
                 },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
+                "rating": {
+                    "type": "number",
+                    "maximum": 5,
+                    "minimum": 1
                 }
-              ]
             }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
+        },
+        "dto.CreateGenreRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateReplyRequest": {
+            "type": "object",
+            "required": [
+                "content"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
                 },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
+                "parent_id": {
+                    "type": "string"
                 }
-              ]
             }
-          }
+        },
+        "dto.GetBooksResponse": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "cover_image_url": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "file_ai_status": {
+                    "type": "string"
+                },
+                "file_key": {
+                    "type": "string"
+                },
+                "file_upload_status": {
+                    "type": "string"
+                },
+                "file_url": {
+                    "type": "string"
+                },
+                "genres": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Genre"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_public": {
+                    "type": "boolean"
+                },
+                "owner": {
+                    "$ref": "#/definitions/entity.User"
+                },
+                "owner_id": {
+                    "type": "string"
+                },
+                "publish_date": {
+                    "type": "string"
+                },
+                "rating": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.GetCommentsResponse": {
+            "type": "object",
+            "properties": {
+                "book_id": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/entity.User"
+                }
+            }
+        },
+        "dto.GetRepliesResponse": {
+            "type": "object",
+            "properties": {
+                "comment_id": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "parent_id": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/entity.User"
+                }
+            }
+        },
+        "dto.LoginRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RegisterRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 15,
+                    "minLength": 8
+                },
+                "username": {
+                    "type": "string",
+                    "maxLength": 15,
+                    "minLength": 5
+                }
+            }
+        },
+        "dto.SendRegisterOTPRequest": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.SessionResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Book": {
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Comment"
+                    }
+                },
+                "cover_image_url": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "file_ai_status": {
+                    "type": "string"
+                },
+                "file_key": {
+                    "type": "string"
+                },
+                "file_type": {
+                    "type": "string"
+                },
+                "file_upload_status": {
+                    "type": "string"
+                },
+                "file_url": {
+                    "type": "string"
+                },
+                "genres": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Genre"
+                    }
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_public": {
+                    "type": "boolean"
+                },
+                "owner": {
+                    "$ref": "#/definitions/entity.User"
+                },
+                "owner_id": {
+                    "type": "string"
+                },
+                "publish_date": {
+                    "type": "string"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Comment": {
+            "type": "object",
+            "properties": {
+                "book": {
+                    "$ref": "#/definitions/entity.Book"
+                },
+                "book_id": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "rating": {
+                    "type": "number"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/entity.User"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Genre": {
+            "type": "object",
+            "properties": {
+                "books": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Book"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.User": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "email_verified": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.JSONResponseModel": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "errors": {},
+                "message": {
+                    "type": "string"
+                }
+            }
         }
-      },
-      "post": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Create Comments",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Comments"],
-        "summary": "Create Comments",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Book ID",
-            "name": "bookId",
-            "in": "path",
-            "required": true
-          },
-          {
-            "description": "Create Comment Request",
-            "name": "req",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dto.CreateCommentRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
     },
-    "/api/books/{bookId}/comments/{comentId}": {
-      "delete": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Delete Comment",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Comments"],
-        "summary": "Delete Comment",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Book ID",
-            "name": "bookId",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Comment ID",
-            "name": "commentId",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "\"Type 'Bearer TOKEN' to correctly set the API Key\"",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
-      }
-    },
-    "/api/comments": {
-      "get": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Get All Comments",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Comments"],
-        "summary": "Get All Comments",
-        "parameters": [
-          {
-            "type": "integer",
-            "description": "Limit",
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "type": "integer",
-            "description": "Page",
-            "name": "page",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Sort By",
-            "name": "sort_by",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Sort Order",
-            "name": "sort_order",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Top Comment Id",
-            "name": "top_comment_id",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "allOf": [
-                          {
-                            "$ref": "#/definitions/dto.GetCommentsResponse"
-                          },
-                          {
-                            "type": "object",
-                            "properties": {
-                              "book": {
-                                "type": "object"
-                              }
-                            }
-                          }
-                        ]
-                      }
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    "/api/comments/{commentId}/replies": {
-      "get": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Get Replies",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Replies"],
-        "summary": "Get Replies",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Comment ID",
-            "name": "commentId",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "integer",
-            "description": "Limit",
-            "name": "limit",
-            "in": "query"
-          },
-          {
-            "type": "integer",
-            "description": "Page",
-            "name": "page",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Sort Order",
-            "name": "sort_order",
-            "in": "query"
-          },
-          {
-            "type": "string",
-            "description": "Reply Parent ID",
-            "name": "parent_id",
-            "in": "query"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/definitions/dto.GetRepliesResponse"
-                      }
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      },
-      "post": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Get Reply of a Comment",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Replies"],
-        "summary": "Get Reply of a Comment",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Comment ID",
-            "name": "commentId",
-            "in": "path",
-            "required": true
-          },
-          {
-            "description": "Request Reply",
-            "name": "req",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dto.CreateReplyRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    "/api/comments/{commentId}/replies/{replyId}": {
-      "delete": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Delete Reply",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Replies"],
-        "summary": "Delete Reply",
-        "parameters": [
-          {
-            "type": "string",
-            "description": "Comment ID",
-            "name": "commentId",
-            "in": "path",
-            "required": true
-          },
-          {
-            "type": "string",
-            "description": "Reply ID",
-            "name": "replyId",
-            "in": "path",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
-    },
-    "/api/genres": {
-      "get": {
-        "description": "Get Genres",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Genres"],
-        "summary": "Get Genres",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      },
-      "post": {
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "description": "Create Genres (Require Admin Account)",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "tags": ["Genres"],
-        "summary": "Create Genres",
-        "parameters": [
-          {
-            "description": "Create Genre Request",
-            "name": "req",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dto.CreateGenreRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "allOf": [
-                {
-                  "$ref": "#/definitions/models.JSONResponseModel"
-                },
-                {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object"
-                    },
-                    "errors": {
-                      "type": "object"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      }
     }
-  },
-  "definitions": {
-    "dto.CheckRegisterOTPRequest": {
-      "type": "object",
-      "required": ["email", "otp"],
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "otp": {
-          "type": "string"
-        }
-      }
-    },
-    "dto.CreateCommentRequest": {
-      "type": "object",
-      "required": ["content", "rating"],
-      "properties": {
-        "content": {
-          "type": "string"
-        },
-        "rating": {
-          "type": "number",
-          "maximum": 5,
-          "minimum": 1
-        }
-      }
-    },
-    "dto.CreateGenreRequest": {
-      "type": "object",
-      "required": ["name"],
-      "properties": {
-        "name": {
-          "type": "string"
-        }
-      }
-    },
-    "dto.CreateReplyRequest": {
-      "type": "object",
-      "required": ["content"],
-      "properties": {
-        "content": {
-          "type": "string"
-        },
-        "parent_id": {
-          "type": "string"
-        }
-      }
-    },
-    "dto.GetBooksResponse": {
-      "type": "object",
-      "properties": {
-        "author": {
-          "type": "string"
-        },
-        "book_file_status": {
-          "type": "string"
-        },
-        "cover_image_key": {
-          "type": "string"
-        },
-        "cover_image_url": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "file_key": {
-          "type": "string"
-        },
-        "file_url": {
-          "type": "string"
-        },
-        "genres": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/entity.Genre"
-          }
-        },
-        "id": {
-          "type": "string"
-        },
-        "is_public": {
-          "type": "boolean"
-        },
-        "owner": {
-          "$ref": "#/definitions/entity.User"
-        },
-        "owner_id": {
-          "type": "string"
-        },
-        "publish_date": {
-          "type": "string"
-        },
-        "rating": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        }
-      }
-    },
-    "dto.GetCommentsResponse": {
-      "type": "object",
-      "properties": {
-        "book_id": {
-          "type": "string"
-        },
-        "content": {
-          "type": "string"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "rating": {
-          "type": "number"
-        },
-        "updated_at": {
-          "type": "string"
-        },
-        "user": {
-          "$ref": "#/definitions/entity.User"
-        }
-      }
-    },
-    "dto.GetRepliesResponse": {
-      "type": "object",
-      "properties": {
-        "comment_id": {
-          "type": "string"
-        },
-        "content": {
-          "type": "string"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "parent_id": {
-          "type": "string"
-        },
-        "user": {
-          "$ref": "#/definitions/entity.User"
-        }
-      }
-    },
-    "dto.LoginRequest": {
-      "type": "object",
-      "required": ["password", "username"],
-      "properties": {
-        "password": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        }
-      }
-    },
-    "dto.RegisterRequest": {
-      "type": "object",
-      "required": ["email", "name", "password", "username"],
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string",
-          "maxLength": 15,
-          "minLength": 8
-        },
-        "username": {
-          "type": "string",
-          "maxLength": 15,
-          "minLength": 5
-        }
-      }
-    },
-    "dto.SendRegisterOTPRequest": {
-      "type": "object",
-      "required": ["email"],
-      "properties": {
-        "email": {
-          "type": "string"
-        }
-      }
-    },
-    "dto.SessionResponse": {
-      "type": "object",
-      "properties": {
-        "email": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        }
-      }
-    },
-    "entity.Book": {
-      "type": "object",
-      "properties": {
-        "author": {
-          "type": "string"
-        },
-        "book_file_status": {
-          "type": "string"
-        },
-        "comments": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/entity.Comment"
-          }
-        },
-        "cover_image_key": {
-          "type": "string"
-        },
-        "cover_image_url": {
-          "type": "string"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "file_key": {
-          "type": "string"
-        },
-        "file_url": {
-          "type": "string"
-        },
-        "genres": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/entity.Genre"
-          }
-        },
-        "id": {
-          "type": "string"
-        },
-        "is_public": {
-          "type": "boolean"
-        },
-        "owner": {
-          "$ref": "#/definitions/entity.User"
-        },
-        "owner_id": {
-          "type": "string"
-        },
-        "publish_date": {
-          "type": "string"
-        },
-        "rating": {
-          "type": "number"
-        },
-        "title": {
-          "type": "string"
-        },
-        "updated_at": {
-          "type": "string"
-        }
-      }
-    },
-    "entity.Comment": {
-      "type": "object",
-      "properties": {
-        "book": {
-          "$ref": "#/definitions/entity.Book"
-        },
-        "book_id": {
-          "type": "string"
-        },
-        "content": {
-          "type": "string"
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "id": {
-          "type": "string"
-        },
-        "rating": {
-          "type": "number"
-        },
-        "updated_at": {
-          "type": "string"
-        },
-        "user": {
-          "$ref": "#/definitions/entity.User"
-        },
-        "user_id": {
-          "type": "string"
-        }
-      }
-    },
-    "entity.Genre": {
-      "type": "object",
-      "properties": {
-        "books": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/entity.Book"
-          }
-        },
-        "created_at": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "updated_at": {
-          "type": "string"
-        }
-      }
-    },
-    "entity.User": {
-      "type": "object",
-      "properties": {
-        "created_at": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "email_verified": {
-          "type": "boolean"
-        },
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        },
-        "updated_at": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        }
-      }
-    },
-    "models.JSONResponseModel": {
-      "type": "object",
-      "properties": {
-        "data": {},
-        "errors": {},
-        "message": {
-          "type": "string"
-        }
-      }
-    }
-  },
-  "securityDefinitions": {
-    "BearerAuth": {
-      "description": "\"Type 'Bearer TOKEN' to correctly set the API Key\"",
-      "type": "apiKey",
-      "name": "Authorization",
-      "in": "header"
-    }
-  }
 }

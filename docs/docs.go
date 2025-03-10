@@ -2004,19 +2004,19 @@ const docTemplate = `{
                 "author": {
                     "type": "string"
                 },
-                "book_file_status": {
-                    "type": "string"
-                },
-                "cover_image_key": {
-                    "type": "string"
-                },
                 "cover_image_url": {
                     "type": "string"
                 },
                 "description": {
                     "type": "string"
                 },
+                "file_ai_status": {
+                    "type": "string"
+                },
                 "file_key": {
+                    "type": "string"
+                },
+                "file_upload_status": {
                     "type": "string"
                 },
                 "file_url": {
@@ -2176,17 +2176,11 @@ const docTemplate = `{
                 "author": {
                     "type": "string"
                 },
-                "book_file_status": {
-                    "type": "string"
-                },
                 "comments": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/entity.Comment"
                     }
-                },
-                "cover_image_key": {
-                    "type": "string"
                 },
                 "cover_image_url": {
                     "type": "string"
@@ -2197,7 +2191,16 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "file_ai_status": {
+                    "type": "string"
+                },
                 "file_key": {
+                    "type": "string"
+                },
+                "file_type": {
+                    "type": "string"
+                },
+                "file_upload_status": {
                     "type": "string"
                 },
                 "file_url": {
