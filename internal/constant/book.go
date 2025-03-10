@@ -2,6 +2,11 @@ package constant
 
 const (
 	// BookFileStatusProcessing is a constant to represent the book file status processing.
-	BookFileStatusProcessing = "PROCESSING"
-	BookFileStatusReady      = "READY"
+	BookFileUploadStatusQueue     = "UPLOADING"
+	BookFileUploadStatusUploading = "UPLOADING"
+	BookFileUploadStatusUploaded  = "UPLOADED"
+
+	BookFileAIStatusQueue      = "QUEUE"
+	BookFileAIStatusProcessing = "PROCESSING"
+	BookFileAIStatusReady      = "READY"
 )

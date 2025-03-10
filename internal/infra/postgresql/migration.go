@@ -15,16 +15,26 @@ func Migrate(db *gorm.DB, command string) {
 		END IF; 
 	END $$;
 	`
-	createBookFileStatusEnum := `
+	createBookFileUploadStatusEnum := `
 	DO $$ 
 	BEGIN 
-		IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'bookfilestatus') THEN 
-			CREATE TYPE bookfilestatus AS ENUM ('PROCESSING', 'READY'); 
+		IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'book_file_upload_status') THEN 
+			CREATE TYPE bookfilestatus AS ENUM ('QUEUE','UPLOADING', 'UPLOADED'); 
+		END IF; 
+	END $$;
+	`
+
+	createBookFileAIStatusEnum := `
+	DO $$ 
+	BEGIN 
+		IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'book_file_ai_status') THEN 
+			CREATE TYPE bookfilestatus AS ENUM ('QUEUE','PROCESSING', 'READY'); 
 		END IF; 
 	END $$;
 	`
 	db.Exec(createUserRoleEnum)
-	db.Exec(createBookFileStatusEnum)
+	db.Exec(createBookFileUploadStatusEnum)
+	db.Exec(createBookFileAIStatusEnum)
 
 	tables := []any{
 		&entity.User{},

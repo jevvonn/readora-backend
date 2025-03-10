@@ -43,8 +43,9 @@ type GetBooksResponse struct {
 
 	Rating string `json:"rating,omitempty"`
 
-	IsPublic       bool   `json:"is_public,omitempty"`
-	BookFileStatus string `json:"book_file_status,omitempty"`
+	IsPublic         bool   `json:"is_public,omitempty"`
+	FileUploadStatus string `json:"file_upload_status,omitempty"`
+	FileAIStatus     string `json:"file_ai_status,omitempty"`
 
 	OwnerID uuid.UUID   `json:"owner_id,omitempty"`
 	Owner   entity.User `json:"owner,omitempty"`

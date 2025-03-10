@@ -26,8 +26,9 @@ type Book struct {
 	OwnerID uuid.UUID `gorm:"type:varchar(255);not null" json:"owner_id,omitempty"`
 	Owner   User      `gorm:"foreignKey:OwnerID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"owner,omitempty"`
 
-	Genres         []Genre `gorm:"many2many:book_genres;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"genres,omitempty"`
-	BookFileStatus string  `gorm:"type:bookFileStatus;not null;DEFAULT:'PROCESSING';" json:"book_file_status,omitempty"`
+	Genres           []Genre `gorm:"many2many:book_genres;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"genres,omitempty"`
+	FileUploadStatus string  `gorm:"type:book_file_upload_status;not null;DEFAULT:'QUEUE';" json:"file_upload_status,omitempty"`
+	FileAIStatus     string  `gorm:"type:book_file_upload_status;not null;DEFAULT:'QUEUE';" json:"file_ai_status,omitempty"`
 
 	Comments []Comment `gorm:"foreignKey:BookId;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"comments,omitempty"`
 
