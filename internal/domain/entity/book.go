@@ -13,7 +13,6 @@ type Book struct {
 	Author      string    `gorm:"type:varchar(255);not null;index" json:"author,omitempty"`
 	PublishDate time.Time `gorm:"type:timestamp;not null" json:"publish_date,omitempty"`
 
-	CoverImageKey string `gorm:"type:varchar(255);not null" json:"cover_image_key,omitempty"`
 	CoverImageURL string `gorm:"type:varchar(255);not null" json:"cover_image_url,omitempty"`
 
 	FileKey  string `gorm:"type:varchar(255);not null" json:"file_key,omitempty"`
@@ -22,7 +21,7 @@ type Book struct {
 
 	IsPublic bool `gorm:"default:false;not null" json:"is_public,omitempty"`
 
-	Rating float64 `json:"rating"`
+	Rating float64 `gorm:"-" json:"rating"`
 
 	OwnerID uuid.UUID `gorm:"type:varchar(255);not null" json:"owner_id,omitempty"`
 	Owner   User      `gorm:"foreignKey:OwnerID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"owner,omitempty"`

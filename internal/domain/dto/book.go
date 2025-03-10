@@ -35,7 +35,6 @@ type GetBooksResponse struct {
 	Author      string    `json:"author"`
 	PublishDate time.Time `json:"publish_date,omitempty"`
 
-	CoverImageKey string `json:"cover_image_key,omitempty"`
 	CoverImageURL string `json:"cover_image_url,omitempty"`
 
 	FileKey string `json:"file_key,omitempty"`

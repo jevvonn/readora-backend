@@ -127,8 +127,6 @@ func (u *BookUsecase) CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) erro
 		IsPublic:    false,
 		FileType:    fileType,
 
-		// COVER IMAGE NOT DONE YET
-		CoverImageKey: "-",
 		CoverImageURL: constant.GetBookDefultCoverImage(),
 	}
 
@@ -204,7 +202,6 @@ func (u *BookUsecase) GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) (res []d
 			Description:      book.Description,
 			Author:           book.Author,
 			PublishDate:      book.PublishDate,
-			CoverImageKey:    book.CoverImageKey,
 			CoverImageURL:    book.CoverImageURL,
 			OwnerID:          book.OwnerID,
 			IsPublic:         book.IsPublic,
@@ -248,7 +245,6 @@ func (u *BookUsecase) GetSpecificBook(ctx *fiber.Ctx) (res dto.GetBooksResponse,
 		Description:      book.Description,
 		Author:           book.Author,
 		PublishDate:      book.PublishDate,
-		CoverImageKey:    book.CoverImageKey,
 		CoverImageURL:    book.CoverImageURL,
 		FileKey:          book.FileKey,
 		FileURL:          book.FileURL,
