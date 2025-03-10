@@ -39,9 +39,9 @@ func Migrate(db *gorm.DB, command string) {
 	tables := []any{
 		&entity.User{},
 		&entity.Book{},
-		&entity.Genre{},
 		&entity.Comment{},
 		&entity.Reply{},
+		&entity.Genre{},
 	}
 
 	var err error
@@ -51,6 +51,12 @@ func Migrate(db *gorm.DB, command string) {
 
 	if command == "down" {
 		err = migrator.DropTable(tables...)
+		db.Exec(`
+			DROP SCHEMA public CASCADE;
+			CREATE SCHEMA public;
+
+			GRANT ALL ON SCHEMA public TO public;
+		`)
 	}
 
 	if err != nil {
