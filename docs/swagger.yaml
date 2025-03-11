@@ -986,6 +986,66 @@ paths:
       summary: Delete Comment
       tags:
       - Comments
+  /api/books/{bookId}/read:
+    get:
+      consumes:
+      - application/json
+      description: Get Specific Book When Read (Include File Key and File URL for
+        accessing PDF or EPUB file)
+      parameters:
+      - description: Book ID
+        in: path
+        name: bookId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  allOf:
+                  - $ref: '#/definitions/dto.GetBooksResponse'
+                  - properties:
+                      genres:
+                        type: object
+                      owner:
+                        type: object
+                    type: object
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Get Specific Book When Read
+      tags:
+      - Books
   /api/comments:
     get:
       consumes:

@@ -23,6 +23,7 @@ import (
 type BookUsecaseItf interface {
 	CreateBook(ctx *fiber.Ctx, req dto.CreateBookRequest) error
 	GetBooks(ctx *fiber.Ctx, query dto.GetBooksQuery) ([]dto.GetBooksResponse, int, int, error)
+	GetReadBook(ctx *fiber.Ctx) (res dto.GetBooksResponse, err error)
 	GetSpecificBook(ctx *fiber.Ctx) (res dto.GetBooksResponse, err error)
 	DeleteBook(ctx *fiber.Ctx) error
 }
@@ -246,8 +247,6 @@ func (u *BookUsecase) GetSpecificBook(ctx *fiber.Ctx) (res dto.GetBooksResponse,
 		Author:           book.Author,
 		PublishDate:      book.PublishDate,
 		CoverImageURL:    book.CoverImageURL,
-		FileKey:          book.FileKey,
-		FileURL:          book.FileURL,
 		OwnerID:          book.OwnerID,
 		IsPublic:         book.IsPublic,
 		FileUploadStatus: book.FileUploadStatus,
@@ -258,6 +257,45 @@ func (u *BookUsecase) GetSpecificBook(ctx *fiber.Ctx) (res dto.GetBooksResponse,
 			Username: book.Owner.Username,
 		},
 		Genres: book.Genres,
+	}
+
+	return booksRes, nil
+}
+
+func (u *BookUsecase) GetReadBook(ctx *fiber.Ctx) (res dto.GetBooksResponse, err error) {
+	log := "[BookUsecase][GetReadBook]"
+
+	bookId := ctx.Params("bookId")
+	book, err := u.bookRepo.GetSpecificBook(bookId)
+	if err != nil {
+		u.log.Error(log, err)
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return res, errorpkg.ErrNotFoundResource.WithCustomMessage("Book not found")
+		}
+		return res, errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
+	}
+
+	userId := ctx.Locals("userId").(string)
+
+	if !book.IsPublic {
+		if userId != book.OwnerID.String() {
+			return res, errorpkg.ErrForbiddenResource
+		}
+	}
+
+	booksRes := dto.GetBooksResponse{
+		ID:               book.ID,
+		Title:            book.Title,
+		Description:      book.Description,
+		Author:           book.Author,
+		PublishDate:      book.PublishDate,
+		CoverImageURL:    book.CoverImageURL,
+		OwnerID:          book.OwnerID,
+		FileKey:          book.FileKey,
+		FileURL:          book.FileURL,
+		IsPublic:         book.IsPublic,
+		FileUploadStatus: book.FileUploadStatus,
+		FileAIStatus:     book.FileAIStatus,
 	}
 
 	return booksRes, nil
