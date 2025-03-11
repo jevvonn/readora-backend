@@ -50,12 +50,14 @@ func (u *AIFeatureUsecase) HighlightText(ctx *fiber.Ctx, req dto.HighlightTextRe
 	txtURL := constant.GetBookTxtFile(book.ID.String())
 	txtResp, err := http.Get(txtURL)
 	if err != nil {
+		u.log.Error(log, err)
 		return dto.HighlightTextResponse{}, errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 	defer txtResp.Body.Close()
 
 	txtBytes, err := io.ReadAll(txtResp.Body)
 	if err != nil {
+		u.log.Error(log, err)
 		return dto.HighlightTextResponse{}, errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
@@ -81,6 +83,7 @@ func (u *AIFeatureUsecase) HighlightText(ctx *fiber.Ctx, req dto.HighlightTextRe
 	// Generate content.
 	resp, err := u.geminiModel.GenerateContent(ctx.Context(), aiReq...)
 	if err != nil {
+		u.log.Error(log, err)
 		return dto.HighlightTextResponse{}, errorpkg.ErrInternalServerError.WithCustomMessage(err.Error())
 	}
 
