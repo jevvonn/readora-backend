@@ -99,7 +99,6 @@ func HandleBooksFileUploadTask(db *gorm.DB) asynq.HandlerFunc {
 		}
 
 		file.Close()
-		defer os.Remove(payload.TmpFile)
 
 		fmt.Println("[Task][BooksFileUpload] Run Succesfully")
 		return nil

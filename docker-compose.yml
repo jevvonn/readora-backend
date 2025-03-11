@@ -9,22 +9,28 @@ services:
     environment:
       - APP_ENV=production
     depends_on:
-      - db
-      - redis
       - worker
     networks:
+      - readora-network
       - network
+    volumes:
+      - shared:/tmp
     command: ["/app/server"]
   worker:
     container_name: readora-worker
     build: .
     env_file:
       - .env
+    environment:
+      - NODE_API_BASE_URL=http://readora-backend-node:4001
     depends_on:
       - db
       - redis
     networks:
+      - readora-network
       - network
+    volumes:
+      - shared:/tmp
     command: ["/app/worker"]
   db:
     container_name: readora-database
@@ -54,6 +60,10 @@ volumes:
     driver: local
   redis:
     driver: local
+  shared:
+    driver: local
 
 networks:
   network:
+  readora-network:
+    external: true
