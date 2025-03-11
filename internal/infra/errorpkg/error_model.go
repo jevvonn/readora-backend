@@ -55,6 +55,10 @@ var (
 		"wait for 3 minutes before sending another OTP", http.StatusBadRequest,
 	)
 
+	ErrRequestLimitReached = NewError(
+		"Request limit exceeded", http.StatusBadRequest,
+	)
+
 	ErrValidationTimeFormat = func(field string) error {
 		return validator.NewValidationErr([]validator.ErrorField{
 			{

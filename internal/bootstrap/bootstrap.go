@@ -30,9 +30,11 @@ import (
 	commentRepository "github.com/jevvonn/readora-backend/internal/app/comment/repository"
 	commentUsecase "github.com/jevvonn/readora-backend/internal/app/comment/usecase"
 
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	replyHandler "github.com/jevvonn/readora-backend/internal/app/reply/interface/rest"
 	replyRepository "github.com/jevvonn/readora-backend/internal/app/reply/repository"
 	replyUsecase "github.com/jevvonn/readora-backend/internal/app/reply/usecase"
+	"github.com/jevvonn/readora-backend/internal/infra/errorpkg"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"github.com/jevvonn/readora-backend/internal/infra/postgresql"
 	"github.com/jevvonn/readora-backend/internal/infra/redis"
@@ -91,11 +93,18 @@ func Start() error {
 		}
 	}
 
+	app.Use(limiter.New(limiter.Config{
+		Max:               20,
+		Expiration:        30 * time.Second,
+		LimiterMiddleware: limiter.SlidingWindow{},
+		LimitReached: func(c *fiber.Ctx) error {
+			logger.Warn("Request From: "+c.IP(), "Request limit exceeded")
+			return errorpkg.ErrRequestLimitReached
+		},
+	}))
+
 	// Routes Group
 	apiRouter := app.Group("/api")
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello world!")
-	})
 
 	// Cors Middleware
 	app.Use(cors.New())
@@ -139,6 +148,10 @@ func Start() error {
 	})
 
 	app.Get("/docs/*", swaggerHandler)
+	app.Get("/", func(c *fiber.Ctx) error {
+		docsURL := conf.AppBaseURL + "/docs/index.html"
+		return c.Redirect(docsURL)
+	})
 
 	// Start the server
 	listenAddr := fmt.Sprintf("127.0.0.1:%s", conf.AppPort)
