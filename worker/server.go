@@ -32,10 +32,10 @@ func main() {
 	srv := asynq.NewServer(
 		asynq.RedisClientOpt{Addr: redisAddr},
 		asynq.Config{
-			Concurrency: 4,
+			Concurrency: 8,
 			Queues: map[string]int{
 				"critical": 6,
-				"default":  3,
+				"default":  1,
 				"low":      1,
 			},
 		},
@@ -52,6 +52,7 @@ func main() {
 	mux.HandleFunc(tasks.SendOTPRegisterTaskName, tasks.HandleSendOTPRegisterTask)
 	mux.HandleFunc(tasks.BooksFileUploadTaskName, tasks.HandleBooksFileUploadTask(db))
 	mux.HandleFunc(tasks.BooksFileDeleteTaskName, tasks.HandleBooksFileDeleteTask)
+	mux.HandleFunc(tasks.BooksFileProcessTaskName, tasks.HandleBooksFileParseTask(db))
 
 	if err := srv.Run(mux); err != nil {
 		log.Error("[Worker][Server]", err)

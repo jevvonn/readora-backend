@@ -86,7 +86,7 @@ func (r *BookPostgreSQL) GetBooks(filter GetBooksFilter) ([]entity.Book, error) 
 
 func (r *BookPostgreSQL) GetSpecificBook(bookId string) (entity.Book, error) {
 	var book entity.Book
-	query := r.db.Debug().
+	query := r.db.
 		Preload("Owner").
 		Model(&entity.Book{}).
 		Joins("LEFT JOIN comments ON comments.book_id = books.id").

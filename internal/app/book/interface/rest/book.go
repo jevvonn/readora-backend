@@ -131,6 +131,29 @@ func (h *BookHandler) GetSpecificBook(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Summary      Get Specific Book When Read
+// @Description  Get Specific Book When Read (Include File Key and File URL for accessing PDF or EPUB file)
+// @Tags         Books
+// @Accept       json
+// @Produce      json
+// @Param        bookId path string true "Book ID"
+// @Success      200  object   models.JSONResponseModel{data=dto.GetBooksResponse{genres=nil,owner=nil},errors=nil}
+// @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Security     BearerAuth
+// @Router       /api/books/{bookId}/read [get]
+func (h *BookHandler) GetSpecificBookOnRead(ctx *fiber.Ctx) error {
+	book, err := h.bookUsecase.GetReadBook(ctx)
+	if err != nil {
+		return err
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(models.JSONResponseModel{
+		Message: "Book fetched successfully",
+		Data:    book,
+	})
+}
+
 // @Summary      Delete Book
 // @Description  Delete Book
 // @Tags         Books

@@ -35,7 +35,6 @@ type GetBooksResponse struct {
 	Author      string    `json:"author"`
 	PublishDate time.Time `json:"publish_date,omitempty"`
 
-	CoverImageKey string `json:"cover_image_key,omitempty"`
 	CoverImageURL string `json:"cover_image_url,omitempty"`
 
 	FileKey string `json:"file_key,omitempty"`
@@ -43,8 +42,9 @@ type GetBooksResponse struct {
 
 	Rating string `json:"rating,omitempty"`
 
-	IsPublic       bool   `json:"is_public,omitempty"`
-	BookFileStatus string `json:"book_file_status,omitempty"`
+	IsPublic         bool   `json:"is_public,omitempty"`
+	FileUploadStatus string `json:"file_upload_status,omitempty"`
+	FileAIStatus     string `json:"file_ai_status,omitempty"`
 
 	OwnerID uuid.UUID   `json:"owner_id,omitempty"`
 	Owner   entity.User `json:"owner,omitempty"`

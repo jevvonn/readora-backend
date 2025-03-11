@@ -1307,6 +1307,218 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/books/{bookId}/highlight": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Highlight Text in Book Response by AI",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Highlight Text in Book",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "bookId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Highlight Text Request",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.HighlightTextRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/api/books/{bookId}/read": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get Specific Book When Read (Include File Key and File URL for accessing PDF or EPUB file)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Books"
+                ],
+                "summary": "Get Specific Book When Read",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Book ID",
+                        "name": "bookId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/dto.GetBooksResponse"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "genres": {
+                                                            "type": "object"
+                                                        },
+                                                        "owner": {
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/models.JSONResponseModel"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/api/comments": {
             "get": {
                 "security": [
@@ -2004,19 +2216,19 @@ const docTemplate = `{
                 "author": {
                     "type": "string"
                 },
-                "book_file_status": {
-                    "type": "string"
-                },
-                "cover_image_key": {
-                    "type": "string"
-                },
                 "cover_image_url": {
                     "type": "string"
                 },
                 "description": {
                     "type": "string"
                 },
+                "file_ai_status": {
+                    "type": "string"
+                },
                 "file_key": {
+                    "type": "string"
+                },
+                "file_upload_status": {
                     "type": "string"
                 },
                 "file_url": {
@@ -2100,6 +2312,21 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.HighlightTextRequest": {
+            "type": "object",
+            "required": [
+                "highlight_text",
+                "page"
+            ],
+            "properties": {
+                "highlight_text": {
+                    "type": "string"
+                },
+                "page": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.LoginRequest": {
             "type": "object",
             "required": [
@@ -2176,17 +2403,11 @@ const docTemplate = `{
                 "author": {
                     "type": "string"
                 },
-                "book_file_status": {
-                    "type": "string"
-                },
                 "comments": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/entity.Comment"
                     }
-                },
-                "cover_image_key": {
-                    "type": "string"
                 },
                 "cover_image_url": {
                     "type": "string"
@@ -2197,7 +2418,16 @@ const docTemplate = `{
                 "description": {
                     "type": "string"
                 },
+                "file_ai_status": {
+                    "type": "string"
+                },
                 "file_key": {
+                    "type": "string"
+                },
+                "file_type": {
+                    "type": "string"
+                },
+                "file_upload_status": {
                     "type": "string"
                 },
                 "file_url": {

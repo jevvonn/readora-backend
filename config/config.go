@@ -13,6 +13,7 @@ type Config struct {
 	AppBaseURL string `env:"APP_BASE_URL,required"`
 
 	FrontendBaseURL string `env:"FRONTEND_BASE_URL,required"`
+	NodeApiBaseURL  string `env:"NODE_API_BASE_URL,required"`
 
 	JWTSecret string `env:"JWT_SECRET,required"`
 
@@ -32,6 +33,8 @@ type Config struct {
 	SMTPUsername string `env:"SMTP_USERNAME,required"`
 	SMTPPassword string `env:"SMTP_PASSWORD,required"`
 	SMTPEmail    string `env:"SMTP_EMAIL,required"`
+
+	GeminiAPIKey string `env:"GEMINI_API_KEY,required"`
 
 	SupabaseProjectURL   string `env:"SUPABASE_PROJECT_URL,required"`
 	SupabaseProjectToken string `env:"SUPABASE_PROJECT_TOKEN,required"`
