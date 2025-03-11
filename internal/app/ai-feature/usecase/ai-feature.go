@@ -72,7 +72,7 @@ func (u *AIFeatureUsecase) HighlightText(ctx *fiber.Ctx, req dto.HighlightTextRe
 
 		note: the response should be in text of a 2 paragraph merged and not more that 10 sentences in each paragraph. dont say about the page number or page chapter in the response. dont use bold or italic in the response, just plain text with no without any other backticks, and markdown in it. response language should be the same as the book language.
 
-		if ther's no meaning, just say "No meaning found" and if the text is not found in the book, just say "Text not found in the book". If can't find the page/chapter, just say "Page/chapter not found in the book". if ask about other things, just say "I can't answer that".
+		if ask about other things, just say "I can't answer that".
 	`, req.HighlightText, req.Page)
 
 	aiReq := []genai.Part{
