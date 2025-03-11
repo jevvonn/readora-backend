@@ -16,6 +16,9 @@ import (
 	authRepository "github.com/jevvonn/readora-backend/internal/app/auth/repository"
 	authUsecase "github.com/jevvonn/readora-backend/internal/app/auth/usecase"
 
+	aiFeatureHandler "github.com/jevvonn/readora-backend/internal/app/ai-feature/interface/rest"
+	aiFeatureUsecase "github.com/jevvonn/readora-backend/internal/app/ai-feature/usecase"
+
 	bookHandler "github.com/jevvonn/readora-backend/internal/app/book/interface/rest"
 	bookRepository "github.com/jevvonn/readora-backend/internal/app/book/repository"
 	bookUsecase "github.com/jevvonn/readora-backend/internal/app/book/usecase"
@@ -35,6 +38,7 @@ import (
 	replyRepository "github.com/jevvonn/readora-backend/internal/app/reply/repository"
 	replyUsecase "github.com/jevvonn/readora-backend/internal/app/reply/usecase"
 	"github.com/jevvonn/readora-backend/internal/infra/errorpkg"
+	"github.com/jevvonn/readora-backend/internal/infra/gemini"
 	"github.com/jevvonn/readora-backend/internal/infra/logger"
 	"github.com/jevvonn/readora-backend/internal/infra/postgresql"
 	"github.com/jevvonn/readora-backend/internal/infra/redis"
@@ -74,6 +78,9 @@ func Start() error {
 
 	// Connect to Redis
 	rdb := redis.New()
+
+	// Gemini Client Model
+	geminiModel := gemini.NewGeminiModel()
 
 	// Connect Worker
 	workerClient := worker.NewWorkerClient()
@@ -123,6 +130,7 @@ func Start() error {
 	genreUsecase := genreUsecase.NewGenreUsecase(genreRepo)
 	commentUsecase := commentUsecase.NewCommentUsecase(commentRepo, bookRepo, logger)
 	replyUsecase := replyUsecase.NewReplyUsecase(replyRepo, commentRepo, logger)
+	aiFeatureUsecase := aiFeatureUsecase.NewAIFeatureUsecase(geminiModel, bookRepo, logger)
 
 	// Handler Instance
 	authHandler.NewAuthHandler(apiRouter, authUsecase, vd)
@@ -130,6 +138,7 @@ func Start() error {
 	genreHandler.NewGenreHandler(apiRouter, genreUsecase)
 	commentHandler.NewCommentHandler(apiRouter, commentUsecase, vd)
 	replyHandler.NewReplyHandler(apiRouter, replyUsecase, vd)
+	aiFeatureHandler.NewAIFeatureHandler(apiRouter, aiFeatureUsecase, vd)
 
 	// Swagger Docs
 	parsedURL, err := url.Parse(conf.AppBaseURL)

@@ -34,6 +34,8 @@ type Config struct {
 	SMTPPassword string `env:"SMTP_PASSWORD,required"`
 	SMTPEmail    string `env:"SMTP_EMAIL,required"`
 
+	GeminiAPIKey string `env:"GEMINI_API_KEY,required"`
+
 	SupabaseProjectURL   string `env:"SUPABASE_PROJECT_URL,required"`
 	SupabaseProjectToken string `env:"SUPABASE_PROJECT_TOKEN,required"`
 }
