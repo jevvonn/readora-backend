@@ -26,6 +26,7 @@ func NewBookHandler(
 
 	router.Get("/books", middleware.Authenticated, handler.GetBooks)
 	router.Get("/books/:bookId", middleware.Authenticated, handler.GetSpecificBook)
+	router.Get("/books/:bookId/read", middleware.Authenticated, handler.GetSpecificBookOnRead)
 	router.Delete("/books/:bookId", middleware.Authenticated, handler.DeleteBook)
 	router.Post("/books", middleware.Authenticated, handler.CreateBook)
 }
