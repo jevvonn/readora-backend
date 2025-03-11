@@ -104,6 +104,16 @@ definitions:
       user:
         $ref: '#/definitions/entity.User'
     type: object
+  dto.HighlightTextRequest:
+    properties:
+      highlight_text:
+        type: string
+      page:
+        type: string
+    required:
+    - highlight_text
+    - page
+    type: object
   dto.LoginRequest:
     properties:
       password:
@@ -986,6 +996,64 @@ paths:
       summary: Delete Comment
       tags:
       - Comments
+  /api/books/{bookId}/highlight:
+    post:
+      consumes:
+      - application/json
+      description: Highlight Text in Book Response by AI
+      parameters:
+      - description: Book ID
+        in: path
+        name: bookId
+        required: true
+        type: string
+      - description: Highlight Text Request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/dto.HighlightTextRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.JSONResponseModel'
+            - properties:
+                data:
+                  type: object
+                errors:
+                  type: object
+              type: object
+      security:
+      - BearerAuth: []
+      summary: Highlight Text in Book
+      tags:
+      - Books
   /api/books/{bookId}/read:
     get:
       consumes:

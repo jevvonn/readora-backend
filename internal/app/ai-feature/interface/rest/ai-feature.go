@@ -27,6 +27,18 @@ func NewAIFeatureHandler(
 	router.Post("/books/:bookId/highlight", middleware.Authenticated, handler.HighlightText)
 }
 
+// @Summary      Highlight Text in Book
+// @Description  Highlight Text in Book Response by AI
+// @Tags         Books
+// @Accept       json
+// @Produce      json
+// @Param        bookId path string true "Book ID"
+// @Param 		 req body dto.HighlightTextRequest true "Highlight Text Request"
+// @Success      200  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      400  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Success      500  object   models.JSONResponseModel{data=nil,errors=nil}
+// @Security     BearerAuth
+// @Router       /api/books/{bookId}/highlight [post]
 func (h *AIFeatureHandler) HighlightText(ctx *fiber.Ctx) error {
 	var req dto.HighlightTextRequest
 	err := ctx.BodyParser(&req)
