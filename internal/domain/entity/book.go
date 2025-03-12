@@ -9,7 +9,7 @@ import (
 type Book struct {
 	ID          uuid.UUID `gorm:"primaryKey" json:"id,omitempty"`
 	Title       string    `gorm:"type:varchar(255);not null;index" json:"title,omitempty"`
-	Description string    `gorm:"type:varchar(255);not null;index" json:"description,omitempty"`
+	Description string    `gorm:"type:text;not null;index" json:"description,omitempty"`
 	Author      string    `gorm:"type:varchar(255);not null;index" json:"author,omitempty"`
 	PublishDate time.Time `gorm:"type:timestamp;not null" json:"publish_date,omitempty"`
 
