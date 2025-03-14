@@ -88,6 +88,7 @@ func (r *BookPostgreSQL) GetSpecificBook(bookId string) (entity.Book, error) {
 	var book entity.Book
 	query := r.db.
 		Preload("Owner").
+		Preload("Genres").
 		Model(&entity.Book{}).
 		Joins("LEFT JOIN comments ON comments.book_id = books.id").
 		Select("books.*, COALESCE(AVG(comments.rating), 0) as rating").
