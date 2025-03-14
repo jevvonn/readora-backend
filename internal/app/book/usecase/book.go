@@ -293,6 +293,7 @@ func (u *BookUsecase) GetReadBook(ctx *fiber.Ctx) (res dto.GetBooksResponse, err
 		OwnerID:          book.OwnerID,
 		FileKey:          book.FileKey,
 		FileURL:          book.FileURL,
+		FileType:         book.FileType,
 		IsPublic:         book.IsPublic,
 		FileUploadStatus: book.FileUploadStatus,
 		FileAIStatus:     book.FileAIStatus,

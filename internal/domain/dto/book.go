@@ -37,8 +37,9 @@ type GetBooksResponse struct {
 
 	CoverImageURL string `json:"cover_image_url,omitempty"`
 
-	FileKey string `json:"file_key,omitempty"`
-	FileURL string `json:"file_url,omitempty"`
+	FileKey  string `json:"file_key,omitempty"`
+	FileURL  string `json:"file_url,omitempty"`
+	FileType string `json:"file_type,omitempty"`
 
 	Rating string `json:"rating,omitempty"`
 
